@@ -9,6 +9,7 @@ import {
   ArrowRight, Youtube, Linkedin, MessageCircle
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useLocale } from '@/components/providers/useLocale';
 
 export default function Footer() {
   const [dynamicData, setDynamicData] = useState({
@@ -16,6 +17,7 @@ export default function Footer() {
     activities: [],
     settings: null
   });
+  const { t } = useLocale();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -78,35 +80,35 @@ export default function Footer() {
 
   const footerLinks = [
     {
-      title: 'Destinasjoner',
+      title: t.footer.destinations,
       links: dynamicData.destinations.map(d => ({
         label: d.name,
         href: `/destination/${d.slug}`
       }))
     },
     {
-      title: 'Topp Aktiviteter',
+      title: t.footer.topActivities,
       links: dynamicData.activities.map(a => ({
         label: a.name,
         href: `/activity/${a.slug}`
       }))
     },
     {
-      title: 'Bedrift',
+      title: t.footer.company,
       links: [
-        { label: 'Om Oss', href: '/om-oss' },
-        { label: 'Blogg', href: '/blogg' },
-        { label: 'Karriere', href: '/karriere' },
-        { label: 'Vår Historie', href: '/var-historie' },
+        { label: t.footer.about, href: '/om-oss' },
+        { label: t.footer.blog, href: '/blogg' },
+        { label: t.footer.career, href: '/karriere' },
+        { label: t.footer.ourHistory, href: '/var-historie' },
       ]
     },
     {
-      title: 'Støtte',
+      title: t.footer.support,
       links: [
-        { label: 'Kontakt Oss', href: '/kontakt-oss' },
-        { label: 'Betingelser', href: '/betingelser' },
-        { label: 'Personvern', href: '/personvern' },
-        { label: 'Administrasjon', href: '/admin/login' },
+        { label: t.footer.contactUs, href: '/kontakt-oss' },
+        { label: t.footer.terms, href: '/betingelser' },
+        { label: t.footer.privacy, href: '/personvern' },
+        { label: t.footer.admin, href: '/admin/login' },
       ]
     }
   ];
@@ -229,11 +231,11 @@ export default function Footer() {
             </div>
             <div>
               <h5 className="text-[10px] font-black uppercase tracking-widest text-white/90 mb-3">
-                {s.visitingAddressLabel}
+                {t.footer.visitingAddress}
               </h5>
               <div className="text-sm font-medium text-stone-200/90 leading-relaxed">
                 <p>{s.address}</p>
-                {s.kathmanduAddress && <p className="mt-1 opacity-60">Nepal: {s.kathmanduAddress}</p>}
+                {s.kathmanduAddress && <p className="mt-1 opacity-60">{s.kathmanduAddress}</p>}
               </div>
             </div>
           </div>
@@ -243,11 +245,11 @@ export default function Footer() {
             </div>
             <div>
               <h5 className="text-[10px] font-black uppercase tracking-widest text-white/90 mb-3">
-                {s.callUsLabel}
+                {t.footer.callUs}
               </h5>
               <p className="text-sm font-medium text-stone-200/90 leading-relaxed">
                 {s.contactPhone}<br />
-                <span className="opacity-60">{s.callUsHours}</span>
+                <span className="opacity-60">{t.footer.callUsHours}</span>
               </p>
             </div>
           </div>
@@ -257,11 +259,11 @@ export default function Footer() {
             </div>
             <div>
               <h5 className="text-[10px] font-black uppercase tracking-widest text-white/90 mb-3">
-                {s.sendEmailLabel}
+                {t.footer.sendEmail}
               </h5>
               <p className="text-sm font-medium text-stone-200/90 leading-relaxed">
                 {s.contactEmail}<br />
-                <span className="opacity-60">{s.replyTimeLabel}</span>
+                <span className="opacity-60">{t.footer.replyTime}</span>
               </p>
             </div>
           </div>
@@ -275,19 +277,19 @@ export default function Footer() {
             </p>
             <div className="h-4 w-[1px] bg-white/10 hidden md:block" />
             <div className="flex items-center space-x-6">
-              <Link href="/betingelser" className="text-[10px] font-black text-stone-300 hover:text-white transition-colors uppercase tracking-widest">Betingelser</Link>
-              <Link href="/personvern" className="text-[10px] font-black text-stone-300 hover:text-white transition-colors uppercase tracking-widest">Personvern</Link>
+              <Link href="/betingelser" className="text-[10px] font-black text-stone-300 hover:text-white transition-colors uppercase tracking-widest">{t.footer.terms}</Link>
+              <Link href="/personvern" className="text-[10px] font-black text-stone-300 hover:text-white transition-colors uppercase tracking-widest">{t.footer.privacy}</Link>
             </div>
           </div>
 
           <div className="flex items-center space-x-6">
             <div className="flex items-center px-6 py-3 bg-white/5 border border-white/10 rounded-2xl space-x-3 grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all">
               <ShieldCheck className="w-4 h-4 text-emerald-400" />
-              <span className="text-[9px] font-black uppercase tracking-widest text-white">Sikker Betaling</span>
+              <span className="text-[9px] font-black uppercase tracking-widest text-white">{t.footer.securePayment}</span>
             </div>
             <div className="flex items-center px-6 py-3 bg-white/5 border border-white/10 rounded-2xl space-x-3 grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all">
               <Globe className="w-4 h-4 text-orange-400" />
-              <span className="text-[9px] font-black uppercase tracking-widest text-white">Medlem av RGF</span>
+              <span className="text-[9px] font-black uppercase tracking-widest text-white">{t.footer.memberOfRGF}</span>
             </div>
           </div>
         </div>

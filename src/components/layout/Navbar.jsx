@@ -7,6 +7,7 @@ import { useSession, signIn, signOut } from 'next-auth/react';
 import { Menu, X, Phone, Mail, ChevronDown, Globe, Search, User, LogOut, Layout } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { useLocale } from '@/components/providers/useLocale';
 
 const WhatsAppIcon = ({ size = 16, color = "currentColor", ...props }) => (
   <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} fill={color} viewBox="0 0 16 16" {...props}>
@@ -28,6 +29,8 @@ export default function Navbar() {
   const [settings, setSettings] = useState(null);
   const { data: session, status } = useSession();
   const pathname = usePathname();
+  const { locale, t, setLocale } = useLocale();
+  const isNo = locale === 'no';
 
   useEffect(() => {
     const fetchData = async () => {
@@ -56,29 +59,29 @@ export default function Navbar() {
   }, []);
 
   const navLinks = [
-    { name: 'Hjem', href: '/' },
+    { name: t.nav.home, href: '/' },
     {
-      name: 'Destinasjon',
+      name: t.nav.destinations,
       dropdown: [
-        { name: 'Nepal', href: '/destination/nepal' },
+        { name: isNo ? 'Nepal' : 'Nepal', href: '/destination/nepal' },
         { name: 'India', href: '/destination/india' },
         { name: 'Bhutan', href: '/destination/bhutan' },
         { name: 'Tibet', href: '/destination/tibet' },
       ]
     },
     {
-      name: 'Aktiviteter',
+      name: t.nav.activities,
       dropdown: dynamicActivities.map(a => ({
         name: a.name,
         href: `/activity/${a.slug}`
       }))
     },
     {
-      name: 'Bedrift',
+      name: t.nav.company,
       dropdown: [
-        { name: 'Om Oss', href: '/om-oss' },
-        { name: 'Blogg', href: '/blogg' },
-        { name: 'Kontakt oss', href: '/kontakt-oss' },
+        { name: t.nav.about, href: '/om-oss' },
+        { name: t.nav.blog, href: '/blogg' },
+        { name: t.nav.contact, href: '/kontakt-oss' },
       ]
     },
   ];
@@ -118,11 +121,23 @@ export default function Navbar() {
           <div className="hidden sm:flex items-center space-x-6">
             <div className="flex items-center space-x-2 text-emerald-300">
               <Globe className="w-3.5 h-3.5" />
-              <span className="uppercase text-[9px] font-black tracking-[0.2em]">24/7 Kundestøtte</span>
+              <span className="uppercase text-[9px] font-black tracking-[0.2em]">{t.nav.support247}</span>
             </div>
             <div className="flex items-center space-x-3 border-l border-white/10 pl-6 ml-6">
-              <button className="hover:scale-125 transition-transform">🇳🇴</button>
-              <button className="hover:scale-125 transition-transform opacity-50">🇬🇧</button>
+              <button
+                onClick={() => setLocale('no')}
+                aria-label="Norsk"
+                className={cn("hover:scale-125 transition-transform", !isNo && "opacity-50")}
+              >
+                🇳🇴
+              </button>
+              <button
+                onClick={() => setLocale('en')}
+                aria-label="English"
+                className={cn("hover:scale-125 transition-transform", isNo && "opacity-50")}
+              >
+                🇬🇧
+              </button>
             </div>
           </div>
         </div>
@@ -218,7 +233,7 @@ export default function Navbar() {
                 className="bg-orange-500 hover:bg-orange-600 text-white text-[10px] font-black px-8 py-4 rounded-full transition-all uppercase tracking-[0.25em] shadow-2xl hover:shadow-orange-500/30 active:scale-95 flex items-center group"
               >
                 <Search className="w-3.5 h-3.5 mr-2.5 group-hover:scale-110 transition-transform" />
-                Planlegg Reisen
+                {t.nav.planTrip}
               </Link>
 
               {/* Auth Buttons */}
@@ -233,7 +248,7 @@ export default function Navbar() {
                       )}
                     >
                       <Layout className="w-4 h-4" />
-                      <span>Min oversikt</span>
+                      <span>{t.nav.myDashboard}</span>
                     </Link>
                     <button 
                       onClick={() => signOut()}
@@ -254,7 +269,7 @@ export default function Navbar() {
                     )}
                   >
                     <User className="w-4 h-4" />
-                    <span>Logg inn</span>
+                    <span>{t.nav.logIn}</span>
                   </Link>
                 )}
               </div>
@@ -317,7 +332,7 @@ export default function Navbar() {
                   className="block bg-orange-500 text-white text-center py-5 rounded-2xl font-black uppercase tracking-widest text-sm shadow-xl"
                   onClick={() => setIsOpen(false)}
                 >
-                  Planlegg reisen
+                  {t.nav.planTripLower}
                 </Link>
 
                 <div className="pt-8 border-t border-gray-100">
@@ -329,14 +344,14 @@ export default function Navbar() {
                         onClick={() => setIsOpen(false)}
                       >
                         <Layout className="w-6 h-6" />
-                        <span>Min oversikt</span>
+                        <span>{t.nav.myDashboard}</span>
                       </Link>
                       <button 
                         onClick={() => signOut()}
                         className="flex items-center space-x-4 text-xl font-black text-red-500 uppercase tracking-tighter font-display"
                       >
                         <LogOut className="w-6 h-6" />
-                        <span>Logg ut</span>
+                        <span>{t.nav.logOut}</span>
                       </button>
                     </div>
                   ) : (
@@ -346,9 +361,25 @@ export default function Navbar() {
                       onClick={() => setIsOpen(false)}
                     >
                       <User className="w-7 h-7" />
-                      <span>Logg inn</span>
+                      <span>{t.nav.logIn}</span>
                     </Link>
                   )}
+                </div>
+
+                <div className="pt-8 border-t border-gray-100 flex items-center space-x-4">
+                  <span className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400 font-display">Language</span>
+                  <button
+                    onClick={() => setLocale('no')}
+                    className={cn("text-2xl transition-transform", !isNo && "opacity-40")}
+                  >
+                    🇳🇴 <span className="text-sm text-gray-500 font-bold uppercase">Norsk</span>
+                  </button>
+                  <button
+                    onClick={() => setLocale('en')}
+                    className={cn("text-2xl transition-transform", isNo && "opacity-40")}
+                  >
+                    🇬🇧 <span className="text-sm text-gray-500 font-bold uppercase">English</span>
+                  </button>
                 </div>
               </div>
             </motion.div>

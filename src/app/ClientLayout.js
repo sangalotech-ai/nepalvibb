@@ -5,6 +5,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import FloatingUI from "@/components/layout/FloatingUI";
 import AuthProvider from "@/components/providers/AuthProvider";
+import LocaleProvider from "@/components/providers/LocaleProvider";
 
 export default function ClientLayout({ children }) {
   const pathname = usePathname();
@@ -12,10 +13,12 @@ export default function ClientLayout({ children }) {
 
   return (
     <AuthProvider>
-      {!isAdminPage && <Navbar />}
-      {children}
-      {!isAdminPage && <Footer />}
-      {!isAdminPage && pathname !== '/plan-your-trip' && <FloatingUI />}
+      <LocaleProvider>
+        {!isAdminPage && <Navbar />}
+        {children}
+        {!isAdminPage && <Footer />}
+        {!isAdminPage && pathname !== '/plan-your-trip' && <FloatingUI />}
+      </LocaleProvider>
     </AuthProvider>
   );
 }
