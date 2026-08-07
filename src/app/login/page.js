@@ -5,8 +5,10 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { LogIn, Compass, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { useLocale } from '@/components/providers/useLocale';
 
 export default function LoginPage() {
+  const { t } = useLocale();
   const { data: session, status } = useSession();
   const router = useRouter();
 
@@ -23,8 +25,8 @@ export default function LoginPage() {
           <div className="w-20 h-20 bg-emerald-50 rounded-3xl flex items-center justify-center mx-auto mb-8">
             <Compass className="w-10 h-10 text-primary" />
           </div>
-          <h1 className="text-4xl font-black text-primary uppercase tracking-tighter">Velkommen tilbake</h1>
-          <p className="text-gray-400 font-medium">Logg inn for å administrere dine reiser og chatte med spesialister.</p>
+          <h1 className="text-4xl font-black text-primary uppercase tracking-tighter">{t.login.welcomeBack}</h1>
+          <p className="text-gray-400 font-medium">{t.login.subtitle}</p>
         </div>
 
         <div className="space-y-4 pt-8">
@@ -33,7 +35,7 @@ export default function LoginPage() {
             className="w-full flex items-center justify-center space-x-4 bg-white border-2 border-gray-100 hover:border-primary px-8 py-5 rounded-2xl transition-all group"
           >
             <img src="https://www.svgrepo.com/show/355037/google.svg" className="w-6 h-6" alt="Google" />
-            <span className="text-sm font-black uppercase tracking-widest text-primary">Logg inn med Google</span>
+            <span className="text-sm font-black uppercase tracking-widest text-primary">{t.login.signInGoogle}</span>
           </button>
 
           <button
@@ -45,14 +47,14 @@ export default function LoginPage() {
             className="w-full flex items-center justify-center space-x-4 bg-primary text-white px-8 py-5 rounded-2xl transition-all hover:bg-emerald-900 shadow-xl"
           >
             <LogIn className="w-5 h-5" />
-            <span className="text-sm font-black uppercase tracking-widest">Dummy Login (Test)</span>
+            <span className="text-sm font-black uppercase tracking-widest">{t.login.dummyLogin}</span>
           </button>
         </div>
 
         <div className="pt-10 border-t border-gray-50">
-          <p className="text-xs text-gray-400 font-medium mb-6">Planlegger du en ny reise?</p>
+          <p className="text-xs text-gray-400 font-medium mb-6">{t.login.planningTrip}</p>
           <Link href="/plan-your-trip" className="inline-flex items-center text-xs font-black uppercase tracking-[0.2em] text-orange-500 hover:text-orange-600 transition-colors">
-            Start planleggingen nå <ArrowRight className="ml-2 w-4 h-4" />
+            {t.login.startPlanning} <ArrowRight className="ml-2 w-4 h-4" />
           </Link>
         </div>
       </div>

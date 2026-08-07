@@ -49,12 +49,18 @@ export default function AdminTeamPage() {
   };
 
   const handleDelete = async (id) => {
-    if (!confirm('Are you sure you want to delete this team member?')) return;
+    if (!confirm('Er du sikker på at du vil slette dette teammedlemmet?')) return;
     try {
-      await fetch(`/api/team-members/${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/team-members/${id}`, { method: 'DELETE' });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        alert(data.error || 'Kunne ikke slette teammedlemmet.');
+        return;
+      }
       fetchMembers();
     } catch (error) {
       console.error(error);
+      alert('Kunne ikke slette teammedlemmet.');
     }
   };
 

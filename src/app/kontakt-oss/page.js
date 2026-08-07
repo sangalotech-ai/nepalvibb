@@ -5,9 +5,11 @@ import { motion } from 'framer-motion';
 import { Mail, Phone, MapPin, Send, MessageCircle, Clock, Globe, ChevronRight } from 'lucide-react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
+import { useLocale } from '@/components/providers/useLocale';
 import { cn } from '@/lib/utils';
 
 export default function ContactPage() {
+  const { t } = useLocale();
   const [content, setContent] = useState(null);
   const [settings, setSettings] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -54,13 +56,13 @@ export default function ContactPage() {
             className="space-y-4"
           >
             <h5 className="text-orange-500 font-bold uppercase tracking-wider text-xs">
-              {content?.hero?.subtitle || 'La oss snakke'}
+              {content?.hero?.subtitle || t.contact.heroSubtitle}
             </h5>
             <h1 className="text-4xl md:text-7xl font-bold font-display text-white tracking-tight leading-tight">
-              {content?.hero?.title || 'Kontakt Oss'}
+              {content?.hero?.title || t.contact.heroTitle}
             </h1>
             <p className="text-emerald-100/80 max-w-2xl mx-auto text-base sm:text-lg font-light leading-relaxed">
-              {content?.hero?.description || 'Våre reiseeksperter er klare til å hjelpe deg med å planlegge ditt neste eventyr i Himalaya.'}
+              {content?.hero?.description || t.contact.heroDescription}
             </p>
           </motion.div>
         </div>
@@ -74,29 +76,29 @@ export default function ContactPage() {
           <div className="lg:col-span-7 space-y-10">
             <div className="space-y-3">
               <h2 className="text-2xl sm:text-3xl font-bold font-display text-primary tracking-tight">
-                {content?.form?.title || 'Send oss en melding'}
+                {content?.form?.title || t.contact.formTitle}
               </h2>
               <p className="text-gray-500 font-light text-sm">
-                {content?.form?.subtitle || 'Fyll ut skjemaet nedenfor, så kontakter vi deg i løpet av 24 timer.'}
+                {content?.form?.subtitle || t.contact.formSubtitle}
               </p>
             </div>
  
             <form className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-[10px] font-bold uppercase tracking-wider text-gray-400 px-1">Navn</label>
+                <label className="text-[10px] font-bold uppercase tracking-wider text-gray-400 px-1">{t.contact.formName}</label>
                 <input type="text" className="w-full bg-gray-50 border-none rounded-xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all" />
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-bold uppercase tracking-wider text-gray-400 px-1">E-post</label>
+                <label className="text-[10px] font-bold uppercase tracking-wider text-gray-400 px-1">{t.contact.formEmail}</label>
                 <input type="email" className="w-full bg-gray-50 border-none rounded-xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all" />
               </div>
               <div className="md:col-span-2 space-y-2">
-                <label className="text-[10px] font-bold uppercase tracking-wider text-gray-400 px-1">Melding</label>
+                <label className="text-[10px] font-bold uppercase tracking-wider text-gray-400 px-1">{t.contact.formMessage}</label>
                 <textarea rows={6} className="w-full bg-gray-50 border-none rounded-xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all resize-none" />
               </div>
               <div className="md:col-span-2">
                 <button className="bg-orange-500 text-white px-8 py-4 rounded-full text-xs font-bold uppercase tracking-wider shadow-md hover:bg-orange-600 hover:scale-105 transition-all flex items-center space-x-2">
-                  <span>Send melding</span>
+                  <span>{t.contact.formSubmit}</span>
                   <Send className="w-4 h-4" />
                 </button>
               </div>
@@ -110,7 +112,7 @@ export default function ContactPage() {
                 <Globe className="w-24 h-24" />
               </div>
               
-              <h3 className="text-xl font-bold font-display text-white tracking-tight">Kontaktinformasjon</h3>
+              <h3 className="text-xl font-bold font-display text-white tracking-tight">{t.contact.infoTitle}</h3>
               
               <div className="space-y-6 relative z-10">
                 <div className="flex space-x-4">
@@ -119,11 +121,11 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-300 mb-1">
-                      {settings?.visitingAddressLabel || 'Besøksadresse'}
+                      {settings?.visitingAddressLabel || t.contact.visitingAddressLabel}
                     </p>
                     <p className="text-sm font-light leading-relaxed">
                       {settings?.address}<br />
-                      {settings?.kathmanduAddress && <span className="opacity-60">Nepal: {settings.kathmanduAddress}</span>}
+                      {settings?.kathmanduAddress && <span className="opacity-60">{t.contact.nepal}: {settings.kathmanduAddress}</span>}
                     </p>
                   </div>
                 </div>
@@ -134,11 +136,11 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-300 mb-1">
-                      {settings?.callUsLabel || 'Ring Oss'}
+                      {settings?.callUsLabel || t.contact.callUsLabel}
                     </p>
                     <p className="text-lg font-bold">{settings?.contactPhone}</p>
                     <p className="text-[10px] font-light text-white/50 uppercase tracking-wider mt-0.5">
-                      {settings?.callUsHours || 'Tilgjengelig Man-Fre'}
+                      {settings?.callUsHours || t.contact.callUsHours}
                     </p>
                   </div>
                 </div>
@@ -149,7 +151,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-300 mb-1">
-                      {settings?.sendEmailLabel || 'Send E-post'}
+                      {settings?.sendEmailLabel || t.contact.sendEmailLabel}
                     </p>
                     <p className="text-lg font-bold">{settings?.contactEmail}</p>
                   </div>
@@ -159,7 +161,7 @@ export default function ContactPage() {
               <div className="pt-6 border-t border-white/10">
                  <div className="flex items-center space-x-3 text-[10px] font-bold uppercase tracking-wider text-emerald-300">
                     <Clock className="w-4 h-4" />
-                    <span>{settings?.replyTimeLabel || 'Svarer innen 24 timer'}</span>
+                    <span>{settings?.replyTimeLabel || t.contact.replyTimeLabel}</span>
                  </div>
               </div>
             </div>
@@ -176,8 +178,8 @@ export default function ContactPage() {
                   <MessageCircle className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-primary tracking-tight">Chat med oss</h4>
-                  <p className="text-xs text-gray-400 font-light">Vi er tilgjengelige på WhatsApp</p>
+                  <h4 className="text-sm font-bold text-primary tracking-tight">{t.contact.chatTitle}</h4>
+                  <p className="text-xs text-gray-400 font-light">{t.contact.chatSubtitle}</p>
                 </div>
               </div>
               <div className="w-8 h-8 rounded-full border border-gray-100 flex items-center justify-center text-gray-300 group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all">

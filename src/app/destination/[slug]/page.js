@@ -7,8 +7,10 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
+import { useLocale } from '@/components/providers/useLocale';
 
 export default function DestinationDetailPage({ params }) {
+  const { t } = useLocale();
   const { slug } = use(params);
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -34,8 +36,8 @@ export default function DestinationDetailPage({ params }) {
 
   if (!data?.destination) return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-white space-y-6">
-      <h1 className="text-4xl font-black text-primary uppercase tracking-tighter italic">Destinasjon ikke funnet</h1>
-      <Link href="/" className="bg-orange-500 text-white px-8 py-3 rounded-xl font-black uppercase tracking-widest text-xs shadow-xl">Tilbake til hjem</Link>
+      <h1 className="text-4xl font-black text-primary uppercase tracking-tighter italic">{t.destinationDetail.notFoundTitle}</h1>
+      <Link href="/" className="bg-orange-500 text-white px-8 py-3 rounded-xl font-black uppercase tracking-widest text-xs shadow-xl">{t.destinationDetail.backHome}</Link>
     </div>
   );
 
@@ -71,7 +73,7 @@ export default function DestinationDetailPage({ params }) {
 
         <div className="relative z-10 text-center px-6 pt-20 animate-hero-content">
           <p className="text-orange-400 font-bold uppercase tracking-wider text-xs mb-4">
-            Opplev hjertet av Himalaya
+            {t.destinationDetail.heroSubtitle}
           </p>
           <h1 className="text-5xl md:text-8xl lg:text-[10rem] font-bold font-display text-white tracking-tight leading-[1] drop-shadow-2xl">
             {destination?.name}
@@ -85,11 +87,11 @@ export default function DestinationDetailPage({ params }) {
         <div className="bg-white rounded-3xl shadow-sm p-8 sm:p-12 lg:p-16 border border-gray-100 mb-16">
           <div className="">
             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold font-display text-primary tracking-tight mb-8">
-              Om <span className="text-orange-500">{destination.name}</span>
+              {t.destinationDetail.aboutLabel} <span className="text-orange-500">{destination.name}</span>
             </h2>
             <div
               className="space-y-6 text-gray-600 font-light leading-relaxed text-lg border-l-2 border-orange-500 pl-6 [&_p]:m-0"
-              dangerouslySetInnerHTML={{ __html: destination.description || 'Oppdag de skjulte perlene i denne praktfulle regionen. Fra eldgamle tradisjoner til pustebestående landskap, hvert hjørne forteller en historie om undring og styrke.' }}
+              dangerouslySetInnerHTML={{ __html: destination.description || t.destinationDetail.descriptionFallback }}
             />
           </div>
         </div>
@@ -97,8 +99,8 @@ export default function DestinationDetailPage({ params }) {
         {/* Filters Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 px-2">
           <div>
-            <h3 className="text-2xl sm:text-3xl font-bold font-display text-primary tracking-tight">Tilgjengelige opplevelser</h3>
-            <p className="text-xs text-gray-400 font-bold uppercase tracking-wider mt-1">{filteredTours.length} Opplevelser funnet i {destination.name}</p>
+            <h3 className="text-2xl sm:text-3xl font-bold font-display text-primary tracking-tight">{t.destinationDetail.availableExperiences}</h3>
+            <p className="text-xs text-gray-400 font-bold uppercase tracking-wider mt-1">{filteredTours.length} {t.destinationDetail.experiencesFound} {destination.name}</p>
           </div>
 
           <div className="flex items-center space-x-2 bg-gray-100/60 p-1.5 rounded-xl border border-gray-100 shadow-sm">
@@ -127,12 +129,12 @@ export default function DestinationDetailPage({ params }) {
                 <div className="p-2.5 bg-emerald-50 rounded-xl text-primary">
                   <FilterIcon className="w-5 h-5" />
                 </div>
-                <span className="hidden sm:inline text-xs font-bold uppercase tracking-wider text-primary">Filtrer resultater</span>
+                <span className="hidden sm:inline text-xs font-bold uppercase tracking-wider text-primary">{t.destinationDetail.filterResults}</span>
               </div>
 
               {/* Activity Filter */}
               <div className="space-y-4 mb-10">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Aktivitetstype</p>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">{t.destinationDetail.activityType}</p>
                 <div className="space-y-2">
                   {activities.map(act => (
                     <button
@@ -151,13 +153,13 @@ export default function DestinationDetailPage({ params }) {
 
               {/* Duration Filter */}
               <div className="space-y-4">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Varighet</p>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">{t.destinationDetail.durationLabel}</p>
                 <div className="space-y-2">
                   {[
-                    { label: 'Alle Varigheter', value: 'Alle' },
-                    { label: '1-5 Dager', value: 'Kort' },
-                    { label: '6-12 Dager', value: 'Middels' },
-                    { label: '13+ Dager', value: 'Lang' }
+                    { label: t.destinationDetail.durationAll, value: 'Alle' },
+                    { label: t.destinationDetail.durationShort, value: 'Kort' },
+                    { label: t.destinationDetail.durationMedium, value: 'Middels' },
+                    { label: t.destinationDetail.durationLong, value: 'Lang' }
                   ].map(dur => (
                     <button
                       key={dur.value}
@@ -178,10 +180,10 @@ export default function DestinationDetailPage({ params }) {
             <div className="bg-primary rounded-3xl p-8 text-white overflow-hidden relative group shadow-md">
               <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full blur-2xl -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-1000" />
               <div className="relative z-10 space-y-6">
-                <h4 className="text-xl font-bold font-display text-white tracking-tight">Trenger du hjelp?</h4>
-                <p className="text-emerald-100/80 text-xs font-light leading-relaxed">Våre lokale spesialister kan hjelpe deg med å skreddersy den perfekte reisen til {destination.name}.</p>
+                <h4 className="text-xl font-bold font-display text-white tracking-tight">{t.destinationDetail.needHelp}</h4>
+                <p className="text-emerald-100/80 text-xs font-light leading-relaxed">{t.destinationDetail.helpDescription} {destination.name}.</p>
                 <Link href="/plan-your-trip" className="inline-flex items-center text-[10px] font-bold uppercase tracking-wider bg-white text-primary px-6 py-3 rounded-full hover:bg-orange-500 hover:text-white hover:scale-105 transition-all shadow-sm">
-                  Kontakt Spesialist <ArrowRight className="w-3.5 h-3.5 ml-2" />
+                  {t.destinationDetail.contactSpecialist} <ArrowRight className="w-3.5 h-3.5 ml-2" />
                 </Link>
               </div>
             </div>
@@ -191,12 +193,12 @@ export default function DestinationDetailPage({ params }) {
           <div className="flex-1 w-full">
             {filteredTours.length === 0 ? (
               <div className="bg-white rounded-3xl p-16 text-center border border-gray-100 shadow-sm">
-                <p className="text-lg font-bold font-display text-primary tracking-tight mb-4">Ingen reiser samsvarer med filtrene</p>
+                <p className="text-lg font-bold font-display text-primary tracking-tight mb-4">{t.destinationDetail.noResults}</p>
                 <button
                   onClick={() => setFilters({ activity: 'Alle', duration: 'Alle' })}
                   className="text-orange-500 font-bold uppercase tracking-wider text-[10px] underline hover:text-primary transition-colors"
                 >
-                  Nullstill alle filtre
+                  {t.destinationDetail.resetFilters}
                 </button>
               </div>
             ) : (
@@ -207,8 +209,9 @@ export default function DestinationDetailPage({ params }) {
                 )}
               >
                 {filteredTours.map((tour) => (
-                  <div
+                  <Link
                     key={tour._id}
+                    href={`/trips/${tour.slug}`}
                     className={cn(
                       "bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-500 group border border-gray-100 flex",
                       view === 'list' ? "flex-col md:flex-row h-auto md:h-72" : "flex-col"
@@ -217,7 +220,7 @@ export default function DestinationDetailPage({ params }) {
                     <div className={cn("relative overflow-hidden border-b border-gray-50 md:border-b-0 md:border-r border-gray-50", view === 'list' ? "w-full md:w-[280px] h-52 md:h-full" : "h-64")}>
                       <img src={tour.image} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" alt={tour.title} loading="lazy" />
                       <div className="absolute top-4 left-4 bg-primary/95 text-white text-[9px] font-bold uppercase px-3 py-1.5 rounded-full tracking-wider shadow-md backdrop-blur-sm">
-                        {Array.isArray(tour.category) ? tour.category[0] : tour.category || 'Eventyr'}
+                        {Array.isArray(tour.category) ? tour.category[0] : tour.category || t.destinationDetail.categoryFallback}
                       </div>
                     </div>
 
@@ -242,12 +245,12 @@ export default function DestinationDetailPage({ params }) {
                             NOK {tour.price?.toLocaleString()}
                           </div>
                         </div>
-                        <Link href={`/trips/${tour.slug}`} className="w-10 h-10 bg-gray-50 rounded-xl text-primary hover:bg-primary hover:text-white transition-all shadow-sm flex items-center justify-center group/btn">
+                        <span className="w-10 h-10 bg-gray-50 rounded-xl text-primary group-hover:bg-primary group-hover:text-white transition-all shadow-sm flex items-center justify-center group/btn">
                           <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
-                        </Link>
+                        </span>
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             )}

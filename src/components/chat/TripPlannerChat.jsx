@@ -2,10 +2,12 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { Send, User, MapPin, Loader2 } from 'lucide-react';
+import { useLocale } from '@/components/providers/useLocale';
 
 export default function TripPlannerChat() {
+  const { t } = useLocale();
   const [messages, setMessages] = useState([
-    { sender: 'specialist', text: 'Namaste! 👋 I am your local travel specialist for the Himalayas. I can help you plan a customized trip based on your interests and budget. To get started, where are you thinking of going?' }
+    { sender: 'specialist', text: t.tripPlanner.welcomeMsg }
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -52,7 +54,7 @@ export default function TripPlannerChat() {
       }
     } catch (error) {
       console.error('Failed to send message:', error);
-      setMessages(prev => [...prev, { sender: 'system', text: 'Failed to send message. Please try again.' }]);
+      setMessages(prev => [...prev, { sender: 'system', text: t.tripPlanner.errorMessage }]);
     } finally {
       setIsLoading(false);
     }
@@ -69,8 +71,8 @@ export default function TripPlannerChat() {
             <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-400 border-2 border-emerald-600 rounded-full"></div>
           </div>
           <div>
-            <h2 className="text-white font-bold text-lg leading-tight">Local Specialist</h2>
-            <p className="text-emerald-100 text-sm">Typically replies instantly</p>
+            <h2 className="text-white font-bold text-lg leading-tight">{t.tripPlanner.specialistTitle}</h2>
+            <p className="text-emerald-100 text-sm">{t.tripPlanner.replyInstantly}</p>
           </div>
         </div>
       </div>
@@ -128,7 +130,7 @@ export default function TripPlannerChat() {
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Type your message..."
+            placeholder={t.tripPlanner.inputPlaceholder}
             disabled={isLoading}
             className="flex-1 bg-gray-50 border border-gray-200 rounded-full px-6 py-3 md:py-4 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-shadow text-gray-700"
           />
@@ -141,7 +143,7 @@ export default function TripPlannerChat() {
           </button>
         </form>
         <p className="text-center text-xs text-gray-400 mt-3">
-          Our travel specialists typically reply within a few minutes.
+          {t.tripPlanner.replyWithin}
         </p>
       </div>
     </div>

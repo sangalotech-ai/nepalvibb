@@ -13,12 +13,14 @@ import {
 import Link from 'next/link';
 import { signIn } from 'next-auth/react';
 import { cn } from '@/lib/utils';
+import { useLocale } from '@/components/providers/useLocale';
 
 const IconMap = {
   MapPin, Mountain, Landmark, Heart, Sparkles, Calendar, Users, Send, Mail, User, MessageSquare, Globe, Zap, Compass, Layout, Star
 };
 
 function DateField({ label, value, min, onChange }) {
+  const { t } = useLocale();
   const handleBoxClick = (e) => {
     const input = e.currentTarget.querySelector('input[type="date"]');
     if (input) input.showPicker();
@@ -30,7 +32,7 @@ function DateField({ label, value, min, onChange }) {
         <span className="text-[11px] font-black uppercase tracking-widest">{label}</span>
       </div>
       <div className="w-full bg-gray-50/50 border-2 border-gray-50 rounded-[2rem] px-8 py-5 text-sm font-bold text-gray-800 shadow-sm cursor-pointer transition-all hover:border-primary/30 group-hover:bg-white">
-        {value ? new Date(value).toLocaleDateString('no-NO', { day: '2-digit', month: 'long', year: 'numeric' }) : 'Velg dato'}
+        {value ? new Date(value).toLocaleDateString('no-NO', { day: '2-digit', month: 'long', year: 'numeric' }) : t.planTrip.selectDate}
       </div>
       <input type="date" value={value || ''} min={min} onChange={e => onChange(e.target.value)} className="sr-only" />
     </div>
@@ -38,6 +40,7 @@ function DateField({ label, value, min, onChange }) {
 }
 
 function PlanYourTripContent() {
+  const { t } = useLocale();
   const { data: session } = useSession();
   const searchParams = useSearchParams();
   const tourParam = searchParams.get('tour') || searchParams.get('slug');
@@ -133,7 +136,7 @@ function PlanYourTripContent() {
 
   useEffect(() => {
     if (tourParam && tours.length > 0 && questions.length > 0) {
-      const tour = tours.find(t => t.slug === tourParam);
+      const tour = tours.find(tr => tr.slug === tourParam);
       if (tour) {
         let destSlug = '';
         if (destParam && destinations.length > 0) {
@@ -171,7 +174,7 @@ function PlanYourTripContent() {
     if (currentStepIdx < questions.length) {
       if (currentQuestion.question === 'Tour details') {
         if (!responses['accommodation']) {
-          setError('Vennligst velg et overnattingsalternativ.');
+          setError(t.planTrip.errorAccommodation);
           return;
         }
 
@@ -182,20 +185,20 @@ function PlanYourTripContent() {
 
         if (isTravelDateStep) {
           if (!responses['startDate']) {
-            setError('Vennligst velg i det minste en avreisedato.');
+            setError(t.planTrip.errorDepartureDate);
             return;
           }
         } else {
           const selection = responses[currentQuestion._id];
           if (!selection || selection.length === 0) {
-            setError('Vennligst fyll ut eller velg et alternativ for å fortsette.');
+            setError(t.planTrip.errorSelection);
             return;
           }
         }
       }
     } else {
       if (!contactInfo.name.trim() || !contactInfo.email.trim()) {
-        setError('Vennligst fyll inn navn og e-post.');
+        setError(t.planTrip.errorNameEmail);
         return;
       }
     }
@@ -251,21 +254,21 @@ function PlanYourTripContent() {
           </motion.div>
         </div>
         <div className="space-y-4">
-          <h1 className="text-5xl font-black text-primary uppercase tracking-tighter italic leading-none">Reiseplan Mottatt!</h1>
-          <p className="text-gray-500 font-medium italic text-lg leading-relaxed max-w-md mx-auto">Takk for at du valgte Nepalvibb. Din personlige reisespesialist har allerede sendt deg en melding i din chat-portal.</p>
+          <h1 className="text-5xl font-black text-primary uppercase tracking-tighter italic leading-none">{t.planTrip.received}</h1>
+          <p className="text-gray-500 font-medium italic text-lg leading-relaxed max-w-md mx-auto">{t.planTrip.receivedDesc}</p>
         </div>
         <div className="flex flex-col sm:flex-row gap-4 justify-center pt-6">
           <Link href={`/plan-your-trip/chat/${createdTripId}`} className="bg-primary text-white px-12 py-5 rounded-2xl text-[11px] font-black uppercase tracking-widest shadow-2xl hover:bg-emerald-900 transition-all flex items-center justify-center space-x-3 hover:scale-105 active:scale-95">
             <MessageSquare className="w-4 h-4" />
-            <span>Gå til Chat-Portal</span>
+            <span>{t.planTrip.goToChatPortal}</span>
           </Link>
-          <Link href="/" className="border-2 border-gray-100 text-primary px-12 py-5 rounded-2xl text-[11px] font-black uppercase tracking-widest hover:border-primary transition-all flex items-center justify-center">Hjem</Link>
+          <Link href="/" className="border-2 border-gray-100 text-primary px-12 py-5 rounded-2xl text-[11px] font-black uppercase tracking-widest hover:border-primary transition-all flex items-center justify-center">{t.planTrip.home}</Link>
         </div>
       </div>
     </div>
   );
 
-  const stepLabels = ["Reisefølge", "Når reiser du?", "Planlegg detaljer", "Kontakt oss"];
+  const stepLabels = [t.planTrip.stepTravelers, t.planTrip.stepDates, t.planTrip.stepDetails, t.planTrip.stepContact];
 
   return (
     <div className="min-h-screen bg-white font-sans text-gray-900 selection:bg-primary/10">
@@ -281,10 +284,10 @@ function PlanYourTripContent() {
         <header className="mb-20 space-y-6 text-center lg:text-left">
           <div className="inline-flex items-center space-x-3 bg-orange-50/50 border border-orange-100 text-orange-600 px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.2em] backdrop-blur-sm">
             <Compass className="w-3.5 h-3.5 animate-pulse" />
-            <span>Skreddersy din drømmereise i Nepal</span>
+            <span>{t.planTrip.badge}</span>
           </div>
-          <h1 className="text-5xl lg:text-7xl font-black text-primary uppercase tracking-tighter italic leading-[0.85]">Planlegg Din <br /><span className="text-orange-500">Neste Opplevelse</span></h1>
-          <p className="text-gray-400 font-medium text-sm lg:text-base max-w-2xl">Svar på noen enkle spørsmål, så lager vi en reiserute som passer perfekt for deg.</p>
+          <h1 className="text-5xl lg:text-7xl font-black text-primary uppercase tracking-tighter italic leading-[0.85]">{t.planTrip.title} <br /><span className="text-orange-500">{t.planTrip.titleHighlight}</span></h1>
+          <p className="text-gray-400 font-medium text-sm lg:text-base max-w-2xl">{t.planTrip.subtitle}</p>
         </header>
 
         <div className="mb-24 px-4 sm:px-10">
@@ -327,7 +330,7 @@ function PlanYourTripContent() {
                   {currentQuestion ? (
                     <div className="space-y-12">
                       <div className="space-y-4">
-                        <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-[10px] font-black uppercase tracking-[0.5em] text-orange-500">Steg {currentStepIdx + 1} av {totalSteps}</motion.p>
+                        <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-[10px] font-black uppercase tracking-[0.5em] text-orange-500">{t.planTrip.stepOf.replace('{current}', currentStepIdx + 1).replace('{total}', totalSteps)}</motion.p>
                         <motion.h2 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="text-4xl lg:text-5xl font-black text-primary uppercase tracking-tighter leading-[0.95] italic">{currentQuestion.question}</motion.h2>
                       </div>
 
@@ -335,13 +338,13 @@ function PlanYourTripContent() {
                         <div className="space-y-10">
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                             <DateField
-                              label="Avreisedato"
+                              label={t.planTrip.departureDate}
                               value={responses['startDate']}
                               min={new Date().toISOString().split('T')[0]}
                               onChange={v => { setError(''); setResponses(r => ({ ...r, startDate: v })); }}
                             />
                             <DateField
-                              label="Returdato"
+                              label={t.planTrip.returnDate}
                               value={responses['endDate']}
                               min={responses['startDate'] || new Date().toISOString().split('T')[0]}
                               onChange={v => { setError(''); setResponses(r => ({ ...r, endDate: v })); }}
@@ -352,8 +355,8 @@ function PlanYourTripContent() {
                               {responses['flexible_dates'] && <Check className="text-white w-4 h-4 stroke-[3px]" />}
                             </div>
                             <div>
-                              <p className="text-sm font-black text-primary uppercase tracking-tight">Datoene mine er fleksible</p>
-                              <p className="text-[11px] text-gray-400 font-medium">±3 dager gir oss mulighet til å finne bedre priser og ruter.</p>
+                              <p className="text-sm font-black text-primary uppercase tracking-tight">{t.planTrip.flexibleDates}</p>
+                              <p className="text-[11px] text-gray-400 font-medium">{t.planTrip.flexibleDatesDesc}</p>
                             </div>
                           </motion.label>
                         </div>
@@ -363,11 +366,11 @@ function PlanYourTripContent() {
                             <div className="space-y-4">
                               <div className="flex items-center space-x-2 text-gray-400">
                                 <MapPin className="w-4 h-4" />
-                                <label className="text-[11px] font-black uppercase tracking-widest">Velg destinasjon</label>
+                                <label className="text-[11px] font-black uppercase tracking-widest">{t.planTrip.selectDestination}</label>
                               </div>
                               <div className="relative group">
                                 <select value={responses['destination'] || ''} onChange={(e) => setResponses({ ...responses, destination: e.target.value, tour: "" })} className="w-full bg-white border-2 border-gray-100 rounded-[2rem] px-8 py-5 text-sm font-bold text-gray-900 focus:border-primary appearance-none pr-12 relative z-10 cursor-pointer shadow-sm transition-all">
-                                  <option value="">Velg destinasjon</option>
+                                  <option value="">{t.planTrip.selectDestinationPlaceholder}</option>
                                   {destinations.map(d => <option key={d._id} value={d.slug}>{d.name}</option>)}
                                 </select>
                                 <ChevronDown className="absolute right-6 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 z-0 pointer-events-none group-hover:text-primary transition-colors" />
@@ -376,22 +379,22 @@ function PlanYourTripContent() {
                             <div className="space-y-4">
                               <div className="flex items-center space-x-2 text-gray-400">
                                 <Mountain className="w-4 h-4" />
-                                <label className="text-[11px] font-black uppercase tracking-widest">Velg spesifikk tur (valgfritt)</label>
+                                <label className="text-[11px] font-black uppercase tracking-widest">{t.planTrip.selectTour}</label>
                               </div>
                               <div className="relative group">
                                 <select value={responses['tour'] || ''} onChange={(e) => setResponses({ ...responses, tour: e.target.value })} className="w-full bg-white border-2 border-gray-100 rounded-[2rem] px-8 py-5 text-sm font-bold text-gray-900 focus:border-primary appearance-none pr-12 relative z-10 cursor-pointer shadow-sm transition-all">
-                                  <option value="">Ingen spesifikk tur</option>
+                                  <option value="">{t.planTrip.noTour}</option>
                                   {tours
-                                    .filter(t => { 
+                                    .filter(tr => { 
                                       if (!responses["destination"]) return true; 
                                       const selectedDest = destinations.find(d => d.slug === responses["destination"]); 
                                       const selectedName = selectedDest?.name; 
-                                      return t.destination === responses["destination"] || 
-                                             t.destination === selectedName || 
-                                             t.destination?.toLowerCase() === responses["destination"]?.toLowerCase() || 
-                                             t.destination?.toLowerCase() === selectedName?.toLowerCase(); 
+                                      return tr.destination === responses["destination"] || 
+                                             tr.destination === selectedName || 
+                                             tr.destination?.toLowerCase() === responses["destination"]?.toLowerCase() || 
+                                             tr.destination?.toLowerCase() === selectedName?.toLowerCase(); 
                                     })
-                                    .map(t => <option key={t._id} value={t.slug}>{t.title}</option>)
+                                    .map(tr => <option key={tr._id} value={tr.slug}>{tr.title}</option>)
                                   }
                                 </select>
                                 <ChevronDown className="absolute right-6 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 z-0 pointer-events-none group-hover:text-primary transition-colors" />
@@ -403,7 +406,7 @@ function PlanYourTripContent() {
                             <div className="flex items-center justify-between">
                               <div className="flex items-center space-x-2 text-gray-400">
                                 <Heart className="w-4 h-4" />
-                                <label className="text-[11px] font-black uppercase tracking-widest">Hvor vil du bo? *</label>
+                                <label className="text-[11px] font-black uppercase tracking-widest">{t.planTrip.whereStay}</label>
                               </div>
                             </div>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -429,31 +432,31 @@ function PlanYourTripContent() {
                             <div className="space-y-4">
                               <div className="flex items-center space-x-2 text-gray-400">
                                 <Sparkles className="w-4 h-4" />
-                                <label className="text-[11px] font-black uppercase tracking-widest">Budsjett per person (NOK)</label>
+                                <label className="text-[11px] font-black uppercase tracking-widest">{t.planTrip.budgetLabel}</label>
                               </div>
                               <div className="relative group">
                                 <div className="absolute left-5 top-1/2 -translate-y-1/2 z-10 flex items-center gap-1.5 bg-gray-100 rounded-xl px-3 py-2 group-focus-within:bg-primary/10 group-focus-within:text-primary transition-all">
-                                  <span className="text-xs font-black text-gray-400 group-focus-within:text-primary transition-colors">kr</span>
+                                  <span className="text-xs font-black text-gray-400 group-focus-within:text-primary transition-colors">{t.planTrip.kr}</span>
                                 </div>
                                 <input type="number" placeholder="0" value={responses['budget'] || ''} onChange={e => setResponses({ ...responses, 'budget': e.target.value })} className="w-full bg-white border-2 border-gray-100 rounded-[2rem] pl-[4.5rem] pr-8 py-5 text-lg font-bold text-primary focus:outline-none focus:border-primary focus:bg-white transition-all shadow-sm placeholder:text-gray-200" />
                               </div>
                               <div className="flex gap-2 pt-1">
                                 {[5000, 10000, 15000, 25000].map(amount => (
-                                  <button key={amount} type="button" onClick={() => setResponses({ ...responses, 'budget': String(amount), 'budget_flexible': responses['budget_flexible'] || 'enough' })} className={`px-4 py-2 rounded-xl text-[11px] font-bold uppercase tracking-wider border transition-all ${responses['budget'] === String(amount) ? 'bg-primary text-white border-primary' : 'bg-white text-gray-400 border-gray-100 hover:border-primary/30 hover:text-primary'}`}>{amount.toLocaleString('no-NO')} kr</button>
+                                  <button key={amount} type="button" onClick={() => setResponses({ ...responses, 'budget': String(amount), 'budget_flexible': responses['budget_flexible'] || 'enough' })} className={`px-4 py-2 rounded-xl text-[11px] font-bold uppercase tracking-wider border transition-all ${responses['budget'] === String(amount) ? 'bg-primary text-white border-primary' : 'bg-white text-gray-400 border-gray-100 hover:border-primary/30 hover:text-primary'}`}>{amount.toLocaleString('no-NO')} {t.planTrip.kr}</button>
                                 ))}
                               </div>
                             </div>
                             <div className="space-y-4">
                               <div className="flex items-center space-x-2 text-gray-400">
                                 <Zap className="w-4 h-4" />
-                                <label className="text-[11px] font-black uppercase tracking-widest">Er budsjettet fleksibelt? *</label>
+                                <label className="text-[11px] font-black uppercase tracking-widest">{t.planTrip.budgetFlexible}</label>
                               </div>
                               <div className="relative group">
                                 <select value={responses['budget_flexible'] || ''} onChange={e => setResponses({ ...responses, 'budget_flexible': e.target.value })} className="w-full bg-gray-50/50 border-2 border-gray-50 rounded-2xl px-8 py-5 text-sm font-bold text-gray-900 focus:border-primary appearance-none pr-12 cursor-pointer shadow-sm transition-all">
-                                  <option value="">Velg</option>
-                                  <option value="yes">Ja, jeg er fleksibel</option>
-                                  <option value="no">Nei, fast budsjett</option>
-                                  <option value="enough">Bare et estimat</option>
+                                  <option value="">{t.planTrip.select}</option>
+                                  <option value="yes">{t.planTrip.budgetYes}</option>
+                                  <option value="no">{t.planTrip.budgetNo}</option>
+                                  <option value="enough">{t.planTrip.budgetEstimate}</option>
                                 </select>
                                 <ChevronDown className="absolute right-6 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none group-hover:text-primary transition-colors" />
                               </div>
@@ -462,16 +465,16 @@ function PlanYourTripContent() {
                           <div className="space-y-4 pt-4">
                             <div className="flex items-center space-x-2 text-gray-400">
                               <Edit2 className="w-4 h-4" />
-                              <label className="text-[11px] font-black uppercase tracking-widest">Fortell oss mer (valgfritt)</label>
+                              <label className="text-[11px] font-black uppercase tracking-widest">{t.planTrip.tellMore}</label>
                             </div>
-                            <textarea rows={5} value={responses['trip_description'] || ''} onChange={e => setResponses({ ...responses, 'trip_description': e.target.value })} className="w-full bg-gray-50/50 border-2 border-gray-50 rounded-[2.5rem] px-8 py-6 text-sm font-medium text-gray-800 focus:outline-none focus:border-primary focus:bg-white transition-all shadow-sm resize-none" placeholder="Har du spesielle ønsker for overnatting, mat eller aktiviteter? Fortell oss gjerne litt om dine drømmer for reisen..." />
+                            <textarea rows={5} value={responses['trip_description'] || ''} onChange={e => setResponses({ ...responses, 'trip_description': e.target.value })} className="w-full bg-gray-50/50 border-2 border-gray-50 rounded-[2.5rem] px-8 py-6 text-sm font-medium text-gray-800 focus:outline-none focus:border-primary focus:bg-white transition-all shadow-sm resize-none" placeholder={t.planTrip.tellMorePlaceholder} />
                           </div>
                         </div>
                       ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                           {currentQuestion.type === 'text' ? (
                             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="col-span-2">
-                              <textarea rows={6} value={responses[currentQuestion._id]?.[0] || ''} onChange={e => setResponses({ ...responses, [currentQuestion._id]: [e.target.value] })} className="w-full bg-white border-2 border-gray-100 rounded-3xl px-6 py-5 text-sm font-light text-gray-800 focus:outline-none focus:border-primary focus:bg-white transition-all shadow-sm resize-none" placeholder="Fortell oss litt mer om hva du tenker..." />
+                              <textarea rows={6} value={responses[currentQuestion._id]?.[0] || ''} onChange={e => setResponses({ ...responses, [currentQuestion._id]: [e.target.value] })} className="w-full bg-white border-2 border-gray-100 rounded-3xl px-6 py-5 text-sm font-light text-gray-800 focus:outline-none focus:border-primary focus:bg-white transition-all shadow-sm resize-none" placeholder={t.planTrip.textPlaceholder} />
                             </motion.div>
                           ) : (
                             currentQuestion.options.map((opt, i) => { 
@@ -484,7 +487,7 @@ function PlanYourTripContent() {
                                   </div>
                                   <div className="space-y-1 relative z-10">
                                     <p className={cn("text-base font-bold font-display tracking-tight transition-colors", isSelected ? "text-primary" : "text-gray-700 group-hover:text-primary")}>{opt.label}</p>
-                                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{isSelected ? 'Valgt' : 'Klikk for å velge'}</p>
+                                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{isSelected ? t.planTrip.selected : t.planTrip.clickToSelect}</p>
                                   </div>
                                   {isSelected && (
                                     <motion.div initial={{ scale: 0, rotate: -45 }} animate={{ scale: 1, rotate: 0 }} className="absolute top-6 right-6 bg-primary text-white p-1.5 rounded-xl shadow-sm">
@@ -505,13 +508,13 @@ function PlanYourTripContent() {
                           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="p-8 rounded-3xl border-2 border-primary/5 bg-emerald-50/30 space-y-6 shadow-inner">
                             <div className="flex items-center space-x-2.5">
                               <Users className="w-4 h-4 text-primary" />
-                              <h3 className="text-[10px] font-bold uppercase tracking-wider text-primary">Spesifiser din gruppe</h3>
+                              <h3 className="text-[10px] font-bold uppercase tracking-wider text-primary">{t.planTrip.specifyGroup}</h3>
                             </div>
                             <div className="space-y-6">
                               <div className="flex items-center justify-between group">
                                 <div className="space-y-0.5">
-                                  <p className="text-base font-bold text-primary tracking-tight">Voksne</p>
-                                  <p className="text-[11px] text-gray-400 font-light">12 år og eldre</p>
+                                  <p className="text-base font-bold text-primary tracking-tight">{t.planTrip.adults}</p>
+                                  <p className="text-[11px] text-gray-400 font-light">{t.planTrip.adultsDesc}</p>
                                 </div>
                                 <div className="flex items-center space-x-4">
                                   <button type="button" onClick={() => { const n = Math.max(1, adults - 1); setAdults(n); setResponses(r => ({ ...r, adults: n, children })); }} className="w-10 h-10 rounded-xl border border-gray-200 bg-white shadow-sm flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all font-bold text-lg active:scale-90">−</button>
@@ -521,8 +524,8 @@ function PlanYourTripContent() {
                               </div>
                               <div className="flex items-center justify-between pt-6 border-t border-primary/10 group">
                                 <div className="space-y-0.5">
-                                  <p className="text-base font-bold text-primary tracking-tight">Barn</p>
-                                  <p className="text-[11px] text-gray-400 font-light">Under 12 år</p>
+                                  <p className="text-base font-bold text-primary tracking-tight">{t.planTrip.children}</p>
+                                  <p className="text-[11px] text-gray-400 font-light">{t.planTrip.childrenDesc}</p>
                                 </div>
                                 <div className="flex items-center space-x-4">
                                   <button type="button" onClick={() => { const n = Math.max(0, children - 1); setChildren(n); setResponses(r => ({ ...r, adults, children: n })); }} className="w-10 h-10 rounded-xl border border-gray-200 bg-white shadow-sm flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all font-bold text-lg active:scale-90">−</button>
@@ -538,30 +541,30 @@ function PlanYourTripContent() {
                   ) : (
                     <div className="space-y-8">
                       <div className="space-y-2">
-                        <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-[10px] font-bold uppercase tracking-wider text-orange-500">Siste Steg</motion.p>
-                        <motion.h2 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="text-2xl sm:text-3xl font-bold font-display text-primary tracking-tight leading-tight">Din reise starter her</motion.h2>
-                        <p className="text-gray-400 font-light text-sm">Fyll ut dine detaljer eller logg inn for en raskere prosess.</p>
+                        <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-[10px] font-bold uppercase tracking-wider text-orange-500">{t.planTrip.lastStep}</motion.p>
+                        <motion.h2 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="text-2xl sm:text-3xl font-bold font-display text-primary tracking-tight leading-tight">{t.planTrip.contactTitle}</motion.h2>
+                        <p className="text-gray-400 font-light text-sm">{t.planTrip.contactSubtitle}</p>
                       </div>
                       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                         <div className={cn("space-y-8 order-2 lg:order-1", session?.user ? "col-span-2" : "col-span-1")}>
                           <div className={cn("space-y-6", session?.user ? "grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 space-y-0" : "space-y-6")}>
                             <div className="space-y-2">
-                              <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Fullt Navn</label>
+                              <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">{t.planTrip.fullName}</label>
                               <div className="relative group">
                                 <User className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 group-focus-within:text-primary transition-colors" />
-                                <input type="text" required placeholder="Ola Nordmann" value={contactInfo.name} onChange={e => setContactInfo({ ...contactInfo, name: e.target.value })} className="w-full bg-gray-50/50 border-2 border-gray-50 rounded-2xl px-14 py-5 text-sm font-bold focus:outline-none focus:border-primary focus:bg-white transition-all" />
+                                <input type="text" required placeholder={t.planTrip.namePlaceholder} value={contactInfo.name} onChange={e => setContactInfo({ ...contactInfo, name: e.target.value })} className="w-full bg-gray-50/50 border-2 border-gray-50 rounded-2xl px-14 py-5 text-sm font-bold focus:outline-none focus:border-primary focus:bg-white transition-all" />
                               </div>
                             </div>
                             <div className="space-y-2">
-                              <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">E-postadresse</label>
+                              <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">{t.planTrip.emailLabel}</label>
                               <div className="relative group">
                                 <Mail className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 group-focus-within:text-primary transition-colors" />
-                                <input type="email" required placeholder="ola@epost.no" value={contactInfo.email} onChange={e => setContactInfo({ ...contactInfo, email: e.target.value })} className="w-full bg-gray-50/50 border-2 border-gray-50 rounded-2xl px-14 py-5 text-sm font-bold focus:outline-none focus:border-primary focus:bg-white transition-all" />
+                                <input type="email" required placeholder={t.planTrip.emailPlaceholder} value={contactInfo.email} onChange={e => setContactInfo({ ...contactInfo, email: e.target.value })} className="w-full bg-gray-50/50 border-2 border-gray-50 rounded-2xl px-14 py-5 text-sm font-bold focus:outline-none focus:border-primary focus:bg-white transition-all" />
                               </div>
                             </div>
                             <div className={cn("space-y-2", session?.user ? "col-span-2" : "")}>
-                              <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Spesielle forespørsler</label>
-                              <textarea rows={session?.user ? 6 : 4} value={contactInfo.message} onChange={e => setContactInfo({ ...contactInfo, message: e.target.value })} className="w-full bg-gray-50/50 border-2 border-gray-50 rounded-[2rem] px-8 py-6 text-sm font-medium focus:outline-none focus:border-primary focus:bg-white transition-all resize-none shadow-sm" placeholder="Fortell oss om eventuelle preferanser eller spørsmål..." />
+                              <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">{t.planTrip.specialRequests}</label>
+                              <textarea rows={session?.user ? 6 : 4} value={contactInfo.message} onChange={e => setContactInfo({ ...contactInfo, message: e.target.value })} className="w-full bg-gray-50/50 border-2 border-gray-50 rounded-[2rem] px-8 py-6 text-sm font-medium focus:outline-none focus:border-primary focus:bg-white transition-all resize-none shadow-sm" placeholder={t.planTrip.specialRequestsPlaceholder} />
                             </div>
                           </div>
                         </div>
@@ -573,8 +576,8 @@ function PlanYourTripContent() {
                                 <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center mx-auto shadow-sm text-primary">
                                   <Shield className="w-6 h-6" />
                                 </div>
-                                <h3 className="text-sm font-black text-primary uppercase tracking-tight italic">Rask Innlogging</h3>
-                                <p className="text-[10px] text-gray-400 font-medium uppercase tracking-widest">Synkroniser dine reiseplaner</p>
+                                <h3 className="text-sm font-black text-primary uppercase tracking-tight italic">{t.planTrip.quickLogin}</h3>
+                                <p className="text-[10px] text-gray-400 font-medium uppercase tracking-widest">{t.planTrip.syncPlans}</p>
                               </div>
                               <div className="space-y-4">
                                 <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => signIn('google')} className="w-full bg-white border-2 border-gray-100 text-gray-700 px-6 py-4 rounded-2xl text-xs font-bold flex items-center justify-center space-x-3 shadow-sm hover:border-primary/20 transition-all">
@@ -584,17 +587,17 @@ function PlanYourTripContent() {
                                     <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
                                     <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 6.23l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
                                   </svg>
-                                  <span>Logg inn med Google</span>
+                                  <span>{t.planTrip.loginGoogle}</span>
                                 </motion.button>
                                 <div className="relative flex items-center py-2">
                                   <div className="flex-grow border-t border-gray-200"></div>
-                                  <span className="flex-shrink mx-4 text-[9px] font-black text-gray-300 uppercase tracking-widest">Eller e-post</span>
+                                  <span className="flex-shrink mx-4 text-[9px] font-black text-gray-300 uppercase tracking-widest">{t.planTrip.orEmail}</span>
                                   <div className="flex-grow border-t border-gray-200"></div>
                                 </div>
                                 <div className="space-y-3">
-                                  <input type="email" placeholder="E‑post" value={loginInfo.email} onChange={e => setLoginInfo({ ...loginInfo, email: e.target.value })} className="w-full px-6 py-4 border-2 border-white bg-white/70 rounded-2xl text-xs font-bold focus:outline-none focus:border-primary transition-all shadow-sm" />
-                                  <input type="password" placeholder="Passord" value={loginInfo.password} onChange={e => setLoginInfo({ ...loginInfo, password: e.target.value })} className="w-full px-6 py-4 border-2 border-white bg-white/70 rounded-2xl text-xs font-bold focus:outline-none focus:border-primary transition-all shadow-sm" />
-                                  <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={async () => { const result = await signIn('credentials', { redirect: false, email: loginInfo.email, password: loginInfo.password }); if (result?.ok) { setError(''); nextStep(); } else { setError('Innlogging mislyktes.'); } }} className="w-full bg-primary text-white px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-lg hover:bg-emerald-900 transition-all">Logg inn</motion.button>
+                                  <input type="email" placeholder={t.planTrip.loginEmailPlaceholder} value={loginInfo.email} onChange={e => setLoginInfo({ ...loginInfo, email: e.target.value })} className="w-full px-6 py-4 border-2 border-white bg-white/70 rounded-2xl text-xs font-bold focus:outline-none focus:border-primary transition-all shadow-sm" />
+                                  <input type="password" placeholder={t.planTrip.loginPasswordPlaceholder} value={loginInfo.password} onChange={e => setLoginInfo({ ...loginInfo, password: e.target.value })} className="w-full px-6 py-4 border-2 border-white bg-white/70 rounded-2xl text-xs font-bold focus:outline-none focus:border-primary transition-all shadow-sm" />
+                                  <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={async () => { const result = await signIn('credentials', { redirect: false, email: loginInfo.email, password: loginInfo.password }); if (result?.ok) { setError(''); nextStep(); } else { setError(t.planTrip.errorLoginFailed); } }} className="w-full bg-primary text-white px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-lg hover:bg-emerald-900 transition-all">{t.planTrip.login}</motion.button>
                                 </div>
                               </div>
                             </div>
@@ -611,7 +614,7 @@ function PlanYourTripContent() {
                 {currentStepIdx > 0 && (
                   <motion.button whileHover={{ x: -4 }} onClick={() => setCurrentStepIdx(prev => prev - 1)} className="px-4 py-3 rounded-xl text-[11px] font-black uppercase tracking-[0.2em] text-gray-400 hover:text-primary transition-all flex items-center space-x-2">
                     <ChevronLeft className="w-4 h-4" />
-                    <span>Tilbake</span>
+                    <span>{t.planTrip.back}</span>
                   </motion.button>
                 )}
               </div>
@@ -625,7 +628,7 @@ function PlanYourTripContent() {
                   )}
                 </AnimatePresence>
                 <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={nextStep} className="w-full sm:w-auto bg-primary text-white px-12 py-5 rounded-[2rem] text-[11px] font-black uppercase tracking-[0.2em] shadow-2xl hover:bg-emerald-900 transition-all flex items-center justify-center space-x-4 group ring-8 ring-primary/5">
-                  <span>{isLastStep ? 'Opprett Reiseplan' : 'Neste Steg'}</span>
+                  <span>{isLastStep ? t.planTrip.createPlan : t.planTrip.nextStep}</span>
                   {isLastStep ? <Send className="w-4 h-4 group-hover:translate-x-1 transition-transform" /> : <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />}
                 </motion.button>
               </div>
@@ -638,8 +641,8 @@ function PlanYourTripContent() {
               <div className="relative z-10 space-y-10">
                 <div className="flex items-center justify-between">
                   <div className="space-y-1">
-                    <h3 className="text-2xl font-black uppercase tracking-tighter italic">Reiseplan</h3>
-                    <p className="text-[9px] font-black uppercase tracking-[0.3em] text-white/40">Din Nepal-opplevelse</p>
+                    <h3 className="text-2xl font-black uppercase tracking-tighter italic">{t.planTrip.tripPlan}</h3>
+                    <p className="text-[9px] font-black uppercase tracking-[0.3em] text-white/40">{t.planTrip.yourNepalExperience}</p>
                   </div>
                   <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-md border border-white/10">
                     <Sparkles className="w-5 h-5 text-orange-400" />
@@ -673,7 +676,7 @@ function PlanYourTripContent() {
                         <div className="space-y-2">
                           <div className="flex items-center space-x-3 text-white/40">
                             <div className="w-1 h-1 rounded-full bg-current" />
-                            <p className="text-[9px] font-black uppercase tracking-[0.25em]">Destinasjon</p>
+                            <p className="text-[9px] font-black uppercase tracking-[0.25em]">{t.planTrip.asideDestination}</p>
                           </div>
                           <p className="pl-4 text-base font-black text-white italic tracking-tight">{responses['destination']}</p>
                         </div>
@@ -682,7 +685,7 @@ function PlanYourTripContent() {
                         <div className="space-y-2">
                           <div className="flex items-center space-x-3 text-white/40">
                             <div className="w-1 h-1 rounded-full bg-current" />
-                            <p className="text-[9px] font-black uppercase tracking-[0.25em]">Valgt Tur</p>
+                            <p className="text-[9px] font-black uppercase tracking-[0.25em]">{t.planTrip.selectedTour}</p>
                           </div>
                           <p className="pl-4 text-base font-black text-white italic tracking-tight">{responses['tour']}</p>
                         </div>
@@ -695,16 +698,16 @@ function PlanYourTripContent() {
                         <div className="flex items-center justify-between bg-white/5 p-4 rounded-2xl border border-white/5">
                           <div className="flex items-center space-x-3">
                             <Users className="w-4 h-4 text-orange-400" />
-                            <p className="text-[9px] font-black uppercase tracking-widest text-white/40">Reisende</p>
+                            <p className="text-[9px] font-black uppercase tracking-widest text-white/40">{t.planTrip.travelers}</p>
                           </div>
-                          <p className="text-xs font-black text-white tracking-tighter">{responses['adults']}V, {responses['children'] || 0}B</p>
+                          <p className="text-xs font-black text-white tracking-tighter">{t.planTrip.travelersValue.replace('{adults}', responses['adults']).replace('{children}', responses['children'] || 0)}</p>
                         </div>
                       )}
                       {responses['startDate'] && (
                         <div className="flex items-center justify-between bg-white/5 p-4 rounded-2xl border border-white/5">
                           <div className="flex items-center space-x-3">
                             <Calendar className="w-4 h-4 text-orange-400" />
-                            <p className="text-[9px] font-black uppercase tracking-widest text-white/40">Periode</p>
+                            <p className="text-[9px] font-black uppercase tracking-widest text-white/40">{t.planTrip.period}</p>
                           </div>
                           <p className="text-xs font-black text-white uppercase tracking-tighter">
                             {new Date(responses['startDate']).toLocaleDateString('no-NO', { day: '2-digit', month: 'short' })}
@@ -717,7 +720,7 @@ function PlanYourTripContent() {
                 <div className="pt-10 border-t border-white/10 flex flex-col items-center space-y-4">
                   <div className="flex items-center space-x-2 text-[10px] font-bold text-white/30 uppercase tracking-[0.2em]">
                     <Shield className="w-3 h-3" />
-                    <span>Trygg & Sikker Planlegging</span>
+                    <span>{t.planTrip.safePlanning}</span>
                   </div>
                 </div>
               </div>

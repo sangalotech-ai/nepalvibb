@@ -13,8 +13,10 @@ import {
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { cn } from '@/lib/utils';
+import { useLocale } from '@/components/providers/useLocale';
 
 export default function BlogDetailPage({ params }) {
+  const { t } = useLocale();
   const { slug } = use(params);
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -90,7 +92,7 @@ export default function BlogDetailPage({ params }) {
         transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
         className="w-16 h-16 border-[3px] border-primary/5 border-t-orange-500 rounded-full"
       />
-      <p className="mt-6 text-[10px] font-bold uppercase tracking-wider text-primary/40 animate-pulse">Navigerer til eventyret...</p>
+      <p className="mt-6 text-[10px] font-bold uppercase tracking-wider text-primary/40 animate-pulse">{t.blogDetail.loadingText}</p>
     </div>
   );
 
@@ -98,10 +100,10 @@ export default function BlogDetailPage({ params }) {
     <div className="min-h-screen bg-white flex flex-col items-center justify-center p-8 text-center">
       <h1 className="text-8xl font-bold text-primary/5 absolute select-none">404</h1>
       <div className="relative space-y-4">
-        <h2 className="text-2xl sm:text-3xl font-bold font-display text-primary tracking-tight">Artikkelen ble ikke funnet</h2>
-        <p className="text-gray-400 font-light max-w-xs mx-auto text-sm">Vinden har kanskje blåst denne siden bort over Himalaya...</p>
+        <h2 className="text-2xl sm:text-3xl font-bold font-display text-primary tracking-tight">{t.blogDetail.notFoundTitle}</h2>
+        <p className="text-gray-400 font-light max-w-xs mx-auto text-sm">{t.blogDetail.notFoundDesc}</p>
         <Link href="/blogg" className="inline-flex items-center space-x-2 bg-primary text-white px-8 py-4 rounded-xl text-xs font-bold uppercase tracking-wider shadow-md hover:bg-orange-500 transition-all">
-          <ArrowLeft className="w-4 h-4" /> <span>Tilbake til bloggen</span>
+          <ArrowLeft className="w-4 h-4" /> <span>{t.blogDetail.backToBlog}</span>
         </Link>
       </div>
     </div>
@@ -117,9 +119,9 @@ export default function BlogDetailPage({ params }) {
       {/* Editorial Header Section */}
       <header className="pt-32 pb-12 md:pt-40 md:pb-20 max-w-4xl mx-auto px-6 text-center">
         <div className="flex items-center justify-center space-x-2 text-[11px] font-bold uppercase tracking-[0.2em] text-orange-600 mb-6">
-          <span>Blogg</span>
+          <span>{t.blogDetail.breadcrumbBlog}</span>
           <span>•</span>
-          <span>{blog.category || 'Reisetips'}</span>
+          <span>{blog.category || t.blogDetail.categoryFallback}</span>
         </div>
 
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary tracking-tight leading-tight max-w-4xl mx-auto font-display">
@@ -129,9 +131,9 @@ export default function BlogDetailPage({ params }) {
         <div className="flex flex-wrap items-center justify-center gap-y-4 gap-x-6 mt-8 text-gray-500 text-xs font-medium">
           <div className="flex items-center space-x-2">
             <div className="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center text-white font-bold text-xs uppercase">
-              {blog.author ? blog.author[0] : 'N'}
+              {blog.author ? blog.author[0] : t.blogDetail.authorInitial}
             </div>
-            <span className="font-semibold text-primary">{blog.author || 'Nepalvibb Editor'}</span>
+            <span className="font-semibold text-primary">{blog.author || t.blogDetail.editorName}</span>
           </div>
           <div className="w-[1px] h-4 bg-gray-200 hidden sm:block" />
           <div className="flex items-center space-x-1">
@@ -141,7 +143,7 @@ export default function BlogDetailPage({ params }) {
           <div className="w-[1px] h-4 bg-gray-200 hidden sm:block" />
           <div className="flex items-center space-x-1">
             <Clock className="w-3.5 h-3.5 text-gray-400" />
-            <span>{readingTime} min lesetid</span>
+            <span>{readingTime} {t.blogDetail.readingTime}</span>
           </div>
         </div>
       </header>
@@ -163,7 +165,7 @@ export default function BlogDetailPage({ params }) {
               <div className="sticky top-40 space-y-12">
                 {toc.length > 0 && (
                   <div className="space-y-6">
-                    <h4 className="text-[10px] font-bold uppercase tracking-widest text-primary/40">I denne artikkelen</h4>
+                    <h4 className="text-[10px] font-bold uppercase tracking-widest text-primary/40">{t.blogDetail.inThisArticle}</h4>
                     <nav className="flex flex-col space-y-3">
                       {toc.map((item) => (
                         <a
@@ -185,7 +187,7 @@ export default function BlogDetailPage({ params }) {
 
                 <div className="pt-8 border-t border-gray-100 space-y-4">
                   <span className="text-[10px] font-bold uppercase tracking-widest text-primary/40 flex items-center gap-2">
-                    <Share2 className="w-3.5 h-3.5" /> Del denne saken
+                    <Share2 className="w-3.5 h-3.5" /> {t.blogDetail.shareStory}
                   </span>
                   <div className="flex items-center gap-2">
                     {[
@@ -242,7 +244,7 @@ export default function BlogDetailPage({ params }) {
                   )}
                   <div className="bg-gray-50 px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider text-primary/60 flex items-center space-x-1.5">
                     <MapPin className="w-3.5 h-3.5 text-orange-500" />
-                    <span>Nepalvibb Insider</span>
+                    <span>{t.blogDetail.insider}</span>
                   </div>
                 </div>
               </motion.div>
@@ -253,15 +255,15 @@ export default function BlogDetailPage({ params }) {
                 <div className="relative z-10 shrink-0">
                   <div className="w-20 h-20 rounded-2xl bg-orange-500 p-0.5 shadow-xl rotate-3 group-hover:rotate-0 transition-transform duration-500">
                     <div className="w-full h-full rounded-2xl bg-primary flex items-center justify-center text-orange-500 font-bold text-3xl font-display uppercase">
-                      {blog.author ? blog.author[0] : 'N'}
+                      {blog.author ? blog.author[0] : t.blogDetail.authorInitial}
                     </div>
                   </div>
                 </div>
                 <div className="relative z-10 flex-1 text-center md:text-left space-y-3">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-orange-400">Skrevet av</p>
-                  <h3 className="text-2xl font-bold font-display text-white">{blog.author || 'Nepalvibb Editor'}</h3>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-orange-400">{t.blogDetail.writtenBy}</p>
+                  <h3 className="text-2xl font-bold font-display text-white">{blog.author || t.blogDetail.editorName}</h3>
                   <p className="text-emerald-100/75 text-sm leading-relaxed max-w-xl">
-                    Vår faste reiseekspert som brenner for å formidle unike reiseskildringer og praktiske tips fra Nepals mest spektakulære turområder.
+                    {t.blogDetail.authorDescription}
                   </p>
                 </div>
               </div>
@@ -272,16 +274,16 @@ export default function BlogDetailPage({ params }) {
                   <div className="w-12 h-12 bg-orange-100 rounded-2xl flex items-center justify-center mx-auto">
                     <Mountain className="w-6 h-6 text-orange-600" />
                   </div>
-                  <h3 className="text-2xl md:text-3xl font-bold font-display text-primary tracking-tight">Klar for ditt eget eventyr?</h3>
-                  <p className="text-gray-600 text-sm leading-relaxed">Vi skreddersyr uforglemmelige reiser i Himalaya tilpasset dine ønsker og behov. La oss ta en prat om dine drømmer.</p>
+                  <h3 className="text-2xl md:text-3xl font-bold font-display text-primary tracking-tight">{t.blogDetail.ctaTitle}</h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">{t.blogDetail.ctaDescription}</p>
                 </div>
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
                   <Link href="/plan-your-trip" className="w-full sm:w-auto bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 rounded-xl text-xs font-bold uppercase tracking-wider transition-all shadow-md flex items-center justify-center space-x-2">
-                    <span>Planlegg din reise</span>
+                    <span>{t.blogDetail.ctaPlanButton}</span>
                     <ArrowRight className="w-4 h-4" />
                   </Link>
                   <Link href="/trips" className="w-full sm:w-auto border border-gray-200 bg-white text-primary px-8 py-4 rounded-xl text-xs font-bold uppercase tracking-wider hover:border-primary transition-all">
-                    Utforsk våre turer
+                    {t.blogDetail.ctaExploreButton}
                   </Link>
                 </div>
               </div>
@@ -296,24 +298,24 @@ export default function BlogDetailPage({ params }) {
                     <Mail className="w-5 h-5 text-white" />
                   </div>
                   <div className="space-y-2">
-                    <h4 className="text-lg font-bold font-display tracking-tight text-white">Innsikt fra Himalaya</h4>
-                    <p className="text-emerald-100/60 text-xs leading-relaxed font-light">Månedlige reisebrev, pakketips og eksklusive tilbud direkte til deg.</p>
+                    <h4 className="text-lg font-bold font-display tracking-tight text-white">{t.blogDetail.newsletterTitle}</h4>
+                    <p className="text-emerald-100/60 text-xs leading-relaxed font-light">{t.blogDetail.newsletterDesc}</p>
                   </div>
                   <form className="space-y-3" onSubmit={(e) => e.preventDefault()}>
                     <input
                       type="email"
-                      placeholder="Din e-postadresse"
+                      placeholder={t.blogDetail.newsletterPlaceholder}
                       className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 text-xs text-white placeholder-white/30 focus:ring-1 focus:ring-orange-500 focus:border-orange-500 transition-all outline-none"
                     />
                     <button className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all shadow-lg shadow-orange-500/20">
-                      Abonner nå
+                      {t.blogDetail.newsletterButton}
                     </button>
                   </form>
                 </div>
 
                 {/* Popular Destinations Card */}
                 <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm space-y-6">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-primary/40">Mest populære turer</h4>
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-primary/40">{t.blogDetail.popularTours}</h4>
                   <div className="space-y-5">
                     {[
                       { name: "Everest Base Camp Trek", price: "24 900 kr", img: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=100&q=80" },
@@ -324,7 +326,7 @@ export default function BlogDetailPage({ params }) {
                         <img src={item.img} className="w-12 h-12 rounded-xl object-cover grayscale group-hover:grayscale-0 transition-all duration-300" alt="" />
                         <div className="space-y-0.5">
                           <p className="text-xs font-bold text-primary group-hover:text-orange-500 transition-colors leading-tight">{item.name}</p>
-                          <p className="text-[11px] font-semibold text-gray-400">Fra {item.price}</p>
+                          <p className="text-[11px] font-semibold text-gray-400">{t.common.fra} {item.price}</p>
                         </div>
                       </div>
                     ))}
@@ -342,11 +344,11 @@ export default function BlogDetailPage({ params }) {
           <div className="max-w-9xl mx-auto px-6">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
               <div className="space-y-2">
-                <p className="text-orange-500 font-bold uppercase tracking-widest text-xs">Inspirasjon</p>
-                <h2 className="text-3xl md:text-4xl font-bold font-display text-primary tracking-tight">Flere spennende reiseskildringer</h2>
+                <p className="text-orange-500 font-bold uppercase tracking-widest text-xs">{t.blogDetail.inspiration}</p>
+                <h2 className="text-3xl md:text-4xl font-bold font-display text-primary tracking-tight">{t.blogDetail.relatedTitle}</h2>
               </div>
               <Link href="/blogg" className="inline-flex items-center space-x-2 text-xs font-bold uppercase tracking-wider text-gray-400 hover:text-orange-500 transition-colors">
-                <span>Se alle artikler</span>
+                <span>{t.common.seAlleArtikler}</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>

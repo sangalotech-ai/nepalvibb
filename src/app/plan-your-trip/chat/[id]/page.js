@@ -13,15 +13,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { io } from 'socket.io-client';
-
-const SPECIALIST = {
-  name: "Nepalvibb Ekspert",
-  title: "Reisespesialist for Nepal",
-  avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=100&q=80",
-  rating: 4.9,
-  trips: 312,
-  responseTime: "< 1 time",
-};
+import { useLocale } from '@/components/providers/useLocale';
 
 // Notification sound - short beep using Web Audio API
 function playNotificationSound() {
@@ -40,25 +32,35 @@ function playNotificationSound() {
   } catch (e) { /* ignore audio errors */ }
 }
 
-const QUICK_REPLIES = [
-  "Fjellvandring",
-  "Lokal kultur og templer",
-  "Dyreliv og nasjonalparker",
-  "Alt — overrask meg!",
-];
-
-const TRIP_DEFAULTS = {
-  title: 'Nepal-eventyr',
-  slug: 'nepal',
-  price: '1800',
-  duration: '10 dager',
-  image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=800&q=80',
-  destination: 'Nepal',
-};
-
 export default function ChatPage({ params }) {
+  const { t } = useLocale();
   const { id } = use(params);
   const searchParams = useSearchParams();
+
+  const SPECIALIST = {
+    name: t.chatPage.specialistName,
+    title: t.chatPage.specialistTitle,
+    avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=100&q=80",
+    rating: 4.9,
+    trips: 312,
+    responseTime: t.chatPage.responseTime,
+  };
+
+  const QUICK_REPLIES = [
+    t.chatPage.quickReply1,
+    t.chatPage.quickReply2,
+    t.chatPage.quickReply3,
+    t.chatPage.quickReply4,
+  ];
+
+  const TRIP_DEFAULTS = {
+    title: t.chatPage.defaultTitle,
+    slug: 'nepal',
+    price: '1800',
+    duration: t.chatPage.defaultDuration,
+    image: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=800&q=80',
+    destination: t.chatPage.defaultDestination,
+  };
 
   const tripTitle = searchParams.get('title') || TRIP_DEFAULTS.title;
   const tripSlug = searchParams.get('slug') || TRIP_DEFAULTS.slug;
@@ -163,8 +165,8 @@ export default function ChatPage({ params }) {
     const fetchChat = async () => {
       if (id === 'new') {
         setMessages([
-          { id: 1, from: 'specialist', text: `Hei! Jeg er din dedikerte reisespesialist hos Nepalvibb. Jeg er klar for å hjelpe deg med å planlegge dette eventyret. 🙏`, time: 'Nå' },
-          { id: 2, from: 'specialist', text: `Jeg ser at du er interessert i "${tripTitle}" — et flott valg! Jeg vil gjerne hjelpe deg med å skreddersy dette for deg.`, time: 'Akkurat nå' }
+          { id: 1, from: 'specialist', text: t.chatPage.helloMsg, time: t.chatPage.timeNow },
+          { id: 2, from: 'specialist', text: t.chatPage.interestMsg.replace('{title}', tripTitle), time: t.chatPage.timeJustNow }
         ]);
         setLoading(false);
         return;
@@ -193,27 +195,27 @@ export default function ChatPage({ params }) {
       }
     };
     fetchChat();
-  }, [id, tripTitle]);
+  }, [id, tripTitle, t]);
 
   const tripSummary = {
     title: tripTitle,
     destination: tripDestination,
     dates: request?.startDate 
       ? `${new Date(request.startDate).toLocaleDateString('no-NO', { day: '2-digit', month: 'short' })} - ${request.endDate ? new Date(request.endDate).toLocaleDateString('no-NO', { day: '2-digit', month: 'short' }) : ''}`
-      : 'Ikke valgt',
+      : t.chatPage.notSelected,
     duration: tripDuration,
-    travelers: request?.adults ? `${request.adults} voksne` : '2 reisende',
-    budget: request?.budget || 'Middels',
-    status: request?.status || 'Planlegging pågår',
+    travelers: request?.adults ? t.chatPage.travelersValue.replace('{count}', request.adults) : t.chatPage.defaultTravelers,
+    budget: request?.budget || t.chatPage.mediumBudget,
+    status: request?.status || t.chatPage.statusPlanning,
     price: request?.price || tripPrice,
   };
 
   const [checklist, setChecklist] = useState([
-    { id: 1, done: true, label: "Reiseønsker sendt" },
-    { id: 2, done: true, label: "Spesialist tildelt" },
-    { id: 3, done: false, label: "Utkast til reiserute mottatt" },
-    { id: 4, done: false, label: "Datoer bekreftet" },
-    { id: 5, done: false, label: "Reise bestilt" },
+    { id: 1, done: true, label: t.chatPage.checklist1 },
+    { id: 2, done: true, label: t.chatPage.checklist2 },
+    { id: 3, done: false, label: t.chatPage.checklist3 },
+    { id: 4, done: false, label: t.chatPage.checklist4 },
+    { id: 5, done: false, label: t.chatPage.checklist5 },
   ]);
 
   const updateTask = (id, done = true) => {
@@ -239,7 +241,7 @@ export default function ChatPage({ params }) {
     setInput('');
     setSending(true);
 
-    const userMsg = { id: `temp-${Date.now()}`, from: 'user', text: msg, time: 'Akkurat nå' };
+    const userMsg = { id: `temp-${Date.now()}`, from: 'user', text: msg, time: t.chatPage.timeJustNow };
 
     if (id !== 'new' && socketRef.current?.connected) {
       socketRef.current.emit('send-message', {
@@ -253,7 +255,7 @@ export default function ChatPage({ params }) {
       setMessages(prev => [...prev, userMsg]);
       // For 'new' trips or if socket fails
       setTimeout(() => {
-        const botMsg = { id: Date.now() + 1, from: 'specialist', text: "Takk! En ekspert vil se på dette snart.", time: 'Akkurat nå' };
+        const botMsg = { id: Date.now() + 1, from: 'specialist', text: t.chatPage.botReply, time: t.chatPage.timeJustNow };
         setMessages(prev => [...prev, botMsg]);
         setSending(false);
       }, 1000);
@@ -298,7 +300,7 @@ export default function ChatPage({ params }) {
             from: 'user',
             text: '',
             attachment: { url: data.url, type: data.type, name: data.name },
-            time: 'Akkurat nå',
+            time: t.chatPage.timeJustNow,
             read: false,
             timestamp: new Date().toISOString()
           }]);
@@ -350,7 +352,7 @@ export default function ChatPage({ params }) {
           </span>
         </Link>
         <div className="text-center">
-          <p className="text-[10px] text-gray-400 font-black uppercase tracking-[0.2em]">Oversikt over reiseplanlegging</p>
+          <p className="text-[10px] text-gray-400 font-black uppercase tracking-[0.2em]">{t.chatPage.planningOverview}</p>
         </div>
         <div className="w-20" />
       </div>
@@ -371,7 +373,7 @@ export default function ChatPage({ params }) {
                 <div className="flex items-center space-x-1.5">
                   <div className={cn("w-1.5 h-1.5 rounded-full", specialistOnline ? "bg-green-500 animate-pulse" : "bg-gray-300")} />
                   <p className="text-[9px] text-gray-400 font-black uppercase tracking-widest">
-                    {specialistOnline ? 'Online nå' : 'Offline'}
+                    {specialistOnline ? t.chatPage.onlineNow : t.chatPage.offline}
                   </p>
                 </div>
               </div>
@@ -380,11 +382,11 @@ export default function ChatPage({ params }) {
               <div className="flex items-center space-x-1.5">
                 <Star className="w-3.5 h-3.5 text-yellow-400 fill-yellow-400" />
                 <span className="text-primary font-black">{SPECIALIST.rating}</span>
-                <span>({SPECIALIST.trips} reiser)</span>
+                <span>({SPECIALIST.trips} {t.chatPage.trips})</span>
               </div>
               <div className="flex items-center space-x-1.5">
                 <Clock className="w-3.5 h-3.5" />
-                <span>Svarer {SPECIALIST.responseTime}</span>
+                <span>{t.chatPage.respondsIn} {SPECIALIST.responseTime}</span>
               </div>
             </div>
           </div>
@@ -395,16 +397,16 @@ export default function ChatPage({ params }) {
                 <CreditCard className="w-4 h-4 text-white" />
               </div>
               <div>
-                <p className="text-white font-black text-[11px] uppercase tracking-tight">Bekreft reisen</p>
-                <p className="text-emerald-200 text-[9px] font-medium">Sikre datoene dine med et depositum.</p>
+                <p className="text-white font-black text-[11px] uppercase tracking-tight">{t.chatPage.confirmTrip}</p>
+                <p className="text-emerald-200 text-[9px] font-medium">{t.chatPage.confirmTripDesc}</p>
               </div>
             </div>
             <Link
               href={`/payment?tripId=${id}&amount=${tripSummary.price}`}
               className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all shadow-lg flex items-center space-x-2"
             >
-              <span>Bestill</span>
-              <ArrowRight className="w-3 h-3" />
+<span>{t.chatPage.book}</span>
+                <ArrowRight className="w-3 h-3" />
             </Link>
           </div>
 
@@ -454,7 +456,7 @@ export default function ChatPage({ params }) {
                             </div>
                             <div className="flex-1 min-w-0">
                               <p className="text-[10px] font-black truncate">{msg.attachment.name}</p>
-                              <p className="text-[8px] opacity-60 font-bold uppercase tracking-widest">Klikk for å åpne</p>
+                              <p className="text-[8px] opacity-60 font-bold uppercase tracking-widest">{t.chatPage.clickToOpen}</p>
                             </div>
                             <ExternalLink className="w-3 h-3 opacity-40" />
                           </a>
@@ -490,7 +492,7 @@ export default function ChatPage({ params }) {
                   {[0, 1, 2].map(i => (
                     <motion.div key={i} className="w-1.5 h-1.5 bg-gray-300 rounded-full" animate={{ y: [0, -4, 0] }} transition={{ duration: 0.8, repeat: Infinity, delay: i * 0.15 }} />
                   ))}
-                  <span className="text-[10px] text-gray-400 font-bold ml-2">skriver...</span>
+                  <span className="text-[10px] text-gray-400 font-bold ml-2">{t.chatPage.typing}</span>
                 </div>
               </div>
             )}
@@ -507,7 +509,7 @@ export default function ChatPage({ params }) {
                   className="sticky bottom-32 left-1/2 -translate-x-1/2 bg-primary text-white px-5 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-2xl z-50 flex items-center space-x-2 border-2 border-white/20 backdrop-blur-sm"
                 >
                   <MessageCircle className="w-3.5 h-3.5" />
-                  <span>Ny melding ↓</span>
+                  <span>{t.chatPage.newMessage}</span>
                 </motion.button>
               )}
             </AnimatePresence>
@@ -546,7 +548,7 @@ export default function ChatPage({ params }) {
                 value={input}
                 onChange={handleInputChange}
                 onKeyDown={e => e.key === 'Enter' && !e.shiftKey && sendMessage()}
-                placeholder="Send melding til din spesialist..."
+                placeholder={t.chatPage.inputPlaceholder}
                 className="flex-1 bg-transparent text-sm font-medium focus:outline-none text-gray-800 placeholder-gray-400"
               />
               <button
@@ -574,7 +576,7 @@ export default function ChatPage({ params }) {
                   activeTab === tab ? "text-primary border-primary" : "text-gray-400 border-transparent"
                 )}
               >
-                {tab}
+                {tab === 'oversikt' ? t.chatPage.tabOverview : t.chatPage.tabChecklist}
               </button>
             ))}
           </div>
@@ -593,13 +595,13 @@ export default function ChatPage({ params }) {
                 </div>
 
                 <div className="space-y-4">
-                  <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400">Reisedetaljer</h3>
+                  <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400">{t.chatPage.tripDetails}</h3>
                   <div className="space-y-3">
                     {[
-                      { icon: MapPin, label: "Destinasjon", value: tripSummary.destination },
-                      { icon: Calendar, label: "Reisedatoer", value: tripSummary.dates },
-                      { icon: Clock, label: "Varighet", value: tripSummary.duration },
-                      { icon: Users, label: "Reisende", value: tripSummary.travelers },
+                      { icon: MapPin, label: t.chatPage.detailDestination, value: tripSummary.destination },
+                      { icon: Calendar, label: t.chatPage.detailDates, value: tripSummary.dates },
+                      { icon: Clock, label: t.chatPage.detailDuration, value: tripSummary.duration },
+                      { icon: Users, label: t.chatPage.detailTravelers, value: tripSummary.travelers },
                     ].map((item, i) => (
                       <div key={i} className="flex items-center justify-between p-3 rounded-xl bg-gray-50">
                         <div className="flex items-center space-x-3">
@@ -614,11 +616,11 @@ export default function ChatPage({ params }) {
 
                 <button className="w-full flex items-center justify-center space-x-3 border-2 border-dashed border-gray-200 rounded-2xl py-4 text-[11px] font-black uppercase tracking-widest text-gray-400 hover:border-primary hover:text-primary transition-all">
                   <Edit2 className="w-4 h-4" />
-                  <span>Rediger reisedetaljer</span>
+                  <span>{t.chatPage.editTripDetails}</span>
                 </button>
 
                 <div className="bg-emerald-50/50 rounded-3xl p-5 space-y-4 border border-emerald-100">
-                  <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400">Din Spesialist</h3>
+                  <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400">{t.chatPage.yourSpecialist}</h3>
                   <div className="flex items-center space-x-4">
                     <img src={SPECIALIST.avatar} className="w-12 h-12 rounded-full border-2 border-primary object-cover" alt="" />
                     <div>
@@ -628,10 +630,10 @@ export default function ChatPage({ params }) {
                   </div>
                   <div className="flex space-x-3">
                     <button className="flex-1 bg-primary text-white py-3 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center space-x-2">
-                      <MessageCircle className="w-3.5 h-3.5" /><span>Melding</span>
+                      <MessageCircle className="w-3.5 h-3.5" /><span>{t.chatPage.message}</span>
                     </button>
                     <button className="flex-1 border-2 border-gray-100 text-gray-600 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center space-x-2 hover:border-primary hover:text-primary transition-all">
-                      <Phone className="w-3.5 h-3.5" /><span>Ring</span>
+                      <Phone className="w-3.5 h-3.5" /><span>{t.chatPage.call}</span>
                     </button>
                   </div>
                 </div>
@@ -639,32 +641,32 @@ export default function ChatPage({ params }) {
                 <div className="rounded-3xl overflow-hidden border-2 border-orange-100 bg-orange-50/30">
                   <div className="p-6 space-y-5">
                     <div>
-                      <p className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400">Fra</p>
-                      <p className="text-3xl font-black text-primary tracking-tighter mt-1">NOK {tripPrice}<span className="text-sm text-gray-400 font-light">/person</span></p>
+                      <p className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400">{t.common.fra}</p>
+                      <p className="text-3xl font-black text-primary tracking-tighter mt-1">NOK {tripPrice}<span className="text-sm text-gray-400 font-light">{t.chatPage.perPerson}</span></p>
                     </div>
 
                     <Link
                       href={`/payment?tripId=${id}&amount=${tripSummary.price}`}
                       className="block w-full bg-orange-500 hover:bg-orange-600 text-white text-center py-4 rounded-2xl font-black uppercase tracking-[0.2em] text-[11px] transition-all shadow-xl"
                     >
-                      Bestill denne reisen
-                    </Link>
+{t.chatPage.bookThisTrip}
+                      </Link>
 
                     <Link
                       href={`/trips/${tripSlug}`}
                       className="block w-full text-center border-2 border-gray-200 text-gray-500 hover:border-primary hover:text-primary py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all"
                     >
-                      Se full reiserute
-                    </Link>
+{t.chatPage.viewFullItinerary}
+                      </Link>
 
                     <div className="space-y-2 pt-1 text-[10px] font-medium text-gray-400">
                       <div className="flex items-center space-x-2">
                         <Shield className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                        <span>Sikker betaling</span>
+                        <span>{t.chatPage.securePayment}</span>
                       </div>
                       <div className="flex items-center space-x-2">
                         <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                        <span>Gratis avbestilling 30+ dager før</span>
+                        <span>{t.chatPage.freeCancellation}</span>
                       </div>
                     </div>
                   </div>
@@ -676,7 +678,7 @@ export default function ChatPage({ params }) {
               <div className="space-y-8">
                 <div className="bg-gray-50 rounded-3xl p-6 space-y-2">
                   <div className="flex justify-between text-[10px] font-black uppercase tracking-widest">
-                    <span className="text-gray-400">Fremdrift</span>
+                    <span className="text-gray-400">{t.chatPage.progress}</span>
                     <span className="text-primary">{checklist.filter(i => i.done).length}/{checklist.length}</span>
                   </div>
                   <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
@@ -698,7 +700,7 @@ export default function ChatPage({ params }) {
                         <span className={cn("text-sm font-medium", item.done ? "text-primary" : "text-gray-400")}>{item.label}</span>
                         {item.id === 4 && !item.done && (
                           <button onClick={() => updateTask(4, true)} className="text-[10px] font-black uppercase tracking-widest text-orange-500 mt-1 hover:underline text-left">
-                            Bekreft datoer nå
+                            {t.chatPage.confirmDatesNow}
                           </button>
                         )}
                       </div>

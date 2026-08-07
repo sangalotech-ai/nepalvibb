@@ -4,8 +4,10 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Calendar, User, Tag, ArrowRight, Newspaper } from 'lucide-react';
+import { useLocale } from '@/components/providers/useLocale';
 
 export default function BlogListPage() {
+  const { t } = useLocale();
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -38,7 +40,7 @@ export default function BlogListPage() {
             animate={{ opacity: 1, y: 0 }}
             className="text-orange-500 font-bold uppercase tracking-wider text-xs mb-3"
           >
-            Tips og inspirasjon
+            {t.blogList.tipsInspirasjon}
           </motion.h5>
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
@@ -46,7 +48,7 @@ export default function BlogListPage() {
             transition={{ delay: 0.1 }}
             className="text-4xl md:text-7xl font-bold font-display text-white tracking-tight leading-tight"
           >
-            Vår reiseblogg
+            {t.blogList.title}
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
@@ -54,7 +56,7 @@ export default function BlogListPage() {
             transition={{ delay: 0.2 }}
             className="mt-6 text-emerald-100/80 max-w-2xl mx-auto text-base sm:text-lg font-light leading-relaxed"
           >
-            Oppdag skjulte perler, praktiske reisetips og historier fra hjertet av Himalaya.
+            {t.blogList.subtitle}
           </motion.p>
         </div>
       </section>
@@ -102,7 +104,7 @@ export default function BlogListPage() {
                         {blog.title}
                       </h3>
                       <div className="flex items-center space-x-2 text-orange-500 text-[10px] font-bold uppercase tracking-wider">
-                        <span>Les mer</span>
+                        <span>{t.common.lesMer}</span>
                         <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                       </div>
                     </div>

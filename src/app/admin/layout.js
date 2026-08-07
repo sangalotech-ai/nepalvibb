@@ -7,7 +7,7 @@ import {
   LayoutDashboard, Map, Compass, MessageSquare, 
   Settings, LogOut, Plus, Search, 
   Menu, X, Bell, User, Users, Image as ImageIcon,
-  Mountain, Newspaper, Layout
+  Mountain, Newspaper, Layout, FileText
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -43,6 +43,7 @@ export default function AdminLayout({ children }) {
     { label: 'Home Content', icon: Layout, href: '/admin/home-content' },
     { label: 'About Content', icon: Layout, href: '/admin/about-content' },
     { label: 'Contact Content', icon: MessageSquare, href: '/admin/contact-content' },
+    { label: 'Legal Pages', icon: FileText, href: '/admin/legal' },
     { label: 'Team', icon: Users, href: '/admin/team' },
     { label: 'Plan Trip Form', icon: Settings, href: '/admin/plan-trip' },
     { label: 'Reviews', icon: MessageSquare, href: '/admin/reviews' },

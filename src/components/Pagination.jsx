@@ -1,8 +1,10 @@
 "use client";
 
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useLocale } from '@/components/providers/useLocale';
 
 export default function Pagination({ currentPage, totalPages, onPageChange }) {
+  const { t } = useLocale();
   if (totalPages <= 1) return null;
 
   const pages = [];
@@ -19,6 +21,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage <= 1}
+        aria-label={t.pagination.prev}
         className={`w-11 h-11 rounded-full border flex items-center justify-center transition-all ${
           currentPage <= 1
             ? 'border-gray-100 text-gray-300 cursor-not-allowed'
@@ -49,6 +52,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage >= totalPages}
+        aria-label={t.pagination.next}
         className={`w-11 h-11 rounded-full border flex items-center justify-center transition-all ${
           currentPage >= totalPages
             ? 'border-gray-100 text-gray-300 cursor-not-allowed'

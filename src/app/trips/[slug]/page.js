@@ -14,21 +14,23 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import Navbar from '@/components/layout/Navbar';
 import ReviewSection from '@/components/trips/ReviewSection';
+import { useLocale } from '@/components/providers/useLocale';
 
 export default function TripDetailPage({ params }) {
+  const { t } = useLocale();
   const { slug } = use(params);
   const [trip, setTrip] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeSection, setActiveSection] = useState('oversikt');
 
   const tabs = [
-    { id: 'oversikt', label: 'Oversikt' },
-    { id: 'turdetaljer', label: 'Turdetaljer' },
-    { id: 'reiserute', label: 'Reiserute' },
-    { id: 'tjenester', label: 'Inkludert/Ekskludert' },
-    { id: 'galleri', label: 'Galleri' },
-    { id: 'info', label: 'Viktig Info' },
-    { id: 'omtaler', label: 'Omtaler' },
+    { id: 'oversikt', label: t.tripDetail.tabOverview },
+    { id: 'turdetaljer', label: t.tripDetail.tabDetails },
+    { id: 'reiserute', label: t.tripDetail.tabItinerary },
+    { id: 'tjenester', label: t.tripDetail.tabIncluded },
+    { id: 'galleri', label: t.tripDetail.tabGallery },
+    { id: 'info', label: t.tripDetail.tabInfo },
+    { id: 'omtaler', label: t.tripDetail.tabReviews },
   ];
 
   useEffect(() => {
@@ -101,9 +103,9 @@ export default function TripDetailPage({ params }) {
       <Navbar />
       <div className="flex flex-col items-center justify-center pt-44 space-y-6">
         <Zap className="w-10 h-10 text-red-500" />
-        <h1 className="text-2xl sm:text-3xl font-bold font-display text-primary tracking-tight">Reisen ble ikke funnet</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold font-display text-primary tracking-tight">{t.tripDetail.notFoundTitle}</h1>
         <Link href="/" className="bg-primary text-white px-8 py-4 rounded-xl text-xs font-bold uppercase tracking-wider transition-all hover:bg-orange-500 shadow-md">
-          Tilbake til hjem
+          {t.tripDetail.backHome}
         </Link>
       </div>
     </div>
@@ -156,7 +158,7 @@ export default function TripDetailPage({ params }) {
               </button>
             ))}
           </div>
-          <Link href={`/plan-your-trip?tour=${slug}&dest=${trip.destination}`} className="hidden md:block bg-orange-500 text-white px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-wider shadow-md hover:bg-orange-600 transition-all">Bestill Reisen</Link>
+          <Link href={`/plan-your-trip?tour=${slug}&dest=${trip.destination}`} className="hidden md:block bg-orange-500 text-white px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-wider shadow-md hover:bg-orange-600 transition-all">{t.tripDetail.bookTrip}</Link>
         </div>
       </div>
 
@@ -167,7 +169,7 @@ export default function TripDetailPage({ params }) {
           {/* Oversikt Section */}
           <section id="oversikt" className="scroll-mt-36 space-y-8">
             <div className="space-y-4">
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold font-display text-primary tracking-tight">Oversikt</h2>
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold font-display text-primary tracking-tight">{t.tripDetail.overviewTitle}</h2>
               <div 
                 className="prose prose-primary max-w-none text-gray-600 font-light leading-relaxed prose-p:text-sm md:prose-p:base prose-p:mb-4 prose-strong:font-semibold" 
                 dangerouslySetInnerHTML={{ __html: trip.overview || trip.summary }} 
@@ -177,7 +179,7 @@ export default function TripDetailPage({ params }) {
             {trip.highlights?.length > 0 && (
               <div className="space-y-6 bg-gray-50 p-8 rounded-3xl border border-gray-100">
                 <h3 className="text-xl font-bold font-display text-primary tracking-tight flex items-center">
-                  <Star className="w-5 h-5 mr-3 text-orange-500 fill-current" /> Høydepunkter
+                  <Star className="w-5 h-5 mr-3 text-orange-500 fill-current" /> {t.tripDetail.highlightsTitle}
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                   {trip.highlights.map((h, i) => (
@@ -196,7 +198,7 @@ export default function TripDetailPage({ params }) {
           {/* Turdetaljer Section */}
           {trip.tripDetails?.length > 0 && (
             <section id="turdetaljer" className="scroll-mt-36 space-y-6">
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold font-display text-primary tracking-tight">Turdetaljer</h2>
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold font-display text-primary tracking-tight">{t.tripDetail.detailsTitle}</h2>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
                 {trip.tripDetails.map((detail, i) => {
                   const Icon = ({
@@ -231,7 +233,7 @@ export default function TripDetailPage({ params }) {
 
           {/* Reiserute Section */}
           <section id="reiserute" className="scroll-mt-36 space-y-6">
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold font-display text-primary tracking-tight">Detaljert reiserute</h2>
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold font-display text-primary tracking-tight">{t.tripDetail.itineraryTitle}</h2>
             <div className="space-y-6 relative">
               <div className="absolute left-6 top-8 bottom-8 w-0.5 bg-gray-100 hidden md:block" />
               {(trip.itinerary || []).map((item, idx) => (
@@ -251,10 +253,10 @@ export default function TripDetailPage({ params }) {
 
           {/* Tjenester Section */}
           <section id="tjenester" className="scroll-mt-36 space-y-6">
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold font-display text-primary tracking-tight">Inkludert & Ekskludert</h2>
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold font-display text-primary tracking-tight">{t.tripDetail.includedTitle}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
               <div className="bg-emerald-50/30 p-6 rounded-3xl border border-emerald-100/50 space-y-4">
-                <h3 className="text-base font-bold font-display text-emerald-700 tracking-tight flex items-center"><CheckCircle className="w-4 h-4 mr-2 text-emerald-600" /> Pris inkluderer</h3>
+                <h3 className="text-base font-bold font-display text-emerald-700 tracking-tight flex items-center"><CheckCircle className="w-4 h-4 mr-2 text-emerald-600" /> {t.tripDetail.priceIncludes}</h3>
                 <ul className="space-y-2">
                   {trip.priceIncludes?.map((item, i) => (
                     <li key={i} className="flex items-start space-x-2 text-xs font-medium text-emerald-800/80 leading-relaxed">
@@ -264,7 +266,7 @@ export default function TripDetailPage({ params }) {
                 </ul>
               </div>
               <div className="bg-red-50/30 p-6 rounded-3xl border border-red-100/50 space-y-4">
-                <h3 className="text-base font-bold font-display text-red-700 tracking-tight flex items-center"><XCircle className="w-4 h-4 mr-2 text-red-600" /> Pris ekskluderer</h3>
+                <h3 className="text-base font-bold font-display text-red-700 tracking-tight flex items-center"><XCircle className="w-4 h-4 mr-2 text-red-600" /> {t.tripDetail.priceExcludes}</h3>
                 <ul className="space-y-2">
                   {trip.priceExcludes?.map((item, i) => (
                     <li key={i} className="flex items-start space-x-2 text-xs font-medium text-red-800/80 leading-relaxed">
@@ -278,7 +280,7 @@ export default function TripDetailPage({ params }) {
 
           {/* Galleri Section */}
           <section id="galleri" className="scroll-mt-36 space-y-6">
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold font-display text-primary tracking-tight">Bildegalleri</h2>
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold font-display text-primary tracking-tight">{t.tripDetail.galleryTitle}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
               {trip.gallery?.map((img, i) => (
                 <div key={i} className="h-64 md:h-72 rounded-2xl overflow-hidden shadow-sm">
@@ -290,14 +292,14 @@ export default function TripDetailPage({ params }) {
 
           {/* Info Section */}
           <section id="info" className="scroll-mt-36 space-y-6">
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold font-display text-primary tracking-tight">Viktig informasjon</h2>
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold font-display text-primary tracking-tight">{t.tripDetail.infoTitle}</h2>
             <div className="bg-white border border-gray-100 rounded-3xl overflow-hidden divide-y divide-gray-100">
               {[
-                { label: 'Beste Reisetid', value: trip.usefulInfo?.bestTime },
-                { label: 'Overnatting', value: trip.usefulInfo?.accommodation },
-                { label: 'Måltider', value: trip.usefulInfo?.meals },
-                { label: 'Visum & Forsikring', value: trip.usefulInfo?.visaInfo },
-                { label: 'Pakkeliste', value: trip.usefulInfo?.packingList },
+                { label: t.tripDetail.infoBestTime, value: trip.usefulInfo?.bestTime },
+                { label: t.tripDetail.infoAccommodation, value: trip.usefulInfo?.accommodation },
+                { label: t.tripDetail.infoMeals, value: trip.usefulInfo?.meals },
+                { label: t.tripDetail.infoVisa, value: trip.usefulInfo?.visaInfo },
+                { label: t.tripDetail.infoPackingList, value: trip.usefulInfo?.packingList },
               ].map((item, i) => item.value && (
                 <div key={i} className="flex items-start gap-6 px-8 py-5">
                   <span className="text-xs font-bold uppercase tracking-wider text-gray-400 min-w-[140px] pt-0.5">{item.label}</span>
@@ -316,19 +318,19 @@ export default function TripDetailPage({ params }) {
           <div className="sticky top-36 space-y-6">
             <div className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm text-center space-y-6">
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-1">Fra kun</p>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-1">{t.tripDetail.priceFromOnly}</p>
                 <p className="text-4xl font-bold font-display text-primary tracking-tight">NOK {trip.price?.toLocaleString()}</p>
               </div>
               <div className="space-y-3">
-                <Link href={`/plan-your-trip?tour=${slug}&dest=${trip.destination}`} className="block bg-orange-500 text-white py-4 rounded-xl font-bold uppercase tracking-wider text-xs shadow-sm hover:bg-orange-600 transition-all text-center">Bestill nå</Link>
-                <Link href={`/plan-your-trip?tour=${slug}&dest=${trip.destination}`} className="block border border-gray-200 py-4 rounded-xl font-bold uppercase tracking-wider text-xs hover:border-primary transition-all text-center text-primary">Snakk med ekspert</Link>
+                <Link href={`/plan-your-trip?tour=${slug}&dest=${trip.destination}`} className="block bg-orange-500 text-white py-4 rounded-xl font-bold uppercase tracking-wider text-xs shadow-sm hover:bg-orange-600 transition-all text-center">{t.tripDetail.bookNow}</Link>
+                <Link href={`/plan-your-trip?tour=${slug}&dest=${trip.destination}`} className="block border border-gray-200 py-4 rounded-xl font-bold uppercase tracking-wider text-xs hover:border-primary transition-all text-center text-primary">{t.tripDetail.talkToExpert}</Link>
               </div>
               <div className="pt-6 border-t border-gray-100 space-y-3">
                 <div className="flex items-center justify-center space-x-2.5 text-[9px] font-bold uppercase tracking-wider text-gray-400">
-                  <ShieldCheck className="w-4 h-4 text-orange-500" /> <span>Sikker Betaling</span>
+                  <ShieldCheck className="w-4 h-4 text-orange-500" /> <span>{t.tripDetail.securePayment}</span>
                 </div>
                 <div className="flex items-center justify-center space-x-2.5 text-[9px] font-bold uppercase tracking-wider text-gray-400">
-                  <Globe className="w-4 h-4 text-orange-500" /> <span>Lokale Eksperter</span>
+                  <Globe className="w-4 h-4 text-orange-500" /> <span>{t.tripDetail.localExperts}</span>
                 </div>
               </div>
             </div>

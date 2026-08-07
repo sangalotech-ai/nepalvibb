@@ -5,7 +5,7 @@ import TeamMember from '@/models/TeamMember';
 export async function PUT(request, { params }) {
   await dbConnect();
   try {
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
     const member = await TeamMember.findByIdAndUpdate(id, body, { new: true });
     return NextResponse.json(member);
@@ -17,7 +17,7 @@ export async function PUT(request, { params }) {
 export async function DELETE(request, { params }) {
   await dbConnect();
   try {
-    const { id } = params;
+    const { id } = await params;
     await TeamMember.findByIdAndDelete(id);
     return NextResponse.json({ message: 'Deleted successfully' });
   } catch (error) {
