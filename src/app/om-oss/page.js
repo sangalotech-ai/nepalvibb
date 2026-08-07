@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ShieldCheck, Users, Globe, Award, Heart, 
   Sparkles, ChevronRight, Compass, Facebook, 
-  Instagram, Linkedin, Twitter 
+  Instagram, Linkedin, Twitter, X 
 } from 'lucide-react';
 import Link from 'next/link';
 import Navbar from '@/components/layout/Navbar';
@@ -16,6 +16,24 @@ export default function AboutPage() {
   const [content, setContent] = useState(null);
   const [team, setTeam] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedMember, setSelectedMember] = useState(null);
+
+  useEffect(() => {
+    const closeOnEscape = (e) => {
+      if (e.key === 'Escape') setSelectedMember(null);
+    };
+    window.addEventListener('keydown', closeOnEscape);
+    return () => window.removeEventListener('keydown', closeOnEscape);
+  }, []);
+
+  useEffect(() => {
+    if (selectedMember) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [selectedMember]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -136,22 +154,25 @@ export default function AboutPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
-                  className="group"
+                  className="group cursor-pointer"
+                  onClick={() => setSelectedMember(member)}
                 >
                   <div className="relative aspect-[4/5] rounded-3xl overflow-hidden shadow-md mb-6">
                     <img src={member.image} className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" alt={member.name} loading="lazy" />
                     <div className="absolute inset-0 bg-gradient-to-t from-primary/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-8">
                       <div className="flex space-x-4">
-                        {member.socialLinks?.facebook && <a href={member.socialLinks.facebook} className="text-white hover:text-orange-500"><Facebook className="w-5 h-5" /></a>}
-                        {member.socialLinks?.instagram && <a href={member.socialLinks.instagram} className="text-white hover:text-orange-500"><Instagram className="w-5 h-5" /></a>}
-                        {member.socialLinks?.linkedin && <a href={member.socialLinks.linkedin} className="text-white hover:text-orange-500"><Linkedin className="w-5 h-5" /></a>}
+                        {member.socialLinks?.facebook && <a href={member.socialLinks.facebook} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="text-white hover:text-orange-500"><Facebook className="w-5 h-5" /></a>}
+                        {member.socialLinks?.instagram && <a href={member.socialLinks.instagram} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="text-white hover:text-orange-500"><Instagram className="w-5 h-5" /></a>}
+                        {member.socialLinks?.linkedin && <a href={member.socialLinks.linkedin} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="text-white hover:text-orange-500"><Linkedin className="w-5 h-5" /></a>}
+                        {member.socialLinks?.twitter && <a href={member.socialLinks.twitter} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="text-white hover:text-orange-500"><Twitter className="w-5 h-5" /></a>}
                       </div>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-white/70 mt-4">Se profil →</p>
                     </div>
                   </div>
                   <div className="text-center">
                     <h3 className="text-lg font-bold text-primary tracking-tight mb-1">{member.name}</h3>
                     <p className="text-[10px] font-bold uppercase tracking-wider text-orange-500">{member.role}</p>
-                    {member.bio && <p className="text-xs text-gray-500 mt-3 line-clamp-2 px-4 leading-relaxed font-light">"{member.bio}"</p>}
+                    {member.bio && <p className="text-xs text-gray-500 mt-3 line-clamp-2 px-4 leading-relaxed font-light">&ldquo;{member.bio}&rdquo;</p>}
                   </div>
                 </motion.div>
               ))}
@@ -203,6 +224,86 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+
+      {/* Team Member Modal */}
+      <AnimatePresence>
+        {selectedMember && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6"
+            onClick={() => setSelectedMember(null)}
+          >
+            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.92, y: 30 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.92, y: 30 }}
+              transition={{ duration: 0.25, ease: 'easeOut' }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative w-full max-w-3xl bg-white rounded-3xl overflow-hidden shadow-2xl"
+            >
+              <button
+                onClick={() => setSelectedMember(null)}
+                aria-label="Lukk"
+                className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white/90 hover:bg-white text-gray-700 hover:text-primary flex items-center justify-center shadow-md transition-all"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="grid grid-cols-1 md:grid-cols-5">
+                <div className="relative md:col-span-2 h-64 md:h-auto">
+                  <img
+                    src={selectedMember.image}
+                    alt={selectedMember.name}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent md:bg-gradient-to-r" />
+                </div>
+                <div className="md:col-span-3 p-8 sm:p-10">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-orange-500 mb-2">
+                    {selectedMember.role}
+                  </p>
+                  <h3 className="text-2xl sm:text-3xl font-bold font-display text-primary tracking-tight mb-5">
+                    {selectedMember.name}
+                  </h3>
+                  <div className="space-y-4 text-gray-600 font-light leading-relaxed text-sm sm:text-base">
+                    {selectedMember.bio ? (
+                      <p>{selectedMember.bio}</p>
+                    ) : (
+                      <p>Vi er stolte av å ha {selectedMember.name} på teamet hos Nepalvibb.</p>
+                    )}
+                  </div>
+
+                  <div className="flex items-center space-x-3 mt-8 pt-6 border-t border-gray-100">
+                    {selectedMember.socialLinks?.facebook && (
+                      <a href={selectedMember.socialLinks.facebook} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-gray-100 hover:bg-primary hover:text-white text-gray-600 flex items-center justify-center transition-all">
+                        <Facebook className="w-4 h-4" />
+                      </a>
+                    )}
+                    {selectedMember.socialLinks?.instagram && (
+                      <a href={selectedMember.socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-gray-100 hover:bg-primary hover:text-white text-gray-600 flex items-center justify-center transition-all">
+                        <Instagram className="w-4 h-4" />
+                      </a>
+                    )}
+                    {selectedMember.socialLinks?.linkedin && (
+                      <a href={selectedMember.socialLinks.linkedin} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-gray-100 hover:bg-primary hover:text-white text-gray-600 flex items-center justify-center transition-all">
+                        <Linkedin className="w-4 h-4" />
+                      </a>
+                    )}
+                    {selectedMember.socialLinks?.twitter && (
+                      <a href={selectedMember.socialLinks.twitter} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-gray-100 hover:bg-primary hover:text-white text-gray-600 flex items-center justify-center transition-all">
+                        <Twitter className="w-4 h-4" />
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
