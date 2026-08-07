@@ -3,8 +3,10 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ShieldCheck, Award, Users } from 'lucide-react';
+import { useLocale } from '@/components/providers/useLocale';
 
 export default function WhoWeAre({ content }) {
+  const { t } = useLocale();
   return (
     <section className="py-40 bg-gray-50/50 overflow-hidden relative">
       {/* Decorative Background Text */}
@@ -58,7 +60,7 @@ export default function WhoWeAre({ content }) {
                 {content?.yearsOfExperience || '15'}
               </span>
               <span className="text-[10px] uppercase font-black tracking-[0.3em] text-orange-500 block">
-                {content?.yearsOfExperienceLabel || 'Års Erfaring'}
+                {content?.yearsOfExperienceLabel || t.whoWeAre.yearsLabel}
               </span>
               <div className="mt-6 flex justify-center space-x-1">
                 {[1, 2, 3, 4, 5].map(i => (
@@ -76,15 +78,15 @@ export default function WhoWeAre({ content }) {
               viewport={{ once: true }}
             >
               <h5 className="text-orange-500 font-bold uppercase tracking-wider text-xs mb-6 flex items-center">
-                <span className="w-12 h-[2px] bg-orange-500 mr-4" /> {content?.subtitle || 'Hvem vi er'}
+                <span className="w-12 h-[2px] bg-orange-500 mr-4" /> {content?.subtitle || t.whoWeAre.subtitle}
               </h5>
               <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold font-display text-primary leading-tight mb-8 tracking-tight">
-                {content?.title || 'Eksperter på Himalaya-eventyr'}
+                {content?.title || t.whoWeAre.title}
               </h2>
               
               <div className="space-y-8 text-gray-500 leading-relaxed text-lg font-light">
                 <p>
-                  {content?.description || 'Velkommen til Nepalvibb, et stolt datterselskap av Actual Adventure Pvt. Ltd. Med over 15 års dedikasjon har vi etablert oss som den fremste aktøren for skandinaviske reisende i Nepal.'}
+                  {content?.description || t.whoWeAre.description}
                 </p>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 pt-4">
@@ -93,8 +95,8 @@ export default function WhoWeAre({ content }) {
                       <ShieldCheck className="w-6 h-6" />
                     </div>
                     <div>
-                      <h4 className="text-sm font-bold uppercase tracking-wider text-primary mb-1">{content?.feature1Title || 'Trygghet'}</h4>
-                      <p className="text-xs">{content?.feature1Desc || 'Sikkerhet i fokus på alle turer.'}</p>
+                      <h4 className="text-sm font-bold uppercase tracking-wider text-primary mb-1">{content?.feature1Title || t.whoWeAre.feature1Title}</h4>
+                      <p className="text-xs">{content?.feature1Desc || t.whoWeAre.feature1Desc}</p>
                     </div>
                   </div>
                   <div className="flex items-start space-x-4">
@@ -102,8 +104,8 @@ export default function WhoWeAre({ content }) {
                       <Users className="w-6 h-6" />
                     </div>
                     <div>
-                      <h4 className="text-sm font-bold uppercase tracking-wider text-primary mb-1">{content?.feature2Title || 'Ekspertise'}</h4>
-                      <p className="text-xs">{content?.feature2Desc || 'Lokale guider med dyp kunnskap.'}</p>
+                      <h4 className="text-sm font-bold uppercase tracking-wider text-primary mb-1">{content?.feature2Title || t.whoWeAre.feature2Title}</h4>
+                      <p className="text-xs">{content?.feature2Desc || t.whoWeAre.feature2Desc}</p>
                     </div>
                   </div>
                 </div>
@@ -111,13 +113,13 @@ export default function WhoWeAre({ content }) {
 
               <div className="mt-12 flex items-center space-x-10">
                 <Link href="/om-oss" className="inline-block bg-primary text-white px-10 py-4.5 text-xs font-bold uppercase tracking-wider rounded-full hover:bg-emerald-900 transition-all shadow-md">
-                  Om oss
+                  {t.common.omOss}
                 </Link>
                 <div className="hidden sm:flex items-center space-x-4">
                   <div className="w-14 h-14 rounded-full border border-gray-200 flex items-center justify-center p-3">
                     <Award className="text-orange-500 w-7 h-7" />
                   </div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-primary leading-tight">Sertifisert <br /> Reisebyrå</span>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-primary leading-tight">{t.whoWeAre.certified}</span>
                 </div>
               </div>
             </motion.div>

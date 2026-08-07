@@ -4,8 +4,10 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
+import { useLocale } from '@/components/providers/useLocale';
 
 export default function DestinationCards({ content }) {
+  const { t } = useLocale();
   const [destinations, setDestinations] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -37,7 +39,7 @@ export default function DestinationCards({ content }) {
               viewport={{ once: true }}
               className="text-orange-500 font-bold uppercase tracking-wider text-xs mb-3"
             >
-              {content?.subtitle || 'Oppdag verden med oss'}
+              {content?.subtitle || t.destinations.subtitle}
             </motion.h5>
             <motion.h2 
               initial={{ opacity: 0, y: 30 }}
@@ -45,7 +47,7 @@ export default function DestinationCards({ content }) {
               viewport={{ once: true }}
               className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold font-display text-primary tracking-tight leading-tight"
             >
-              {content?.title || 'Velg din neste destinasjon'}
+              {content?.title || t.destinations.title}
             </motion.h2>
           </div>
           <motion.div
@@ -55,7 +57,7 @@ export default function DestinationCards({ content }) {
              className="shrink-0"
           >
             <Link href="/destination/nepal" className="text-xs font-bold uppercase tracking-wider text-primary border-b-2 border-orange-500 pb-1.5 hover:text-orange-500 transition-colors">
-              Se alle destinasjoner
+              {t.destinations.seAlle}
             </Link>
           </motion.div>
         </div>
@@ -82,7 +84,7 @@ export default function DestinationCards({ content }) {
                 <div className="absolute inset-0 flex flex-col items-center justify-end p-6 sm:p-8 text-center">
                   <div className="translate-y-4 group-hover:translate-y-0 transition-transform duration-700">
                     <span className="text-orange-400 font-bold uppercase text-[10px] tracking-wider mb-2 block opacity-0 group-hover:opacity-100 transition-opacity duration-700">
-                      Nepalvibb Reise
+                      {t.destinations.travel}
                     </span>
                     <h3 className="text-2xl sm:text-3xl font-bold font-display text-white tracking-tight mb-4">
                       {destination.name}

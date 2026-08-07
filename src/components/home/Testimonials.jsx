@@ -4,8 +4,10 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Star, MessageSquare, Quote } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useLocale } from '@/components/providers/useLocale';
 
 export default function Testimonials({ content }) {
+  const { t } = useLocale();
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -31,10 +33,10 @@ export default function Testimonials({ content }) {
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16 space-y-3">
           <h5 className="text-orange-500 font-bold uppercase tracking-wider text-xs">
-            {content?.subtitle || 'Gjestevurderinger'}
+            {content?.subtitle || t.testimonials.subtitle}
           </h5>
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold font-display text-primary tracking-tight leading-tight">
-            {content?.title || 'Hva våre gjester sier'}
+            {content?.title || t.testimonials.title}
           </h2>
         </div>
 
@@ -59,7 +61,7 @@ export default function Testimonials({ content }) {
                   </div>
                   
                   <p className="text-gray-600 font-light leading-relaxed text-base">
-                    "{review.comment.length > 120 ? review.comment.substring(0, 120) + '...' : review.comment}"
+                    &ldquo;{review.comment.length > 120 ? review.comment.substring(0, 120) + '...' : review.comment}&rdquo;
                   </p>
                 </div>
 
@@ -69,7 +71,7 @@ export default function Testimonials({ content }) {
                   </div>
                   <div>
                     <h4 className="text-sm font-bold text-primary tracking-tight">{review.userName}</h4>
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-orange-500">{review.tripId?.title || 'Nepalvibb Gjest'}</p>
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-orange-500">{review.tripId?.title || t.testimonials.guest}</p>
                   </div>
                 </div>
               </div>

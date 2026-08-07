@@ -4,8 +4,10 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowRight, Compass, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useLocale } from '@/components/providers/useLocale';
 
 export default function FeaturedActivities({ content }) {
+  const { t } = useLocale();
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
   const scrollRef = useRef(null);
@@ -83,10 +85,10 @@ export default function FeaturedActivities({ content }) {
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
           <div className="max-w-2xl space-y-3">
             <h5 className="text-orange-500 font-bold uppercase tracking-wider text-xs">
-              {content?.subtitle || 'Ting å gjøre i Nepal'}
+              {content?.subtitle || t.activities.subtitle}
             </h5>
             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold font-display text-primary tracking-tight leading-tight">
-              {content?.title || 'Eventyrlige opplevelser'}
+              {content?.title || t.activities.title}
             </h2>
           </div>
           
@@ -118,7 +120,7 @@ export default function FeaturedActivities({ content }) {
               </button>
             </div>
             <Link href="/activity/all" className="bg-primary hover:bg-emerald-900 text-white px-6 py-3 rounded-full text-xs font-bold uppercase tracking-wider transition-all shadow-md shrink-0">
-              Se alle
+              {t.common.seAlle}
             </Link>
           </div>
         </div>
@@ -158,7 +160,7 @@ export default function FeaturedActivities({ content }) {
                       dangerouslySetInnerHTML={{ __html: activity.description }}
                     />
                     <div className="flex items-center space-x-2 text-xs font-bold uppercase tracking-wider text-orange-400">
-                      <span>Utforsk</span>
+                      <span>{t.activities.explore}</span>
                       <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />
                     </div>
                   </div>

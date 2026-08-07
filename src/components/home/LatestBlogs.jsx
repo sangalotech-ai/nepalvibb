@@ -4,8 +4,10 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Calendar, Tag, ArrowRight } from 'lucide-react';
+import { useLocale } from '@/components/providers/useLocale';
 
 export default function LatestBlogs() {
+  const { t } = useLocale();
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -78,7 +80,7 @@ export default function LatestBlogs() {
                 {blog.title}
               </h3>
               <div className="flex items-center space-x-2 text-orange-500 text-[10px] font-black uppercase tracking-widest">
-                <span>Les mer</span>
+                <span>{t.common.lesMer}</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />
               </div>
             </div>

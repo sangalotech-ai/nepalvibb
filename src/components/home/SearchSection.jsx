@@ -4,13 +4,15 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChevronDown, Search, Map, Compass, Calendar } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useLocale } from '@/components/providers/useLocale';
 
 export default function SearchSection() {
   const router = useRouter();
+  const { t } = useLocale();
   const [filters, setFilters] = useState({
-    destination: 'Velg destinasjon',
-    activity: 'Velg aktivitet',
-    duration: 'Varighet'
+    destination: t.search.selectDestination,
+    activity: t.search.selectActivity,
+    duration: t.search.durationLabel
   });
   const [options, setOptions] = useState({
     destinations: [],
@@ -32,9 +34,9 @@ export default function SearchSection() {
   const handleSubmit = (e) => {
     e.preventDefault();
     const params = new URLSearchParams();
-    if (filters.destination !== 'Velg destinasjon') params.append('destination', filters.destination);
-    if (filters.activity !== 'Velg aktivitet') params.append('activity', filters.activity);
-    if (filters.duration !== 'Varighet') params.append('duration', filters.duration);
+    if (filters.destination !== t.search.selectDestination) params.append('destination', filters.destination);
+    if (filters.activity !== t.search.selectActivity) params.append('activity', filters.activity);
+    if (filters.duration !== t.search.durationLabel) params.append('duration', filters.duration);
     
     router.push(`/search?${params.toString()}`);
   };
@@ -56,7 +58,7 @@ export default function SearchSection() {
           <div className="space-y-4">
             <div className="flex items-center text-primary/40 space-x-2">
               <Map className="w-4 h-4" />
-              <label className="text-[10px] font-black uppercase tracking-[0.3em]">Destinasjon</label>
+              <label className="text-[10px] font-black uppercase tracking-[0.3em]">{t.search.destination}</label>
             </div>
             <div className="relative group/select">
               <select 
@@ -64,7 +66,7 @@ export default function SearchSection() {
                 onChange={(e) => setFilters({...filters, destination: e.target.value})}
                 className="w-full bg-gray-50/50 border-b-2 border-gray-100 focus:border-orange-500 rounded-none px-2 py-4 text-[13px] font-black uppercase tracking-widest text-primary appearance-none focus:outline-none transition-all cursor-pointer"
               >
-                <option>Velg destinasjon</option>
+                <option>{t.search.selectDestination}</option>
                 {options.destinations.map(d => <option key={d}>{d}</option>)}
               </select>
               <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none group-hover/select:text-orange-500 transition-colors" />
@@ -75,7 +77,7 @@ export default function SearchSection() {
           <div className="space-y-4">
             <div className="flex items-center text-primary/40 space-x-2">
               <Compass className="w-4 h-4" />
-              <label className="text-[10px] font-black uppercase tracking-[0.3em]">Aktiviteter</label>
+              <label className="text-[10px] font-black uppercase tracking-[0.3em]">{t.search.activity}</label>
             </div>
             <div className="relative group/select">
               <select 
@@ -83,7 +85,7 @@ export default function SearchSection() {
                 onChange={(e) => setFilters({...filters, activity: e.target.value})}
                 className="w-full bg-gray-50/50 border-b-2 border-gray-100 focus:border-orange-500 rounded-none px-2 py-4 text-[13px] font-black uppercase tracking-widest text-primary appearance-none focus:outline-none transition-all cursor-pointer"
               >
-                <option>Velg aktivitet</option>
+                <option>{t.search.selectActivity}</option>
                 {options.activities.map(a => <option key={a}>{a}</option>)}
               </select>
               <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none group-hover/select:text-orange-500 transition-colors" />
@@ -94,7 +96,7 @@ export default function SearchSection() {
           <div className="space-y-4">
             <div className="flex items-center text-primary/40 space-x-2">
               <Calendar className="w-4 h-4" />
-              <label className="text-[10px] font-black uppercase tracking-[0.3em]">Varighet</label>
+              <label className="text-[10px] font-black uppercase tracking-[0.3em]">{t.search.duration}</label>
             </div>
             <div className="relative group/select">
               <select 
@@ -102,7 +104,7 @@ export default function SearchSection() {
                 onChange={(e) => setFilters({...filters, duration: e.target.value})}
                 className="w-full bg-gray-50/50 border-b-2 border-gray-100 focus:border-orange-500 rounded-none px-2 py-4 text-[13px] font-black uppercase tracking-widest text-primary appearance-none focus:outline-none transition-all cursor-pointer"
               >
-                <option>Varighet</option>
+                <option>{t.search.durationLabel}</option>
                 {options.durations.map(d => <option key={d.value} value={d.value}>{d.label}</option>)}
               </select>
               <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none group-hover/select:text-orange-500 transition-colors" />
@@ -112,7 +114,7 @@ export default function SearchSection() {
           {/* Seek Button */}
           <button type="submit" className="w-full bg-primary hover:bg-emerald-900 text-white font-black uppercase tracking-[0.4em] text-[11px] py-6 rounded-2xl shadow-2xl transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center group shadow-emerald-900/20">
             <Search className="w-4 h-4 mr-4 group-hover:scale-125 transition-transform" />
-            Søk nå
+            {t.search.searchNow}
           </button>
 
         </form>

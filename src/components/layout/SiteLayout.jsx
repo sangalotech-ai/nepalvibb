@@ -1,7 +1,11 @@
+"use client";
+
 import Link from 'next/link';
 import { MessageCircle } from 'lucide-react';
+import { useLocale } from '@/components/providers/useLocale';
 
 export default function SiteLayout({ children }) {
+  const { t } = useLocale();
   return (
     <>
       <div className="fixed left-0 top-1/2 -translate-y-1/2 z-[60] hidden md:block">
@@ -10,7 +14,7 @@ export default function SiteLayout({ children }) {
           className="bg-primary text-white py-8 px-2.5 rounded-r-2xl shadow-2xl flex items-center justify-center [writing-mode:vertical-lr] rotate-180 hover:bg-emerald-900 transition-all hover:pl-4 group"
         >
           <span className="text-[10px] font-black uppercase tracking-[0.4em] group-hover:scale-110 transition-transform">
-            Plan your trips
+            {t.siteLayout.planTrips}
           </span>
         </Link>
       </div>
@@ -25,7 +29,7 @@ export default function SiteLayout({ children }) {
           <div className="bg-white/20 p-1.5 rounded-full">
             <MessageCircle className="w-5 h-5 fill-white text-emerald-600" />
           </div>
-          <span className="text-[11px] font-black uppercase tracking-widest">Chat with an expert</span>
+          <span className="text-[11px] font-black uppercase tracking-widest">{t.siteLayout.chatExpert}</span>
         </Link>
       </div>
     </>

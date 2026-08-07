@@ -4,18 +4,20 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowRight, Play, ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
-
-const FALLBACK_BANNER = {
-  title: "Unik",
-  highlightText: "Kulturelle",
-  subtitle: "Opplevelse",
-  badgeText: "Oppdag de mest engasjerte stedene",
-  image: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1920&q=80",
-  buttonText: "TA EN TUR",
-  buttonLink: "/trips"
-};
+import { useLocale } from '@/components/providers/useLocale';
 
 export default function HeroBanner({ initialBanners }) {
+  const { t } = useLocale();
+
+  const FALLBACK_BANNER = {
+    title: t.hero.title,
+    highlightText: t.hero.highlight,
+    subtitle: t.hero.subtitle,
+    badgeText: t.hero.badgeText,
+    image: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1920&q=80",
+    buttonText: t.hero.bannerButton,
+    buttonLink: "/trips"
+  };
   const [banners, setBanners] = useState(initialBanners || []);
   const [current, setCurrent] = useState(0);
 
@@ -64,7 +66,7 @@ export default function HeroBanner({ initialBanners }) {
           <div className="inline-flex items-center gap-3 bg-white/10 backdrop-blur-md px-5 py-2.5 rounded-full border border-white/10 mb-8">
             <span className="w-2 h-2 rounded-full bg-orange-400 animate-pulse" />
             <span className="text-orange-300 text-[11px] font-bold uppercase tracking-[0.25em]">
-              {currentBanner.badgeText || "Explore Nepal"}
+              {currentBanner.badgeText || t.hero.badgeFallback}
             </span>
           </div>
 
@@ -85,7 +87,7 @@ export default function HeroBanner({ initialBanners }) {
               href={currentBanner.buttonLink || "/trips"}
               className="group inline-flex items-center gap-3 bg-orange-500 hover:bg-orange-600 text-white px-10 py-4 text-xs font-black uppercase tracking-[0.25em] rounded-full shadow-[0_15px_35px_rgba(249,115,22,0.35)] hover:shadow-[0_20px_50px_rgba(249,115,22,0.45)] hover:scale-105 transition-all duration-300"
             >
-              {currentBanner.buttonText || "DISCOVER"}
+              {currentBanner.buttonText || t.hero.buttonFallback}
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform" />
             </Link>
 
@@ -94,7 +96,7 @@ export default function HeroBanner({ initialBanners }) {
                 <div className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center group-hover:bg-white group-hover:border-white group-hover:text-primary transition-all duration-300">
                   <Play className="w-5 h-5 fill-current ml-0.5" />
                 </div>
-                <span className="text-xs font-bold uppercase tracking-[0.2em]">Se video</span>
+                <span className="text-xs font-bold uppercase tracking-[0.2em]">{t.common.seVideo}</span>
               </button>
             )}
           </div>
@@ -141,7 +143,7 @@ export default function HeroBanner({ initialBanners }) {
 
       {/* Scroll indicator */}
       <div className="absolute bottom-12 right-12 hidden lg:flex flex-col items-center gap-3 text-white/30 z-20">
-        <span className="text-[9px] font-bold uppercase tracking-[0.3em] [writing-mode:vertical-lr]">Scroll</span>
+        <span className="text-[9px] font-bold uppercase tracking-[0.3em] [writing-mode:vertical-lr]">{t.common.scroll}</span>
         <div className="w-px h-16 bg-gradient-to-b from-white/30 to-transparent" />
       </div>
     </div>

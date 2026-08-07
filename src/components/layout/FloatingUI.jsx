@@ -3,8 +3,10 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { MessageCircle, Sparkles, Send, Map } from 'lucide-react';
+import { useLocale } from '@/components/providers/useLocale';
 
 export default function FloatingUI() {
+  const { t } = useLocale();
   return (
     <>
       {/* Global Floating Side Tab */}
@@ -25,7 +27,7 @@ export default function FloatingUI() {
               <Map className="w-4 h-4 mb-4 text-orange-400 group-hover:scale-125 transition-transform" />
               
               <span className="text-[10px] font-black uppercase tracking-[0.5em] [writing-mode:vertical-lr] rotate-180">
-                Plan your trips
+                {t.siteLayout.planTrips}
               </span>
 
               <Sparkles className="w-3 h-3 mt-4 text-emerald-300 animate-pulse" />
@@ -33,8 +35,8 @@ export default function FloatingUI() {
             
             {/* Tooltip on hover */}
             <div className="absolute left-full ml-4 bg-white shadow-2xl rounded-2xl p-4 w-48 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-x-4 group-hover:translate-x-0 pointer-events-none border border-gray-50">
-              <p className="text-[10px] font-black uppercase tracking-widest text-primary mb-1">Expert Planning</p>
-              <p className="text-[11px] text-gray-400 font-medium leading-relaxed">Kontakt en ekspert for å skreddersy ditt eventyr i Himalaya.</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-primary mb-1">{t.floatingTooltip.expertPlanning}</p>
+              <p className="text-[11px] text-gray-400 font-medium leading-relaxed">{t.floatingTooltip.tooltipDesc}</p>
             </div>
           </Link>
         </motion.div>
@@ -60,9 +62,9 @@ export default function FloatingUI() {
               <div className="flex flex-col items-end">
                 <span className="text-[9px] font-black uppercase tracking-widest text-emerald-500 mb-0.5 flex items-center">
                   <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-1.5 animate-pulse" />
-                  Online Now
+                  {t.common.onlineNow}
                 </span>
-                <span className="text-[11px] font-black uppercase tracking-widest text-primary">Chat med ekspert</span>
+                <span className="text-[11px] font-black uppercase tracking-widest text-primary">{t.floatingTooltip.chatExpert}</span>
               </div>
               
               <div className="bg-gradient-to-tr from-primary to-emerald-400 p-3.5 rounded-full text-white shadow-lg group-hover:shadow-emerald-500/30 transition-all relative overflow-hidden">

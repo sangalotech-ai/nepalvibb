@@ -4,8 +4,10 @@ import { useState, useEffect } from 'react';
 import { Star, Send, User, Calendar, CheckCircle2, MessageSquare } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { useLocale } from '@/components/providers/useLocale';
 
 export default function ReviewSection({ tripId }) {
+  const { t } = useLocale();
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -18,10 +20,6 @@ export default function ReviewSection({ tripId }) {
     comment: ''
   });
 
-  useEffect(() => {
-    fetchReviews();
-  }, [tripId]);
-
   const fetchReviews = async () => {
     try {
       const res = await fetch(`/api/reviews?tripId=${tripId}`);
@@ -33,6 +31,10 @@ export default function ReviewSection({ tripId }) {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchReviews();
+  }, [tripId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -62,21 +64,21 @@ export default function ReviewSection({ tripId }) {
     <section id="omtaler" className="scroll-mt-40 space-y-12">
       <div className="flex flex-col sm:flex-row sm:items-end justify-between border-b border-gray-100 pb-8 gap-6">
         <div className="space-y-3">
-          <h2 className="text-2xl sm:text-3xl font-bold font-display text-primary tracking-tight">Gjestevurderinger</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold font-display text-primary tracking-tight">{t.reviews.title}</h2>
           <div className="flex items-center space-x-4">
             <div className="flex text-orange-500">
               {[1, 2, 3, 4, 5].map((star) => (
                 <Star key={star} className="w-4 h-4 fill-current" />
               ))}
             </div>
-            <span className="text-xs font-light text-gray-500 tracking-wide">{reviews.length} Omtaler</span>
+            <span className="text-xs font-light text-gray-500 tracking-wide">{reviews.length} {t.reviews.count}</span>
           </div>
         </div>
         <button 
           onClick={() => setShowForm(!showForm)}
           className="bg-primary text-white px-6 py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-orange-500 transition-all self-start sm:self-auto"
         >
-          {showForm ? 'Avbryt' : 'Skriv en omtale'}
+          {showForm ? t.reviews.cancel : t.reviews.write}
         </button>
       </div>
 
@@ -94,18 +96,18 @@ export default function ReviewSection({ tripId }) {
                   <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto text-emerald-500">
                     <CheckCircle2 className="w-8 h-8" />
                   </div>
-                  <h3 className="text-xl font-bold font-display text-primary tracking-tight">Takk for din omtale!</h3>
-                  <p className="text-gray-500 font-light text-sm">Din vurdering er sendt til moderering og vil bli synlig så snart den er godkjent av en administrator.</p>
+                  <h3 className="text-xl font-bold font-display text-primary tracking-tight">{t.reviews.thank}</h3>
+                  <p className="text-gray-500 font-light text-sm">{t.reviews.thankDesc}</p>
                 </div>
               ) : (
                 <>
                   <div className="text-center space-y-2">
-                    <h3 className="text-xl font-bold font-display text-primary tracking-tight">Del din opplevelse</h3>
-                    <p className="text-gray-500 text-sm font-light">Din tilbakemelding hjelper oss å bli bedre og andre reisende å velge riktig.</p>
+                    <h3 className="text-xl font-bold font-display text-primary tracking-tight">{t.reviews.share}</h3>
+                    <p className="text-gray-500 text-sm font-light">{t.reviews.shareDesc}</p>
                   </div>
                   <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <label className="text-[10px] font-bold uppercase tracking-wider text-gray-400 px-2">Navn</label>
+                      <label className="text-[10px] font-bold uppercase tracking-wider text-gray-400 px-2">{t.reviews.name}</label>
                       <input 
                         type="text" 
                         required
@@ -115,7 +117,7 @@ export default function ReviewSection({ tripId }) {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-[10px] font-bold uppercase tracking-wider text-gray-400 px-2">E-post</label>
+                      <label className="text-[10px] font-bold uppercase tracking-wider text-gray-400 px-2">{t.reviews.email}</label>
                       <input 
                         type="email" 
                         required
@@ -125,7 +127,7 @@ export default function ReviewSection({ tripId }) {
                       />
                     </div>
                     <div className="md:col-span-2 space-y-2 text-center">
-                      <label className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Din Vurdering</label>
+                      <label className="text-[10px] font-bold uppercase tracking-wider text-gray-400">{t.reviews.rating}</label>
                       <div className="flex justify-center space-x-3 pt-1">
                         {[1, 2, 3, 4, 5].map((star) => (
                           <button 
@@ -140,7 +142,7 @@ export default function ReviewSection({ tripId }) {
                       </div>
                     </div>
                     <div className="md:col-span-2 space-y-2">
-                      <label className="text-[10px] font-bold uppercase tracking-wider text-gray-400 px-2">Din Tilbakemelding</label>
+                      <label className="text-[10px] font-bold uppercase tracking-wider text-gray-400 px-2">{t.reviews.feedback}</label>
                       <textarea 
                         rows={5} 
                         required
@@ -158,7 +160,7 @@ export default function ReviewSection({ tripId }) {
                           <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
                         ) : (
                           <>
-                            <span>Send Omtale</span>
+                            <span>{t.reviews.send}</span>
                             <Send className="w-4 h-4" />
                           </>
                         )}
@@ -182,8 +184,8 @@ export default function ReviewSection({ tripId }) {
             <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center mx-auto text-gray-300 shadow-sm">
               <MessageSquare className="w-6 h-6" />
             </div>
-            <p className="text-lg font-bold font-display text-primary tracking-tight">Ingen omtaler ennå</p>
-            <p className="text-gray-500 text-sm font-light">Bli den første til å dele din erfaring fra denne reisen!</p>
+            <p className="text-lg font-bold font-display text-primary tracking-tight">{t.reviews.none}</p>
+            <p className="text-gray-500 text-sm font-light">{t.reviews.noneDesc}</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-8">
@@ -215,7 +217,7 @@ export default function ReviewSection({ tripId }) {
                   </div>
                 </div>
                 <p className="text-gray-600 font-light leading-relaxed text-base border-l-4 border-orange-500 pl-6 ml-1">
-                  "{review.comment}"
+                  &ldquo;{review.comment}&rdquo;
                 </p>
               </motion.div>
             ))}

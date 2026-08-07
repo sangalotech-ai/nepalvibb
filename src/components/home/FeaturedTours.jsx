@@ -2,10 +2,12 @@
 
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
+import { useLocale } from '@/components/providers/useLocale';
 
 import { useState, useEffect } from 'react';
 
 export default function FeaturedTours({ content }) {
+  const { t } = useLocale();
   const [tours, setTours] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -39,17 +41,17 @@ export default function FeaturedTours({ content }) {
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="text-center mb-12">
           <h5 className="text-orange-500 font-bold uppercase tracking-wider text-xs mb-3">
-            {content?.subtitle || 'Mest Populære Turpakker'}
+            {content?.subtitle || t.tours.subtitle}
           </h5>
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold font-display text-primary tracking-tight mb-8 leading-tight">
-            {content?.title || 'Nepal-fotturpakke'}
+            {content?.title || t.tours.title}
           </h2>
           <div className="flex justify-center">
             <Link
               href="/turer"
               className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-bold uppercase text-sm tracking-wider px-8 py-4 rounded-full shadow-[0_10px_30px_rgba(249,115,22,0.35)] hover:shadow-[0_15px_40px_rgba(249,115,22,0.45)] transition-all duration-300 hover:-translate-y-0.5"
             >
-              Se alle turer
+              {t.common.seAlleTurer}
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -70,10 +72,10 @@ export default function FeaturedTours({ content }) {
                   className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
                 />
                 <div className="absolute top-4 left-4 bg-primary/95 text-white text-[9px] font-bold uppercase px-3 py-1.5 rounded-full tracking-wider shadow-md backdrop-blur-sm">
-                  {Array.isArray(tour.category) ? tour.category[0] : tour.category || 'Eventyr'}
+                  {Array.isArray(tour.category) ? tour.category[0] : tour.category || t.tours.categoryFallback}
                 </div>
                 <div className="absolute bottom-4 right-4 bg-orange-500 text-white font-bold px-4 py-2 rounded-2xl shadow-md transition-transform duration-500">
-                  <p className="text-[9px] block font-light text-orange-200 uppercase tracking-wider leading-none mb-0.5">Fra</p>
+                  <p className="text-[9px] block font-light text-orange-200 uppercase tracking-wider leading-none mb-0.5">{t.common.fra}</p>
                   <p className="text-sm">NOK {tour.price?.toLocaleString()}</p>
                 </div>
               </div>
@@ -87,7 +89,7 @@ export default function FeaturedTours({ content }) {
                   dangerouslySetInnerHTML={{ __html: tour.summary }}
                 />
                 <Link href={`/trips/${tour.slug}`} className="mt-auto inline-flex items-center text-primary font-bold uppercase text-xs tracking-wider gap-2 hover:text-orange-500 transition-colors">
-                  <span>Les mer</span>
+                  <span>{t.common.lesMer}</span>
                   <span className="text-orange-500 text-base group-hover:translate-x-1.5 transition-transform">→</span>
                 </Link>
               </div>
