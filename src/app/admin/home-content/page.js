@@ -423,6 +423,33 @@ export default function AdminHomeContentPage() {
                     />
                   </div>
                   <div className="space-y-3">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Travelers Count (e.g. "200+")</label>
+                    <input 
+                      type="text" 
+                      value={content[section.id]?.travelersValue || ''}
+                      onChange={e => updateSection(section.id, 'travelersValue', e.target.value)}
+                      className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all"
+                    />
+                  </div>
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Travelers Label</label>
+                    <input 
+                      type="text" 
+                      value={content[section.id]?.travelersLabel || ''}
+                      onChange={e => updateSection(section.id, 'travelersLabel', e.target.value)}
+                      className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all"
+                    />
+                  </div>
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Travelers Label (English)</label>
+                    <input 
+                      type="text" 
+                      value={content[section.id]?.travelersLabelEn || ''}
+                      onChange={e => updateSection(section.id, 'travelersLabelEn', e.target.value)}
+                      className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all"
+                    />
+                  </div>
+                  <div className="space-y-3">
                     <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Stats (JSON array)</label>
                     <textarea 
                       rows={4}

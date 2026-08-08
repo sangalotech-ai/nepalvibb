@@ -1,5 +1,6 @@
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
+import { cookies } from 'next/headers';
 import { ArrowRight } from 'lucide-react';
 import HomeContent from '@/models/HomeContent';
 import Banner from '@/models/Banner';
@@ -80,6 +81,8 @@ export default async function Home() {
     getHomeContent(),
     Banner.find({ isActive: true }).sort({ order: 1 }).lean().catch(() => []),
   ]);
+  const cookieStore = await cookies();
+  const locale = cookieStore.get('NEXT_LOCALE')?.value === 'en' ? 'en' : 'no';
 
   return (
     <main className="relative bg-white">
@@ -180,7 +183,10 @@ export default async function Home() {
                         ))}
                       </div>
                       <div className="text-white text-xs font-light">
-                        <span className="font-bold text-orange-300">200+</span> reisende fornøyd
+                        <span className="font-bold text-orange-300">{content.purpose?.travelersValue || '200+'}</span>{' '}
+                        {locale === 'en'
+                          ? (content.purpose?.travelersLabelEn || 'happy travelers')
+                          : (content.purpose?.travelersLabel || 'reisende fornøyd')}
                       </div>
                     </div>
                   </div>
