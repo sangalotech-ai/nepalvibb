@@ -655,7 +655,7 @@ export default function AdminHomeContentPage() {
                       />
                     </div>
                     <div className="space-y-3 mt-6">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Steps (JSON array of {title, desc})</label>
+                      <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Steps (JSON array of {'{title, desc}'})</label>
                       <textarea
                         rows={4}
                         value={content[section.id]?.steps || ''}
@@ -665,7 +665,7 @@ export default function AdminHomeContentPage() {
                       />
                     </div>
                     <div className="space-y-3 mt-6">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Steps (English) (JSON array of {title, desc})</label>
+                      <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Steps (English) (JSON array of {'{title, desc}'})</label>
                       <textarea
                         rows={4}
                         value={content[section.id]?.stepsEn || ''}
