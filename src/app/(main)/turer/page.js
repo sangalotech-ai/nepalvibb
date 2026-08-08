@@ -4,8 +4,11 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Clock, ArrowRight, Compass } from 'lucide-react';
 import Pagination from '@/components/Pagination';
+import { tr } from '@/lib/tr';
+import { useLocale } from '@/components/providers/useLocale';
 
 export default function TurerPage() {
+  const { locale } = useLocale();
   const [tours, setTours] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -73,12 +76,14 @@ export default function TurerPage() {
                   <div className="relative h-52 overflow-hidden">
                     <img
                       src={tour.image}
-                      alt={tour.title}
+                      alt={tr(tour, 'title', locale)}
                       className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
                       loading="lazy"
                     />
                     <div className="absolute top-4 left-4 bg-primary/95 text-white text-[9px] font-bold uppercase px-3 py-1.5 rounded-full tracking-wider shadow-md backdrop-blur-sm">
-                      {Array.isArray(tour.category) ? tour.category[0] : tour.category || 'Eventyr'}
+                      {(locale === 'en'
+                        ? (Array.isArray(tour.categoryEn) ? tour.categoryEn[0] : (tour.categoryEn || tour.category))
+                        : (Array.isArray(tour.category) ? tour.category[0] : tour.category)) || 'Eventyr'}
                     </div>
                     <div className="absolute bottom-4 right-4 bg-orange-500 text-white font-bold px-4 py-2 rounded-2xl shadow-md">
                       <p className="text-[9px] block font-light text-orange-200 uppercase tracking-wider leading-none mb-0.5">Fra</p>
@@ -88,16 +93,16 @@ export default function TurerPage() {
 
                   <div className="p-5 flex-1 flex flex-col">
                     <h3 className="text-base sm:text-lg font-bold font-display text-primary mb-2 line-clamp-2 leading-snug group-hover:text-orange-500 transition-colors">
-                      {tour.title}
+                      {tr(tour, 'title', locale)}
                     </h3>
                     <div
                       className="text-gray-500 font-light text-xs mb-4 line-clamp-2 leading-relaxed [&_p]:m-0 [&_p]:inline"
-                      dangerouslySetInnerHTML={{ __html: tour.summary }}
+                      dangerouslySetInnerHTML={{ __html: tr(tour, 'summary', locale) }}
                     />
                     <div className="mt-auto pt-4 border-t border-gray-50 flex items-center justify-between">
                       <div className="flex items-center space-x-1.5 text-[10px] font-bold uppercase tracking-wider text-gray-400">
                         <Clock className="w-3.5 h-3.5 text-orange-500" />
-                        <span>{tour.duration}</span>
+                        <span>{tr(tour, 'duration', locale)}</span>
                       </div>
                       <Link href={`/trips/${tour.slug}`} className="text-[10px] font-bold uppercase tracking-wider text-primary flex items-center group-hover:text-orange-500 transition-all">
                         <span>Les mer</span>

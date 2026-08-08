@@ -12,12 +12,13 @@ import {
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { tr, trItem } from '@/lib/tr';
 import Navbar from '@/components/layout/Navbar';
 import ReviewSection from '@/components/trips/ReviewSection';
 import { useLocale } from '@/components/providers/useLocale';
 
 export default function TripDetailPage({ params }) {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const { slug } = use(params);
   const [trip, setTrip] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -118,22 +119,24 @@ export default function TripDetailPage({ params }) {
       
       {/* Cinematic Hero */}
       <section className="relative h-[60vh] md:h-[75vh] min-h-[400px] overflow-hidden">
-        <img src={trip.image} className="w-full h-full object-cover" alt={trip.title} fetchPriority="high" />
+        <img src={trip.image} className="w-full h-full object-cover" alt={tr(trip, 'title', locale)} fetchPriority="high" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
         
         <div className="absolute inset-0 flex items-end">
           <div className="max-w-[85rem] mx-auto px-6 pb-12 md:pb-16 w-full">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-4xl space-y-6">
               <span className="inline-block bg-orange-500 text-white px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-md">
-                {Array.isArray(trip.category) ? trip.category[0] : trip.category}
+                {locale === 'en'
+                  ? (trip.categoryEn?.[0] || trip.category?.[0])
+                  : (trip.category?.[0])}
               </span>
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold font-display text-white tracking-tight leading-tight">
-                {trip.title}
+                {tr(trip, 'title', locale)}
               </h1>
               <div className="flex flex-wrap gap-x-8 gap-y-3 text-white/90 text-xs font-medium tracking-wide">
-                <span className="flex items-center"><Clock className="w-4 h-4 mr-2 text-orange-500" /> {trip.duration}</span>
-                <span className="flex items-center"><Mountain className="w-4 h-4 mr-2 text-orange-500" /> {trip.difficulty}</span>
-                <span className="flex items-center"><MapPin className="w-4 h-4 mr-2 text-orange-500" /> {trip.destination}</span>
+                <span className="flex items-center"><Clock className="w-4 h-4 mr-2 text-orange-500" /> {tr(trip, 'duration', locale)}</span>
+                <span className="flex items-center"><Mountain className="w-4 h-4 mr-2 text-orange-500" /> {tr(trip, 'difficulty', locale)}</span>
+                <span className="flex items-center"><MapPin className="w-4 h-4 mr-2 text-orange-500" /> {tr(trip, 'destination', locale)}</span>
               </div>
             </motion.div>
           </div>
@@ -158,7 +161,7 @@ export default function TripDetailPage({ params }) {
               </button>
             ))}
           </div>
-          <Link href={`/plan-your-trip?tour=${slug}&dest=${trip.destination}`} className="hidden md:block bg-orange-500 text-white px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-wider shadow-md hover:bg-orange-600 transition-all">{t.tripDetail.bookTrip}</Link>
+          <Link href={`/plan-your-trip?tour=${slug}&dest=${tr(trip, 'destination', locale)}`} className="hidden md:block bg-orange-500 text-white px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-wider shadow-md hover:bg-orange-600 transition-all">{t.tripDetail.bookTrip}</Link>
         </div>
       </div>
 
@@ -172,17 +175,17 @@ export default function TripDetailPage({ params }) {
               <h2 className="text-xl sm:text-2xl md:text-3xl font-bold font-display text-primary tracking-tight">{t.tripDetail.overviewTitle}</h2>
               <div 
                 className="prose prose-primary max-w-none text-gray-600 font-light leading-relaxed prose-p:text-sm md:prose-p:base prose-p:mb-4 prose-strong:font-semibold" 
-                dangerouslySetInnerHTML={{ __html: trip.overview || trip.summary }} 
+                dangerouslySetInnerHTML={{ __html: tr(trip, 'overview', locale) || tr(trip, 'summary', locale) }} 
               />
             </div>
 
-            {trip.highlights?.length > 0 && (
+            {(locale === 'en' ? (trip.highlightsEn?.length ? trip.highlightsEn : trip.highlights) : trip.highlights)?.length > 0 && (
               <div className="space-y-6 bg-gray-50 p-8 rounded-3xl border border-gray-100">
                 <h3 className="text-xl font-bold font-display text-primary tracking-tight flex items-center">
                   <Star className="w-5 h-5 mr-3 text-orange-500 fill-current" /> {t.tripDetail.highlightsTitle}
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                  {trip.highlights.map((h, i) => (
+                  {(locale === 'en' ? (trip.highlightsEn?.length ? trip.highlightsEn : trip.highlights) : trip.highlights).map((h, i) => (
                     <div key={i} className="flex items-start space-x-3 group">
                       <div className="w-6 h-6 rounded-lg bg-orange-100 flex items-center justify-center flex-shrink-0 text-orange-600">
                         <Check className="w-3.5 h-3.5" />
@@ -221,8 +224,8 @@ export default function TripDetailPage({ params }) {
                         <Icon className="w-5 h-5 text-orange-500 group-hover:text-white" />
                       </div>
                       <div>
-                        <h4 className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 mb-0.5">{detail.label}</h4>
-                        <p className="text-sm font-bold text-primary">{detail.value}</p>
+                        <h4 className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 mb-0.5">{trItem(detail, 'label', locale)}</h4>
+                        <p className="text-sm font-bold text-primary">{trItem(detail, 'value', locale)}</p>
                       </div>
                     </div>
                   );
@@ -240,10 +243,10 @@ export default function TripDetailPage({ params }) {
                 <div key={idx} className="relative md:pl-16 group">
                   <div className="absolute left-0 top-1 w-12 h-12 bg-white border border-gray-200 rounded-xl flex items-center justify-center font-bold text-primary text-sm shadow-sm group-hover:bg-primary group-hover:text-white transition-all hidden md:flex z-10">{item.day}</div>
                   <div className="bg-white rounded-2xl border border-gray-100 p-6 md:p-8 hover:shadow-md transition-all">
-                    <h3 className="text-base font-bold font-display text-primary mb-2">{item.title}</h3>
+                    <h3 className="text-base font-bold font-display text-primary mb-2">{trItem(item, 'title', locale)}</h3>
                     <div 
                       className="prose prose-primary max-w-none text-gray-600 font-light prose-p:text-xs md:prose-p:sm prose-p:leading-relaxed" 
-                      dangerouslySetInnerHTML={{ __html: item.details }} 
+                      dangerouslySetInnerHTML={{ __html: trItem(item, 'details', locale) }} 
                     />
                   </div>
                 </div>
@@ -258,7 +261,7 @@ export default function TripDetailPage({ params }) {
               <div className="bg-emerald-50/30 p-6 rounded-3xl border border-emerald-100/50 space-y-4">
                 <h3 className="text-base font-bold font-display text-emerald-700 tracking-tight flex items-center"><CheckCircle className="w-4 h-4 mr-2 text-emerald-600" /> {t.tripDetail.priceIncludes}</h3>
                 <ul className="space-y-2">
-                  {trip.priceIncludes?.map((item, i) => (
+                  {(locale === 'en' ? (trip.priceIncludesEn?.length ? trip.priceIncludesEn : trip.priceIncludes) : trip.priceIncludes)?.map((item, i) => (
                     <li key={i} className="flex items-start space-x-2 text-xs font-medium text-emerald-800/80 leading-relaxed">
                       <Check className="w-3.5 h-3.5 mt-0.5 flex-shrink-0 text-emerald-600" /> <span>{item}</span>
                     </li>
@@ -268,7 +271,7 @@ export default function TripDetailPage({ params }) {
               <div className="bg-red-50/30 p-6 rounded-3xl border border-red-100/50 space-y-4">
                 <h3 className="text-base font-bold font-display text-red-700 tracking-tight flex items-center"><XCircle className="w-4 h-4 mr-2 text-red-600" /> {t.tripDetail.priceExcludes}</h3>
                 <ul className="space-y-2">
-                  {trip.priceExcludes?.map((item, i) => (
+                  {(locale === 'en' ? (trip.priceExcludesEn?.length ? trip.priceExcludesEn : trip.priceExcludes) : trip.priceExcludes)?.map((item, i) => (
                     <li key={i} className="flex items-start space-x-2 text-xs font-medium text-red-800/80 leading-relaxed">
                       <XCircle className="w-3.5 h-3.5 mt-0.5 flex-shrink-0 text-red-500" /> <span>{item}</span>
                     </li>
@@ -295,11 +298,11 @@ export default function TripDetailPage({ params }) {
             <h2 className="text-xl sm:text-2xl md:text-3xl font-bold font-display text-primary tracking-tight">{t.tripDetail.infoTitle}</h2>
             <div className="bg-white border border-gray-100 rounded-3xl overflow-hidden divide-y divide-gray-100">
               {[
-                { label: t.tripDetail.infoBestTime, value: trip.usefulInfo?.bestTime },
-                { label: t.tripDetail.infoAccommodation, value: trip.usefulInfo?.accommodation },
-                { label: t.tripDetail.infoMeals, value: trip.usefulInfo?.meals },
-                { label: t.tripDetail.infoVisa, value: trip.usefulInfo?.visaInfo },
-                { label: t.tripDetail.infoPackingList, value: trip.usefulInfo?.packingList },
+                { label: t.tripDetail.infoBestTime, value: tr(trip.usefulInfo, 'bestTime', locale) },
+                { label: t.tripDetail.infoAccommodation, value: tr(trip.usefulInfo, 'accommodation', locale) },
+                { label: t.tripDetail.infoMeals, value: tr(trip.usefulInfo, 'meals', locale) },
+                { label: t.tripDetail.infoVisa, value: tr(trip.usefulInfo, 'visaInfo', locale) },
+                { label: t.tripDetail.infoPackingList, value: tr(trip.usefulInfo, 'packingList', locale) },
               ].map((item, i) => item.value && (
                 <div key={i} className="flex items-start gap-6 px-8 py-5">
                   <span className="text-xs font-bold uppercase tracking-wider text-gray-400 min-w-[140px] pt-0.5">{item.label}</span>
@@ -322,8 +325,8 @@ export default function TripDetailPage({ params }) {
                 <p className="text-4xl font-bold font-display text-primary tracking-tight">NOK {trip.price?.toLocaleString()}</p>
               </div>
               <div className="space-y-3">
-                <Link href={`/plan-your-trip?tour=${slug}&dest=${trip.destination}`} className="block bg-orange-500 text-white py-4 rounded-xl font-bold uppercase tracking-wider text-xs shadow-sm hover:bg-orange-600 transition-all text-center">{t.tripDetail.bookNow}</Link>
-                <Link href={`/plan-your-trip?tour=${slug}&dest=${trip.destination}`} className="block border border-gray-200 py-4 rounded-xl font-bold uppercase tracking-wider text-xs hover:border-primary transition-all text-center text-primary">{t.tripDetail.talkToExpert}</Link>
+                <Link href={`/plan-your-trip?tour=${slug}&dest=${tr(trip, 'destination', locale)}`} className="block bg-orange-500 text-white py-4 rounded-xl font-bold uppercase tracking-wider text-xs shadow-sm hover:bg-orange-600 transition-all text-center">{t.tripDetail.bookNow}</Link>
+                <Link href={`/plan-your-trip?tour=${slug}&dest=${tr(trip, 'destination', locale)}`} className="block border border-gray-200 py-4 rounded-xl font-bold uppercase tracking-wider text-xs hover:border-primary transition-all text-center text-primary">{t.tripDetail.talkToExpert}</Link>
               </div>
               <div className="pt-6 border-t border-gray-100 space-y-3">
                 <div className="flex items-center justify-center space-x-2.5 text-[9px] font-bold uppercase tracking-wider text-gray-400">

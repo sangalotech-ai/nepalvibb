@@ -6,8 +6,8 @@ import RichTextEditor from '@/components/admin/RichTextEditor';
 
 export default function AdminLegalPage() {
   const [docs, setDocs] = useState({
-    betingelser: { slug: 'betingelser', title: '', content: '' },
-    personvern: { slug: 'personvern', title: '', content: '' },
+    betingelser: { slug: 'betingelser', title: '', content: '', titleEn: '', contentEn: '' },
+    personvern: { slug: 'personvern', title: '', content: '', titleEn: '', contentEn: '' },
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -22,8 +22,8 @@ export default function AdminLegalPage() {
         ]);
         const [terms, privacy] = await Promise.all([termsRes.json(), privacyRes.json()]);
         setDocs({
-          betingelser: { slug: 'betingelser', title: terms.title || 'Betingelser', content: terms.content || '' },
-          personvern: { slug: 'personvern', title: privacy.title || 'Personvern', content: privacy.content || '' },
+          betingelser: { slug: 'betingelser', title: terms.title || 'Betingelser', content: terms.content || '', titleEn: terms.titleEn || '', contentEn: terms.contentEn || '' },
+          personvern: { slug: 'personvern', title: privacy.title || 'Personvern', content: privacy.content || '', titleEn: privacy.titleEn || '', contentEn: privacy.contentEn || '' },
         });
       } catch (err) {
         console.error(err);
@@ -116,10 +116,25 @@ export default function AdminLegalPage() {
               />
             </div>
 
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">Tittel (English)</label>
+              <input
+                value={docs[slug].titleEn}
+                onChange={e => updateDoc(slug, 'titleEn', e.target.value)}
+                className="w-full bg-gray-50 border-0 rounded-xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-primary transition-all"
+              />
+            </div>
+
             <RichTextEditor
               value={docs[slug].content}
               onChange={val => updateDoc(slug, 'content', val)}
               label="Innhold"
+            />
+
+            <RichTextEditor
+              value={docs[slug].contentEn}
+              onChange={val => updateDoc(slug, 'contentEn', val)}
+              label="Innhold (English)"
             />
           </section>
         ))}

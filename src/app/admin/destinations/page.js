@@ -14,7 +14,7 @@ export default function DestinationsAdminPage() {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [isEditing, setIsEditing] = useState(null);
-  const [formData, setFormData] = useState({ name: '', slug: '', image: '', description: '' });
+  const [formData, setFormData] = useState({ name: '', slug: '', image: '', description: '', nameEn: '', descriptionEn: '' });
 
   useEffect(() => {
     fetchDestinations();
@@ -45,7 +45,7 @@ export default function DestinationsAdminPage() {
         fetchDestinations();
         setShowModal(false);
         setIsEditing(null);
-        setFormData({ name: '', slug: '', image: '', description: '' });
+        setFormData({ name: '', slug: '', image: '', description: '', nameEn: '', descriptionEn: '' });
       }
     } catch (error) {
       console.error(error);
@@ -71,7 +71,7 @@ export default function DestinationsAdminPage() {
         </div>
         <button 
           onClick={() => {
-            setFormData({ name: '', slug: '', image: '', description: '' });
+            setFormData({ name: '', slug: '', image: '', description: '', nameEn: '', descriptionEn: '' });
             setIsEditing(null);
             setShowModal(true);
           }}
@@ -149,6 +149,10 @@ export default function DestinationsAdminPage() {
                   <input required type="text" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full bg-gray-50 border-0 rounded-2xl px-5 py-3 text-sm font-bold" />
                 </div>
                 <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-gray-400">Name (English)</label>
+                  <input type="text" value={formData.nameEn} onChange={e => setFormData({...formData, nameEn: e.target.value})} className="w-full bg-gray-50 border-0 rounded-2xl px-5 py-3 text-sm font-bold" />
+                </div>
+                <div className="space-y-2">
                   <label className="text-[10px] font-black uppercase tracking-widest text-gray-400">Slug</label>
                   <input required type="text" value={formData.slug} onChange={e => setFormData({...formData, slug: e.target.value})} className="w-full bg-gray-50 border-0 rounded-2xl px-5 py-3 text-sm font-bold" />
                 </div>
@@ -161,6 +165,10 @@ export default function DestinationsAdminPage() {
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-widest text-gray-400">Description</label>
                 <textarea rows={4} value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full bg-gray-50 border-0 rounded-2xl px-5 py-3 text-sm font-medium resize-none" />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400">Description (English)</label>
+                <textarea rows={4} value={formData.descriptionEn} onChange={e => setFormData({...formData, descriptionEn: e.target.value})} className="w-full bg-gray-50 border-0 rounded-2xl px-5 py-3 text-sm font-medium resize-none" />
               </div>
               <button className="w-full bg-primary text-white py-4 rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-xl shadow-primary/20 hover:bg-emerald-900 transition-all">
                 Save Destination

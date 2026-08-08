@@ -142,11 +142,31 @@ export default function AdminHomeContentPage() {
               </div>
 
               <div className="space-y-3">
+                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Subtitle / Badge (English)</label>
+                <input 
+                  type="text" 
+                  value={content[section.id]?.subtitleEn || ''}
+                  onChange={e => updateSection(section.id, 'subtitleEn', e.target.value)}
+                  className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all"
+                />
+              </div>
+
+              <div className="space-y-3">
                 <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Main Title</label>
                 <input 
                   type="text" 
                   value={content[section.id]?.title || ''}
                   onChange={e => updateSection(section.id, 'title', e.target.value)}
+                  className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all"
+                />
+              </div>
+
+              <div className="space-y-3">
+                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Main Title (English)</label>
+                <input 
+                  type="text" 
+                  value={content[section.id]?.titleEn || ''}
+                  onChange={e => updateSection(section.id, 'titleEn', e.target.value)}
                   className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all"
                 />
               </div>
@@ -220,6 +240,15 @@ export default function AdminHomeContentPage() {
                         className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all"
                       />
                     </div>
+                    <div className="space-y-3">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Experience Label (English)</label>
+                      <input 
+                        type="text" 
+                        value={content[section.id]?.yearsOfExperienceLabelEn || ''}
+                        onChange={e => updateSection(section.id, 'yearsOfExperienceLabelEn', e.target.value)}
+                        className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all"
+                      />
+                    </div>
                   </div>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-gray-50">
@@ -232,9 +261,21 @@ export default function AdminHomeContentPage() {
                         className="w-full bg-gray-50 border-none rounded-xl px-4 py-3 text-xs font-bold focus:ring-2 focus:ring-primary"
                       />
                       <input 
+                        placeholder="Title (English)"
+                        value={content[section.id]?.feature1TitleEn || ''}
+                        onChange={e => updateSection(section.id, 'feature1TitleEn', e.target.value)}
+                        className="w-full bg-gray-50 border-none rounded-xl px-4 py-3 text-xs font-bold focus:ring-2 focus:ring-primary"
+                      />
+                      <input 
                         placeholder="Description"
                         value={content[section.id]?.feature1Desc || ''}
                         onChange={e => updateSection(section.id, 'feature1Desc', e.target.value)}
+                        className="w-full bg-gray-50 border-none rounded-xl px-4 py-3 text-xs font-medium focus:ring-2 focus:ring-primary"
+                      />
+                      <input 
+                        placeholder="Description (English)"
+                        value={content[section.id]?.feature1DescEn || ''}
+                        onChange={e => updateSection(section.id, 'feature1DescEn', e.target.value)}
                         className="w-full bg-gray-50 border-none rounded-xl px-4 py-3 text-xs font-medium focus:ring-2 focus:ring-primary"
                       />
                     </div>
@@ -247,9 +288,21 @@ export default function AdminHomeContentPage() {
                         className="w-full bg-gray-50 border-none rounded-xl px-4 py-3 text-xs font-bold focus:ring-2 focus:ring-primary"
                       />
                       <input 
+                        placeholder="Title (English)"
+                        value={content[section.id]?.feature2TitleEn || ''}
+                        onChange={e => updateSection(section.id, 'feature2TitleEn', e.target.value)}
+                        className="w-full bg-gray-50 border-none rounded-xl px-4 py-3 text-xs font-bold focus:ring-2 focus:ring-primary"
+                      />
+                      <input 
                         placeholder="Description"
                         value={content[section.id]?.feature2Desc || ''}
                         onChange={e => updateSection(section.id, 'feature2Desc', e.target.value)}
+                        className="w-full bg-gray-50 border-none rounded-xl px-4 py-3 text-xs font-medium focus:ring-2 focus:ring-primary"
+                      />
+                      <input 
+                        placeholder="Description (English)"
+                        value={content[section.id]?.feature2DescEn || ''}
+                        onChange={e => updateSection(section.id, 'feature2DescEn', e.target.value)}
                         className="w-full bg-gray-50 border-none rounded-xl px-4 py-3 text-xs font-medium focus:ring-2 focus:ring-primary"
                       />
                     </div>
@@ -269,6 +322,18 @@ export default function AdminHomeContentPage() {
                 </div>
               )}
 
+              {section.hasDescription && (
+                <div className="space-y-3">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Description Text (English)</label>
+                  <textarea 
+                    rows={4}
+                    value={content[section.id]?.descriptionEn || ''}
+                    onChange={e => updateSection(section.id, 'descriptionEn', e.target.value)}
+                    className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all resize-none"
+                  />
+                </div>
+              )}
+
               {section.hasButton && (
                 <div className="space-y-3">
                   <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Button Text</label>
@@ -276,6 +341,18 @@ export default function AdminHomeContentPage() {
                     type="text" 
                     value={content[section.id]?.buttonText || ''}
                     onChange={e => updateSection(section.id, 'buttonText', e.target.value)}
+                    className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all"
+                  />
+                </div>
+              )}
+
+              {section.hasButton && (
+                <div className="space-y-3">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Button Text (English)</label>
+                  <input 
+                    type="text" 
+                    value={content[section.id]?.buttonTextEn || ''}
+                    onChange={e => updateSection(section.id, 'buttonTextEn', e.target.value)}
                     className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all"
                   />
                 </div>
@@ -293,11 +370,29 @@ export default function AdminHomeContentPage() {
                     />
                   </div>
                   <div className="space-y-3">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Long Description (English)</label>
+                    <textarea 
+                      rows={5}
+                      value={content[section.id]?.longDescriptionEn || ''}
+                      onChange={e => updateSection(section.id, 'longDescriptionEn', e.target.value)}
+                      className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all resize-none"
+                    />
+                  </div>
+                  <div className="space-y-3">
                     <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Mission Statement</label>
                     <input 
                       type="text" 
                       value={content[section.id]?.mission || ''}
                       onChange={e => updateSection(section.id, 'mission', e.target.value)}
+                      className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all"
+                    />
+                  </div>
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Mission Statement (English)</label>
+                    <input 
+                      type="text" 
+                      value={content[section.id]?.missionEn || ''}
+                      onChange={e => updateSection(section.id, 'missionEn', e.target.value)}
                       className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all"
                     />
                   </div>
@@ -321,6 +416,16 @@ export default function AdminHomeContentPage() {
                     />
                   </div>
                   <div className="space-y-3">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Stats (English) (JSON array)</label>
+                    <textarea 
+                      rows={4}
+                      value={content[section.id]?.statsEn || ''}
+                      onChange={e => updateSection(section.id, 'statsEn', e.target.value)}
+                      className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-mono text-xs focus:ring-2 focus:ring-primary transition-all resize-none"
+                      placeholder='[{"number":"2000+","label":"Dogs sterilized"},...]'
+                    />
+                  </div>
+                  <div className="space-y-3">
                     <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Gallery Images (JSON array of URLs)</label>
                     <textarea 
                       rows={3}
@@ -329,6 +434,306 @@ export default function AdminHomeContentPage() {
                       className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-mono text-xs focus:ring-2 focus:ring-primary transition-all resize-none"
                       placeholder='["url1","url2",...]'
                     />
+                  </div>
+
+                  <div className="pt-4 border-t border-gray-50">
+                    <h4 className="text-[10px] font-black uppercase tracking-widest text-primary mb-4">Hero Section</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">CTA 1 Text</label>
+                        <input type="text" value={content[section.id]?.heroCta1Text || ''} onChange={e => updateSection(section.id, 'heroCta1Text', e.target.value)} className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all" />
+                      </div>
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">CTA 1 Text (English)</label>
+                        <input type="text" value={content[section.id]?.heroCta1TextEn || ''} onChange={e => updateSection(section.id, 'heroCta1TextEn', e.target.value)} className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all" />
+                      </div>
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">CTA 1 Link</label>
+                        <input type="text" value={content[section.id]?.heroCta1Link || ''} onChange={e => updateSection(section.id, 'heroCta1Link', e.target.value)} className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all" />
+                      </div>
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">CTA 2 Text</label>
+                        <input type="text" value={content[section.id]?.heroCta2Text || ''} onChange={e => updateSection(section.id, 'heroCta2Text', e.target.value)} className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all" />
+                      </div>
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">CTA 2 Text (English)</label>
+                        <input type="text" value={content[section.id]?.heroCta2TextEn || ''} onChange={e => updateSection(section.id, 'heroCta2TextEn', e.target.value)} className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all" />
+                      </div>
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">CTA 2 Link</label>
+                        <input type="text" value={content[section.id]?.heroCta2Link || ''} onChange={e => updateSection(section.id, 'heroCta2Link', e.target.value)} className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-4 border-t border-gray-50">
+                    <h4 className="text-[10px] font-black uppercase tracking-widest text-primary mb-4">Misjon Strip</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Label</label>
+                        <input type="text" value={content[section.id]?.missionLabel || ''} onChange={e => updateSection(section.id, 'missionLabel', e.target.value)} className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all" />
+                      </div>
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Label (English)</label>
+                        <input type="text" value={content[section.id]?.missionLabelEn || ''} onChange={e => updateSection(section.id, 'missionLabelEn', e.target.value)} className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all" />
+                      </div>
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">CTA Button Text</label>
+                        <input type="text" value={content[section.id]?.missionCtaText || ''} onChange={e => updateSection(section.id, 'missionCtaText', e.target.value)} className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all" />
+                      </div>
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">CTA Button Text (English)</label>
+                        <input type="text" value={content[section.id]?.missionCtaTextEn || ''} onChange={e => updateSection(section.id, 'missionCtaTextEn', e.target.value)} className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all" />
+                      </div>
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">CTA Button Link</label>
+                        <input type="text" value={content[section.id]?.missionCtaLink || ''} onChange={e => updateSection(section.id, 'missionCtaLink', e.target.value)} className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-4 border-t border-gray-50">
+                    <h4 className="text-[10px] font-black uppercase tracking-widest text-primary mb-4">Historie / Story</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Section Label</label>
+                        <input type="text" value={content[section.id]?.storyLabel || ''} onChange={e => updateSection(section.id, 'storyLabel', e.target.value)} className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all" />
+                      </div>
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Section Label (English)</label>
+                        <input type="text" value={content[section.id]?.storyLabelEn || ''} onChange={e => updateSection(section.id, 'storyLabelEn', e.target.value)} className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all" />
+                      </div>
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Section Title</label>
+                        <input type="text" value={content[section.id]?.storyTitle || ''} onChange={e => updateSection(section.id, 'storyTitle', e.target.value)} className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all" />
+                      </div>
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Section Title (English)</label>
+                        <input type="text" value={content[section.id]?.storyTitleEn || ''} onChange={e => updateSection(section.id, 'storyTitleEn', e.target.value)} className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all" />
+                      </div>
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Badge Text (Siden XXXX)</label>
+                        <input type="text" value={content[section.id]?.sinceText || ''} onChange={e => updateSection(section.id, 'sinceText', e.target.value)} className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all" />
+                      </div>
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Badge Text (English)</label>
+                        <input type="text" value={content[section.id]?.sinceTextEn || ''} onChange={e => updateSection(section.id, 'sinceTextEn', e.target.value)} className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all" />
+                      </div>
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Badge Description</label>
+                        <input type="text" value={content[section.id]?.sinceDesc || ''} onChange={e => updateSection(section.id, 'sinceDesc', e.target.value)} className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all" />
+                      </div>
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Badge Description (English)</label>
+                        <input type="text" value={content[section.id]?.sinceDescEn || ''} onChange={e => updateSection(section.id, 'sinceDescEn', e.target.value)} className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all" />
+                      </div>
+                    </div>
+                    <div className="space-y-3 mt-6">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Feature Pills (JSON array of labels)</label>
+                      <textarea
+                        rows={2}
+                        value={content[section.id]?.featurePills || ''}
+                        onChange={e => updateSection(section.id, 'featurePills', e.target.value)}
+                        className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-mono text-xs focus:ring-2 focus:ring-primary transition-all resize-none"
+                        placeholder='["Gatehunder reddet","Lokalsamfunn","Bærekraft"]'
+                      />
+                    </div>
+                    <div className="space-y-3 mt-6">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Feature Pills (English) (JSON array of labels)</label>
+                      <textarea
+                        rows={2}
+                        value={content[section.id]?.featurePillsEn || ''}
+                        onChange={e => updateSection(section.id, 'featurePillsEn', e.target.value)}
+                        className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-mono text-xs focus:ring-2 focus:ring-primary transition-all resize-none"
+                        placeholder='["Dogs saved","Local communities","Sustainability"]'
+                      />
+                    </div>
+                  </div>
+
+                  <div className="pt-4 border-t border-gray-50">
+                    <h4 className="text-[10px] font-black uppercase tracking-widest text-primary mb-4">Påvirkning / Impact</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Section Label</label>
+                        <input type="text" value={content[section.id]?.impactLabel || ''} onChange={e => updateSection(section.id, 'impactLabel', e.target.value)} className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all" />
+                      </div>
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Section Label (English)</label>
+                        <input type="text" value={content[section.id]?.impactLabelEn || ''} onChange={e => updateSection(section.id, 'impactLabelEn', e.target.value)} className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all" />
+                      </div>
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Section Title</label>
+                        <input type="text" value={content[section.id]?.impactTitle || ''} onChange={e => updateSection(section.id, 'impactTitle', e.target.value)} className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all" />
+                      </div>
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Section Title (English)</label>
+                        <input type="text" value={content[section.id]?.impactTitleEn || ''} onChange={e => updateSection(section.id, 'impactTitleEn', e.target.value)} className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-4 border-t border-gray-50">
+                    <h4 className="text-[10px] font-black uppercase tracking-widest text-primary mb-4">Slik Fungerer Det / Steps</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Section Label</label>
+                        <input type="text" value={content[section.id]?.howLabel || ''} onChange={e => updateSection(section.id, 'howLabel', e.target.value)} className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all" />
+                      </div>
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Section Label (English)</label>
+                        <input type="text" value={content[section.id]?.howLabelEn || ''} onChange={e => updateSection(section.id, 'howLabelEn', e.target.value)} className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all" />
+                      </div>
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Section Title</label>
+                        <input type="text" value={content[section.id]?.howTitle || ''} onChange={e => updateSection(section.id, 'howTitle', e.target.value)} className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all" />
+                      </div>
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Section Title (English)</label>
+                        <input type="text" value={content[section.id]?.howTitleEn || ''} onChange={e => updateSection(section.id, 'howTitleEn', e.target.value)} className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all" />
+                      </div>
+                    </div>
+                    <div className="space-y-3 mt-6">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Description</label>
+                      <textarea
+                        rows={2}
+                        value={content[section.id]?.howDescription || ''}
+                        onChange={e => updateSection(section.id, 'howDescription', e.target.value)}
+                        className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all resize-none"
+                      />
+                    </div>
+                    <div className="space-y-3 mt-6">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Description (English)</label>
+                      <textarea
+                        rows={2}
+                        value={content[section.id]?.howDescriptionEn || ''}
+                        onChange={e => updateSection(section.id, 'howDescriptionEn', e.target.value)}
+                        className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all resize-none"
+                      />
+                    </div>
+                    <div className="space-y-3 mt-6">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Steps (JSON array of {title, desc})</label>
+                      <textarea
+                        rows={4}
+                        value={content[section.id]?.steps || ''}
+                        onChange={e => updateSection(section.id, 'steps', e.target.value)}
+                        className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-mono text-xs focus:ring-2 focus:ring-primary transition-all resize-none"
+                        placeholder='[{"title":"Book Din Reise","desc":"..."}]'
+                      />
+                    </div>
+                    <div className="space-y-3 mt-6">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Steps (English) (JSON array of {title, desc})</label>
+                      <textarea
+                        rows={4}
+                        value={content[section.id]?.stepsEn || ''}
+                        onChange={e => updateSection(section.id, 'stepsEn', e.target.value)}
+                        className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-mono text-xs focus:ring-2 focus:ring-primary transition-all resize-none"
+                        placeholder='[{"title":"Book Your Trip","desc":"..."}]'
+                      />
+                    </div>
+                  </div>
+
+                  <div className="pt-4 border-t border-gray-50">
+                    <h4 className="text-[10px] font-black uppercase tracking-widest text-primary mb-4">Bildegalleri / Gallery</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Section Label</label>
+                        <input type="text" value={content[section.id]?.galleryLabel || ''} onChange={e => updateSection(section.id, 'galleryLabel', e.target.value)} className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all" />
+                      </div>
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Section Label (English)</label>
+                        <input type="text" value={content[section.id]?.galleryLabelEn || ''} onChange={e => updateSection(section.id, 'galleryLabelEn', e.target.value)} className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all" />
+                      </div>
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Section Title</label>
+                        <input type="text" value={content[section.id]?.galleryTitle || ''} onChange={e => updateSection(section.id, 'galleryTitle', e.target.value)} className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all" />
+                      </div>
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Section Title (English)</label>
+                        <input type="text" value={content[section.id]?.galleryTitleEn || ''} onChange={e => updateSection(section.id, 'galleryTitleEn', e.target.value)} className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all" />
+                      </div>
+                    </div>
+                    <div className="space-y-3 mt-6">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Gallery Images (JSON array of URLs) — separate from story images</label>
+                      <textarea
+                        rows={3}
+                        value={content[section.id]?.galleryImages || ''}
+                        onChange={e => updateSection(section.id, 'galleryImages', e.target.value)}
+                        className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-mono text-xs focus:ring-2 focus:ring-primary transition-all resize-none"
+                        placeholder='["url1","url2",...]'
+                      />
+                    </div>
+                  </div>
+
+                  <div className="pt-4 border-t border-gray-50">
+                    <h4 className="text-[10px] font-black uppercase tracking-widest text-primary mb-4">CTA Section</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Badge Text</label>
+                        <input type="text" value={content[section.id]?.ctaBadge || ''} onChange={e => updateSection(section.id, 'ctaBadge', e.target.value)} className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all" />
+                      </div>
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Badge Text (English)</label>
+                        <input type="text" value={content[section.id]?.ctaBadgeEn || ''} onChange={e => updateSection(section.id, 'ctaBadgeEn', e.target.value)} className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all" />
+                      </div>
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Title (use {`{highlight}`} placeholder)</label>
+                        <input type="text" value={content[section.id]?.ctaTitle || ''} onChange={e => updateSection(section.id, 'ctaTitle', e.target.value)} className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all" />
+                      </div>
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Title (English) (use {`{highlight}`} placeholder)</label>
+                        <input type="text" value={content[section.id]?.ctaTitleEn || ''} onChange={e => updateSection(section.id, 'ctaTitleEn', e.target.value)} className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all" />
+                      </div>
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Highlight Word</label>
+                        <input type="text" value={content[section.id]?.ctaTitleHighlight || ''} onChange={e => updateSection(section.id, 'ctaTitleHighlight', e.target.value)} className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all" />
+                      </div>
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Highlight Word (English)</label>
+                        <input type="text" value={content[section.id]?.ctaTitleHighlightEn || ''} onChange={e => updateSection(section.id, 'ctaTitleHighlightEn', e.target.value)} className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all" />
+                      </div>
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Primary Button Text</label>
+                        <input type="text" value={content[section.id]?.ctaButtonText || ''} onChange={e => updateSection(section.id, 'ctaButtonText', e.target.value)} className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all" />
+                      </div>
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Primary Button Text (English)</label>
+                        <input type="text" value={content[section.id]?.ctaButtonTextEn || ''} onChange={e => updateSection(section.id, 'ctaButtonTextEn', e.target.value)} className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all" />
+                      </div>
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Primary Button Link</label>
+                        <input type="text" value={content[section.id]?.ctaButtonLink || ''} onChange={e => updateSection(section.id, 'ctaButtonLink', e.target.value)} className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all" />
+                      </div>
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Secondary Button Text</label>
+                        <input type="text" value={content[section.id]?.ctaSecondaryText || ''} onChange={e => updateSection(section.id, 'ctaSecondaryText', e.target.value)} className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all" />
+                      </div>
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Secondary Button Text (English)</label>
+                        <input type="text" value={content[section.id]?.ctaSecondaryTextEn || ''} onChange={e => updateSection(section.id, 'ctaSecondaryTextEn', e.target.value)} className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all" />
+                      </div>
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Secondary Button Link</label>
+                        <input type="text" value={content[section.id]?.ctaSecondaryLink || ''} onChange={e => updateSection(section.id, 'ctaSecondaryLink', e.target.value)} className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all" />
+                      </div>
+                    </div>
+                    <div className="space-y-3 mt-6">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Description</label>
+                      <textarea
+                        rows={3}
+                        value={content[section.id]?.ctaDescription || ''}
+                        onChange={e => updateSection(section.id, 'ctaDescription', e.target.value)}
+                        className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all resize-none"
+                      />
+                    </div>
+                    <div className="space-y-3 mt-6">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Description (English)</label>
+                      <textarea
+                        rows={3}
+                        value={content[section.id]?.ctaDescriptionEn || ''}
+                        onChange={e => updateSection(section.id, 'ctaDescriptionEn', e.target.value)}
+                        className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all resize-none"
+                      />
+                    </div>
                   </div>
                 </>
               )}

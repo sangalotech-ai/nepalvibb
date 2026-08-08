@@ -16,13 +16,13 @@ export async function POST(request) {
   await dbConnect();
   try {
     const body = await request.json();
-    const { slug, title, content } = body;
+    const { slug, title, content, titleEn, contentEn } = body;
     if (!slug || !title) {
       return NextResponse.json({ error: 'slug and title are required' }, { status: 400 });
     }
     const doc = await LegalContent.findOneAndUpdate(
       { slug },
-      { slug, title, content },
+      { slug, title, content, titleEn, contentEn },
       { new: true, upsert: true }
     );
     return NextResponse.json(doc);

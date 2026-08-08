@@ -24,6 +24,10 @@ export default function AdminBlogsPage() {
     author: 'Nepalvibb Editor',
     category: 'Travel Tips',
     isFeatured: false,
+    titleEn: '',
+    contentEn: '',
+    authorEn: '',
+    categoryEn: '',
   });
 
   const fetchBlogs = async () => {
@@ -95,7 +99,8 @@ export default function AdminBlogsPage() {
             setIsEditing('new');
             setFormData({
               title: '', slug: '', image: '', content: '',
-              author: 'Nepalvibb Editor', category: 'Travel Tips', isFeatured: false
+              author: 'Nepalvibb Editor', category: 'Travel Tips', isFeatured: false,
+              titleEn: '', contentEn: '', authorEn: '', categoryEn: ''
             });
           }}
           className="flex items-center space-x-2 bg-primary text-white px-8 py-4 rounded-2xl text-xs font-black uppercase tracking-widest shadow-xl shadow-primary/20 hover:bg-orange-500 transition-all"
@@ -141,6 +146,15 @@ export default function AdminBlogsPage() {
                     required
                   />
                 </div>
+                <div className="space-y-4">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Title (English)</label>
+                  <input 
+                    type="text" 
+                    value={formData.titleEn}
+                    onChange={e => setFormData({...formData, titleEn: e.target.value})}
+                    className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all"
+                  />
+                </div>
                 <div className="grid grid-cols-2 gap-6">
                   <div className="space-y-4">
                     <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Category</label>
@@ -162,6 +176,24 @@ export default function AdminBlogsPage() {
                       required
                     />
                   </div>
+                  <div className="space-y-4">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Category (English)</label>
+                    <input 
+                      type="text" 
+                      value={formData.categoryEn}
+                      onChange={e => setFormData({...formData, categoryEn: e.target.value})}
+                      className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all"
+                    />
+                  </div>
+                  <div className="space-y-4">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Author (English)</label>
+                    <input 
+                      type="text" 
+                      value={formData.authorEn}
+                      onChange={e => setFormData({...formData, authorEn: e.target.value})}
+                      className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -171,6 +203,14 @@ export default function AdminBlogsPage() {
                 label="Article Content"
                 value={formData.content}
                 onChange={val => setFormData({...formData, content: val})}
+              />
+            </div>
+
+            <div className="space-y-4">
+              <RichTextEditor 
+                label="Content (English)"
+                value={formData.contentEn}
+                onChange={val => setFormData({...formData, contentEn: val})}
               />
             </div>
 

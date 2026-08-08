@@ -5,9 +5,10 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
 import { useLocale } from '@/components/providers/useLocale';
+import { tr } from '@/lib/tr';
 
 export default function DestinationCards({ content }) {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const [destinations, setDestinations] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -39,7 +40,7 @@ export default function DestinationCards({ content }) {
               viewport={{ once: true }}
               className="text-orange-500 font-bold uppercase tracking-wider text-xs mb-3"
             >
-              {content?.subtitle || t.destinations.subtitle}
+              {tr(content, 'subtitle', locale) || t.destinations.subtitle}
             </motion.h5>
             <motion.h2 
               initial={{ opacity: 0, y: 30 }}
@@ -47,7 +48,7 @@ export default function DestinationCards({ content }) {
               viewport={{ once: true }}
               className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold font-display text-primary tracking-tight leading-tight"
             >
-              {content?.title || t.destinations.title}
+              {tr(content, 'title', locale) || t.destinations.title}
             </motion.h2>
           </div>
           <motion.div
@@ -87,7 +88,7 @@ export default function DestinationCards({ content }) {
                       {t.destinations.travel}
                     </span>
                     <h3 className="text-2xl sm:text-3xl font-bold font-display text-white tracking-tight mb-4">
-                      {destination.name}
+                      {tr(destination, 'name', locale)}
                     </h3>
                   </div>
                   

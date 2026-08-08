@@ -125,8 +125,16 @@ export default function AdminAboutContentPage() {
               <input value={content.hero.title} onChange={e => updateNested('hero', 'title', e.target.value)} className="w-full bg-gray-50 border-0 rounded-xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-primary transition-all" />
             </div>
             <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">Main Title (English)</label>
+              <input value={content.hero.titleEn || ''} onChange={e => updateNested('hero', 'titleEn', e.target.value)} className="w-full bg-gray-50 border-0 rounded-xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-primary transition-all" />
+            </div>
+            <div className="space-y-2">
               <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">Subtitle / Badge</label>
               <input value={content.hero.subtitle} onChange={e => updateNested('hero', 'subtitle', e.target.value)} className="w-full bg-gray-50 border-0 rounded-xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-primary transition-all" />
+            </div>
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">Subtitle / Badge (English)</label>
+              <input value={content.hero.subtitleEn || ''} onChange={e => updateNested('hero', 'subtitleEn', e.target.value)} className="w-full bg-gray-50 border-0 rounded-xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-primary transition-all" />
             </div>
             <div className="space-y-4">
               <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">Hero Image</label>
@@ -159,12 +167,24 @@ export default function AdminAboutContentPage() {
               <input value={content.mission.title} onChange={e => updateNested('mission', 'title', e.target.value)} className="w-full bg-gray-50 border-0 rounded-xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-primary transition-all" />
             </div>
             <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">Mission Title (English)</label>
+              <input value={content.mission.titleEn || ''} onChange={e => updateNested('mission', 'titleEn', e.target.value)} className="w-full bg-gray-50 border-0 rounded-xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-primary transition-all" />
+            </div>
+            <div className="space-y-2">
               <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">Description</label>
               <textarea value={content.mission.description} onChange={e => updateNested('mission', 'description', e.target.value)} rows={4} className="w-full bg-gray-50 border-0 rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all resize-none" />
             </div>
             <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">Description (English)</label>
+              <textarea value={content.mission.descriptionEn || ''} onChange={e => updateNested('mission', 'descriptionEn', e.target.value)} rows={4} className="w-full bg-gray-50 border-0 rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all resize-none" />
+            </div>
+            <div className="space-y-2">
               <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2 flex items-center"><Quote className="w-3 h-3 mr-2" /> Inspirerende Sitat</label>
               <input value={content.mission.quote} onChange={e => updateNested('mission', 'quote', e.target.value)} className="w-full bg-gray-50 border-0 rounded-xl px-6 py-4 text-sm font-medium italic italic" />
+            </div>
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2 flex items-center"><Quote className="w-3 h-3 mr-2" /> Inspirerende Sitat (English)</label>
+              <input value={content.mission.quoteEn || ''} onChange={e => updateNested('mission', 'quoteEn', e.target.value)} className="w-full bg-gray-50 border-0 rounded-xl px-6 py-4 text-sm font-medium italic italic" />
             </div>
             <div className="space-y-4">
               <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">Mission Side Image</label>
@@ -216,6 +236,104 @@ export default function AdminAboutContentPage() {
                       updateNested('mission', 'stats', newStats);
                     }} 
                     className="w-full bg-white border-0 rounded-xl px-4 py-3 text-xs font-bold uppercase tracking-widest"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-gray-400">Etikett (English)</label>
+                  <input 
+                    value={stat.labelEn || ''} 
+                    onChange={e => {
+                      const newStats = [...content.mission.stats];
+                      newStats[i].labelEn = e.target.value;
+                      updateNested('mission', 'stats', newStats);
+                    }} 
+                    className="w-full bg-white border-0 rounded-xl px-4 py-3 text-xs font-bold uppercase tracking-widest"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Values Section */}
+        <section className="bg-white p-10 rounded-[3rem] border border-gray-100 shadow-sm space-y-8 lg:col-span-2">
+          <div className="flex items-center space-x-4">
+            <div className="p-3 bg-purple-50 text-purple-500 rounded-2xl">
+              <Compass className="w-6 h-6" />
+            </div>
+            <h3 className="text-xl font-black text-primary uppercase tracking-tight italic">Våre Kjerneverdier (Values)</h3>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">Values Title</label>
+              <input value={content.valuesTitle || ''} onChange={e => setContent(prev => ({ ...prev, valuesTitle: e.target.value }))} className="w-full bg-gray-50 border-0 rounded-xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-primary transition-all" />
+            </div>
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">Values Title (English)</label>
+              <input value={content.valuesTitleEn || ''} onChange={e => setContent(prev => ({ ...prev, valuesTitleEn: e.target.value }))} className="w-full bg-gray-50 border-0 rounded-xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-primary transition-all" />
+            </div>
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">Values Subtitle</label>
+              <textarea value={content.valuesSubtitle || ''} onChange={e => setContent(prev => ({ ...prev, valuesSubtitle: e.target.value }))} rows={3} className="w-full bg-gray-50 border-0 rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all resize-none" />
+            </div>
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">Values Subtitle (English)</label>
+              <textarea value={content.valuesSubtitleEn || ''} onChange={e => setContent(prev => ({ ...prev, valuesSubtitleEn: e.target.value }))} rows={3} className="w-full bg-gray-50 border-0 rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all resize-none" />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {(content.values || []).map((value, i) => (
+              <div key={i} className="p-8 bg-gray-50 rounded-[2.5rem] border border-gray-100 space-y-4">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-gray-400">Value Title</label>
+                  <input
+                    value={value.title}
+                    onChange={e => {
+                      const newValues = [...content.values];
+                      newValues[i].title = e.target.value;
+                      setContent(prev => ({ ...prev, values: newValues }));
+                    }}
+                    className="w-full bg-white border-0 rounded-xl px-4 py-3 text-sm font-bold"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-gray-400">Value Title (English)</label>
+                  <input
+                    value={value.titleEn || ''}
+                    onChange={e => {
+                      const newValues = [...content.values];
+                      newValues[i].titleEn = e.target.value;
+                      setContent(prev => ({ ...prev, values: newValues }));
+                    }}
+                    className="w-full bg-white border-0 rounded-xl px-4 py-3 text-sm font-bold"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-gray-400">Value Description</label>
+                  <textarea
+                    value={value.desc}
+                    onChange={e => {
+                      const newValues = [...content.values];
+                      newValues[i].desc = e.target.value;
+                      setContent(prev => ({ ...prev, values: newValues }));
+                    }}
+                    rows={3}
+                    className="w-full bg-white border-0 rounded-xl px-4 py-3 text-sm font-medium resize-none"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-gray-400">Value Description (English)</label>
+                  <textarea
+                    value={value.descEn || ''}
+                    onChange={e => {
+                      const newValues = [...content.values];
+                      newValues[i].descEn = e.target.value;
+                      setContent(prev => ({ ...prev, values: newValues }));
+                    }}
+                    rows={3}
+                    className="w-full bg-white border-0 rounded-xl px-4 py-3 text-sm font-medium resize-none"
                   />
                 </div>
               </div>

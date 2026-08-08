@@ -13,6 +13,7 @@ import {
 import Link from 'next/link';
 import { signIn } from 'next-auth/react';
 import { cn } from '@/lib/utils';
+import { tr } from '@/lib/tr';
 import { useLocale } from '@/components/providers/useLocale';
 
 const IconMap = {
@@ -40,7 +41,7 @@ function DateField({ label, value, min, onChange }) {
 }
 
 function PlanYourTripContent() {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const { data: session } = useSession();
   const searchParams = useSearchParams();
   const tourParam = searchParams.get('tour') || searchParams.get('slug');
@@ -371,7 +372,7 @@ function PlanYourTripContent() {
                               <div className="relative group">
                                 <select value={responses['destination'] || ''} onChange={(e) => setResponses({ ...responses, destination: e.target.value, tour: "" })} className="w-full bg-white border-2 border-gray-100 rounded-[2rem] px-8 py-5 text-sm font-bold text-gray-900 focus:border-primary appearance-none pr-12 relative z-10 cursor-pointer shadow-sm transition-all">
                                   <option value="">{t.planTrip.selectDestinationPlaceholder}</option>
-                                  {destinations.map(d => <option key={d._id} value={d.slug}>{d.name}</option>)}
+                                  {destinations.map(d => <option key={d._id} value={d.slug}>{tr(d, 'name', locale)}</option>)}
                                 </select>
                                 <ChevronDown className="absolute right-6 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 z-0 pointer-events-none group-hover:text-primary transition-colors" />
                               </div>
@@ -394,7 +395,7 @@ function PlanYourTripContent() {
                                              tr.destination?.toLowerCase() === responses["destination"]?.toLowerCase() || 
                                              tr.destination?.toLowerCase() === selectedName?.toLowerCase(); 
                                     })
-                                    .map(tr => <option key={tr._id} value={tr.slug}>{tr.title}</option>)
+                                    .map(tour => <option key={tour._id} value={tour.slug}>{tr(tour, 'title', locale)}</option>)
                                   }
                                 </select>
                                 <ChevronDown className="absolute right-6 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 z-0 pointer-events-none group-hover:text-primary transition-colors" />

@@ -5,9 +5,10 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Calendar, Tag, ArrowRight } from 'lucide-react';
 import { useLocale } from '@/components/providers/useLocale';
+import { tr } from '@/lib/tr';
 
 export default function LatestBlogs() {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -58,14 +59,14 @@ export default function LatestBlogs() {
             <div className="overflow-hidden rounded-[2.5rem] mb-8 shadow-2xl h-80 relative border-4 border-white group-hover:border-orange-500/20 transition-all">
               <img 
                 src={blog.image} 
-                alt={blog.title} 
+                alt={tr(blog, 'title', locale)} 
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" 
                 loading="lazy"
               />
               <div className="absolute inset-0 bg-primary/20 group-hover:bg-transparent transition-all duration-500"></div>
               <div className="absolute top-6 left-6">
                 <span className="bg-white/90 backdrop-blur-md px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest text-primary flex items-center">
-                  <Tag className="w-3 h-3 mr-1.5 text-orange-500" /> {blog.category}
+                  <Tag className="w-3 h-3 mr-1.5 text-orange-500" /> {tr(blog, 'category', locale)}
                 </span>
               </div>
             </div>
@@ -77,7 +78,7 @@ export default function LatestBlogs() {
                 </span>
               </div>
               <h3 className="text-2xl font-black text-primary uppercase leading-[1.1] tracking-tighter group-hover:text-orange-500 transition-colors">
-                {blog.title}
+                {tr(blog, 'title', locale)}
               </h3>
               <div className="flex items-center space-x-2 text-orange-500 text-[10px] font-black uppercase tracking-widest">
                 <span>{t.common.lesMer}</span>

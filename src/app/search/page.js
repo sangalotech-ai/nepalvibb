@@ -9,10 +9,11 @@ import {
   Compass, Calendar, X
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { tr } from '@/lib/tr';
 import { useLocale } from '@/components/providers/useLocale';
 
 function SearchContent() {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const searchParams = useSearchParams();
   const [tours, setTours] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -97,9 +98,9 @@ function SearchContent() {
               {tours.map((tour) => (
                 <div key={tour._id} className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-500 group border border-gray-100 flex flex-col">
                   <div className="relative h-72 overflow-hidden">
-                    <img src={tour.image} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" alt={tour.title} loading="lazy" />
+                    <img src={tour.image} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" alt={tr(tour, 'title', locale)} loading="lazy" />
                     <div className="absolute top-6 left-6 bg-primary/90 backdrop-blur-md text-white text-[9px] font-bold uppercase px-4 py-1.5 rounded-full tracking-wider">
-                      {tour.difficulty}
+                      {tr(tour, 'difficulty', locale)}
                     </div>
                     <div className="absolute bottom-6 right-6 bg-orange-500 text-white font-bold px-4 py-3 rounded-2xl shadow-lg">
                       <p className="text-[9px] font-medium text-orange-200 uppercase tracking-wider mb-0.5">{t.common.fra}</p>
@@ -108,17 +109,17 @@ function SearchContent() {
                   </div>
                   <div className="p-8 flex-1 flex flex-col">
                     <h3 className="text-lg sm:text-xl font-bold font-display text-primary mb-3 tracking-tight line-clamp-2 leading-snug group-hover:text-orange-500 transition-colors">
-                      {tour.title}
+                      {tr(tour, 'title', locale)}
                     </h3>
                     <div
                       className="text-gray-500 font-light mb-8 line-clamp-2 leading-relaxed text-sm [&_p]:m-0 [&_p]:inline"
-                      dangerouslySetInnerHTML={{ __html: tour.summary }}
+                      dangerouslySetInnerHTML={{ __html: tr(tour, 'summary', locale) }}
                     />
                     <div className="mt-auto pt-6 border-t border-gray-50 flex items-center justify-between">
                       <div className="flex items-center space-x-6">
                         <div className="flex items-center space-x-1.5 text-[10px] font-bold uppercase tracking-wider text-gray-400">
                           <Clock className="w-4 h-4 text-orange-500" />
-                          <span>{tour.duration}</span>
+                          <span>{tr(tour, 'duration', locale)}</span>
                         </div>
                       </div>
                       <Link href={`/trips/${tour.slug}`} className="text-[10px] font-bold uppercase tracking-wider text-primary flex items-center group-hover:text-orange-500 transition-all">

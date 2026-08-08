@@ -6,6 +6,7 @@ const DestinationSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
+  nameEn: { type: String },
   slug: {
     type: String,
     required: true,
@@ -15,6 +16,7 @@ const DestinationSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  descriptionEn: { type: String },
   image: {
     type: String,
     required: true,

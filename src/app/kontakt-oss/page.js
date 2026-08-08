@@ -7,9 +7,10 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { useLocale } from '@/components/providers/useLocale';
 import { cn } from '@/lib/utils';
+import { tr } from '@/lib/tr';
 
 export default function ContactPage() {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const [content, setContent] = useState(null);
   const [settings, setSettings] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -56,13 +57,13 @@ export default function ContactPage() {
             className="space-y-4"
           >
             <h5 className="text-orange-500 font-bold uppercase tracking-wider text-xs">
-              {content?.hero?.subtitle || t.contact.heroSubtitle}
+              {tr(content?.hero, 'subtitle', locale) || t.contact.heroSubtitle}
             </h5>
             <h1 className="text-4xl md:text-7xl font-bold font-display text-white tracking-tight leading-tight">
-              {content?.hero?.title || t.contact.heroTitle}
+              {tr(content?.hero, 'title', locale) || t.contact.heroTitle}
             </h1>
             <p className="text-emerald-100/80 max-w-2xl mx-auto text-base sm:text-lg font-light leading-relaxed">
-              {content?.hero?.description || t.contact.heroDescription}
+              {tr(content?.hero, 'description', locale) || t.contact.heroDescription}
             </p>
           </motion.div>
         </div>
@@ -76,10 +77,10 @@ export default function ContactPage() {
           <div className="lg:col-span-7 space-y-10">
             <div className="space-y-3">
               <h2 className="text-2xl sm:text-3xl font-bold font-display text-primary tracking-tight">
-                {content?.form?.title || t.contact.formTitle}
+                {tr(content?.form, 'title', locale) || t.contact.formTitle}
               </h2>
               <p className="text-gray-500 font-light text-sm">
-                {content?.form?.subtitle || t.contact.formSubtitle}
+                {tr(content?.form, 'subtitle', locale) || t.contact.formSubtitle}
               </p>
             </div>
  

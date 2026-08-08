@@ -33,9 +33,11 @@ export default function EditTourPage({ params }) {
         ...data,
         days: parseInt(data.duration) || 7,
         inclusions: data.priceIncludes || [],
+        inclusionsEn: data.priceIncludesEn || [],
         exclusions: data.priceExcludes || [],
+        exclusionsEn: data.priceExcludesEn || [],
         briefItinerary: data.itinerary?.map(it => ({ day: it.day, highlight: it.title, overnight: '' })) || [],
-        detailedItinerary: data.itinerary?.map(it => ({ day: it.day, title: it.title, desc: it.details, image: it.image || '' })) || []
+        detailedItinerary: data.itinerary?.map(it => ({ day: it.day, title: it.title, titleEn: it.titleEn, desc: it.details, descEn: it.detailsEn, image: it.image || '' })) || []
       };
       
       setFormData(loadedData);
@@ -90,11 +92,15 @@ export default function EditTourPage({ params }) {
         ...formData,
         duration: `${formData.days} Dager`, // duration is required
         priceIncludes: formData.inclusions.filter(Boolean),
+        priceIncludesEn: formData.inclusionsEn?.filter(Boolean),
         priceExcludes: formData.exclusions.filter(Boolean),
+        priceExcludesEn: formData.exclusionsEn?.filter(Boolean),
         itinerary: formData.detailedItinerary.map(item => ({
           day: item.day,
           title: item.title,
+          titleEn: item.titleEn,
           details: item.desc,
+          detailsEn: item.descEn,
           image: item.image
         }))
       };
@@ -174,6 +180,16 @@ export default function EditTourPage({ params }) {
                   className="w-full border-2 border-gray-50 bg-gray-50/30 rounded-2xl px-6 py-4 text-sm font-bold focus:outline-none focus:border-primary transition-colors"
                 />
               </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-blue-400">Tour Title (English)</label>
+                <input 
+                  type="text" 
+                  name="titleEn"
+                  value={formData.titleEn}
+                  onChange={handleChange}
+                  className="w-full border-2 border-gray-50 bg-gray-50/30 rounded-2xl px-6 py-4 text-sm font-bold focus:outline-none focus:border-primary transition-colors"
+                />
+              </div>
               <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label className="text-[10px] font-black uppercase tracking-widest text-gray-400">Slug</label>
@@ -187,10 +203,18 @@ export default function EditTourPage({ params }) {
                     <option>Tibet</option>
                   </select>
                 </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-blue-400">Destination (English)</label>
+                  <input type="text" name="destinationEn" value={formData.destinationEn} onChange={handleChange} className="w-full border-2 border-gray-50 bg-gray-50/30 rounded-2xl px-6 py-3 text-xs font-bold focus:outline-none focus:border-primary transition-colors" />
+                </div>
               </div>
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-widest text-gray-400">Tour Summary</label>
                 <textarea rows={4} name="summary" value={formData.summary} onChange={handleChange} className="w-full border-2 border-gray-50 bg-gray-50/30 rounded-2xl px-6 py-4 text-sm font-medium focus:outline-none focus:border-primary transition-colors resize-none" />
+              </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-blue-400">Tour Summary (English)</label>
+                <textarea rows={4} name="summaryEn" value={formData.summaryEn} onChange={handleChange} className="w-full border-2 border-gray-50 bg-gray-50/30 rounded-2xl px-6 py-4 text-sm font-medium focus:outline-none focus:border-primary transition-colors resize-none" />
               </div>
             </div>
           </section>
@@ -206,7 +230,7 @@ export default function EditTourPage({ params }) {
               </div>
               <button 
                 type="button" 
-                onClick={() => addItem('tripDetails', { label: '', value: '', icon: 'Clock' })}
+                onClick={() => addItem('tripDetails', { label: '', labelEn: '', value: '', valueEn: '', icon: 'Clock' })}
                 className="text-[10px] font-black text-primary hover:underline flex items-center"
               >
                 <Plus className="w-3 h-3 mr-1" /> Legg til fakta
@@ -250,6 +274,15 @@ export default function EditTourPage({ params }) {
                         <option value="Zap">Zap</option>
                       </select>
                     </div>
+                    <div className="space-y-1">
+                      <label className="text-[9px] font-black uppercase text-blue-500 ml-1">Label (English)</label>
+                      <input 
+                        placeholder="e.g. Duration"
+                        value={detail.labelEn}
+                        onChange={(e) => updateArrayItem('tripDetails', index, 'labelEn', e.target.value)}
+                        className="w-full bg-white border border-gray-100 rounded-xl px-4 py-3 text-xs font-bold"
+                      />
+                    </div>
                   </div>
                   <div className="space-y-1">
                     <label className="text-[9px] font-black uppercase text-gray-400 ml-1">Verdi</label>
@@ -257,6 +290,15 @@ export default function EditTourPage({ params }) {
                       placeholder="F.eks. 14 Dager"
                       value={detail.value}
                       onChange={(e) => updateArrayItem('tripDetails', index, 'value', e.target.value)}
+                      className="w-full bg-white border border-gray-100 rounded-xl px-4 py-3 text-xs font-bold"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[9px] font-black uppercase text-blue-500 ml-1">Verdi (English)</label>
+                    <input 
+                      placeholder="e.g. 14 Days"
+                      value={detail.valueEn}
+                      onChange={(e) => updateArrayItem('tripDetails', index, 'valueEn', e.target.value)}
                       className="w-full bg-white border border-gray-100 rounded-xl px-4 py-3 text-xs font-bold"
                     />
                   </div>
@@ -293,7 +335,7 @@ export default function EditTourPage({ params }) {
                 <ImageIcon className="w-4 h-4 text-orange-500" />
                 <h2 className="text-[11px] font-black uppercase tracking-widest text-gray-400">Detailed Itinerary</h2>
               </div>
-              <button type="button" onClick={() => addItem('detailedItinerary', { day: formData.detailedItinerary.length + 1, title: '', desc: '', image: '' })} className="text-[10px] font-black text-primary hover:underline">Add Story Block</button>
+              <button type="button" onClick={() => addItem('detailedItinerary', { day: formData.detailedItinerary.length + 1, title: '', titleEn: '', desc: '', descEn: '', image: '' })} className="text-[10px] font-black text-primary hover:underline">Add Story Block</button>
             </div>
             <div className="space-y-10">
               {formData.detailedItinerary.map((item, index) => (
@@ -302,6 +344,10 @@ export default function EditTourPage({ params }) {
                   <div className="flex items-center space-x-4">
                     <div className="bg-primary text-white w-10 h-10 rounded-xl flex items-center justify-center font-black">{item.day}</div>
                     <input type="text" value={item.title} onChange={(e) => updateArrayItem('detailedItinerary', index, 'title', e.target.value)} className="flex-1 bg-white border border-gray-100 rounded-xl px-6 py-3 text-sm font-black text-primary" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[9px] font-black uppercase tracking-widest text-blue-500">Day Title (English)</label>
+                    <input type="text" value={item.titleEn} onChange={(e) => updateArrayItem('detailedItinerary', index, 'titleEn', e.target.value)} className="w-full bg-white border border-gray-100 rounded-xl px-6 py-3 text-sm font-black text-primary" />
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <textarea rows={6} value={item.desc} onChange={(e) => updateArrayItem('detailedItinerary', index, 'desc', e.target.value)} className="w-full bg-white border border-gray-100 rounded-xl px-5 py-4 text-xs font-medium resize-none" />
@@ -312,6 +358,10 @@ export default function EditTourPage({ params }) {
                         label="Itinerary Image" 
                       />
                     </div>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[9px] font-black uppercase tracking-widest text-blue-500">Description (English)</label>
+                    <textarea rows={6} value={item.descEn} onChange={(e) => updateArrayItem('detailedItinerary', index, 'descEn', e.target.value)} className="w-full bg-white border border-gray-100 rounded-xl px-5 py-4 text-xs font-medium resize-none" />
                   </div>
                 </div>
               ))}
@@ -340,6 +390,10 @@ export default function EditTourPage({ params }) {
                   <select name="difficulty" value={formData.difficulty} onChange={handleChange} className="w-full border-2 border-gray-50 bg-gray-50/30 rounded-2xl px-6 py-3 text-xs font-bold appearance-none">
                     <option>Easy</option><option>Moderate</option><option>Challenging</option><option>Difficult</option>
                   </select>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-blue-400">Difficulty (English)</label>
+                  <input type="text" name="difficultyEn" value={formData.difficultyEn} onChange={handleChange} className="w-full border-2 border-gray-50 bg-gray-50/30 rounded-2xl px-6 py-3 text-xs font-bold" />
                 </div>
               </div>
               <div className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl">

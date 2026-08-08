@@ -13,10 +13,11 @@ import {
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { cn } from '@/lib/utils';
+import { tr } from '@/lib/tr';
 import { useLocale } from '@/components/providers/useLocale';
 
 export default function BlogDetailPage({ params }) {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const { slug } = use(params);
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -121,19 +122,19 @@ export default function BlogDetailPage({ params }) {
         <div className="flex items-center justify-center space-x-2 text-[11px] font-bold uppercase tracking-[0.2em] text-orange-600 mb-6">
           <span>{t.blogDetail.breadcrumbBlog}</span>
           <span>•</span>
-          <span>{blog.category || t.blogDetail.categoryFallback}</span>
+          <span>{tr(blog, 'category', locale) || t.blogDetail.categoryFallback}</span>
         </div>
 
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary tracking-tight leading-tight max-w-4xl mx-auto font-display">
-          {blog.title}
+          {tr(blog, 'title', locale)}
         </h1>
 
         <div className="flex flex-wrap items-center justify-center gap-y-4 gap-x-6 mt-8 text-gray-500 text-xs font-medium">
           <div className="flex items-center space-x-2">
             <div className="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center text-white font-bold text-xs uppercase">
-              {blog.author ? blog.author[0] : t.blogDetail.authorInitial}
+              {tr(blog, 'author', locale) ? tr(blog, 'author', locale)[0] : t.blogDetail.authorInitial}
             </div>
-            <span className="font-semibold text-primary">{blog.author || t.blogDetail.editorName}</span>
+            <span className="font-semibold text-primary">{tr(blog, 'author', locale) || t.blogDetail.editorName}</span>
           </div>
           <div className="w-[1px] h-4 bg-gray-200 hidden sm:block" />
           <div className="flex items-center space-x-1">
@@ -151,7 +152,7 @@ export default function BlogDetailPage({ params }) {
       {/* Feature Image */}
       <div className="max-w-9xl mx-auto px-6 mb-16">
         <div className="relative aspect-[16/9] md:aspect-[21/9] rounded-[2rem] overflow-hidden shadow-md border border-gray-100 bg-gray-50">
-          <img src={blog.image} className="w-full h-full object-cover" alt={blog.title} />
+          <img src={blog.image} className="w-full h-full object-cover" alt={tr(blog, 'title', locale)} />
         </div>
       </div>
 
@@ -194,7 +195,7 @@ export default function BlogDetailPage({ params }) {
                       { Icon: Facebook, link: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}` },
                       { Icon: Twitter, link: `https://twitter.com/intent/tweet?url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}` },
                       { Icon: Linkedin, link: `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}` },
-                      { Icon: Mail, link: `mailto:?subject=${encodeURIComponent(blog.title)}&body=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}` }
+                      { Icon: Mail, link: `mailto:?subject=${encodeURIComponent(tr(blog, 'title', locale))}&body=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}` }
                     ].map(({ Icon, link }, i) => (
                       <a
                         key={i}
@@ -231,15 +232,15 @@ export default function BlogDetailPage({ params }) {
                     prose-a:text-orange-500 prose-a:no-underline hover:prose-a:underline
                     prose-li:text-gray-700 prose-li:font-light prose-li:text-base md:prose-li:text-lg prose-li:leading-relaxed prose-li:mb-2
                     marker:text-orange-500"
-                  dangerouslySetInnerHTML={{ __html: blog.content }}
+                  dangerouslySetInnerHTML={{ __html: tr(blog, 'content', locale) }}
                 />
 
                 {/* Tags & Footer Meta */}
                 <div className="mt-16 pt-8 border-t border-gray-100 flex flex-wrap gap-3">
-                  {blog.category && (
+                  {tr(blog, 'category', locale) && (
                     <div className="bg-gray-50 px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider text-primary/60 flex items-center space-x-1.5">
                       <Tag className="w-3.5 h-3.5 text-orange-500" />
-                      <span>{blog.category}</span>
+                      <span>{tr(blog, 'category', locale)}</span>
                     </div>
                   )}
                   <div className="bg-gray-50 px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider text-primary/60 flex items-center space-x-1.5">
@@ -255,13 +256,13 @@ export default function BlogDetailPage({ params }) {
                 <div className="relative z-10 shrink-0">
                   <div className="w-20 h-20 rounded-2xl bg-orange-500 p-0.5 shadow-xl rotate-3 group-hover:rotate-0 transition-transform duration-500">
                     <div className="w-full h-full rounded-2xl bg-primary flex items-center justify-center text-orange-500 font-bold text-3xl font-display uppercase">
-                      {blog.author ? blog.author[0] : t.blogDetail.authorInitial}
+                      {tr(blog, 'author', locale) ? tr(blog, 'author', locale)[0] : t.blogDetail.authorInitial}
                     </div>
                   </div>
                 </div>
                 <div className="relative z-10 flex-1 text-center md:text-left space-y-3">
                   <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-orange-400">{t.blogDetail.writtenBy}</p>
-                  <h3 className="text-2xl font-bold font-display text-white">{blog.author || t.blogDetail.editorName}</h3>
+                  <h3 className="text-2xl font-bold font-display text-white">{tr(blog, 'author', locale) || t.blogDetail.editorName}</h3>
                   <p className="text-emerald-100/75 text-sm leading-relaxed max-w-xl">
                     {t.blogDetail.authorDescription}
                   </p>
@@ -361,9 +362,9 @@ export default function BlogDetailPage({ params }) {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
                   </div>
                   <div className="space-y-2">
-                    <p className="text-orange-600 text-[10px] font-bold uppercase tracking-widest">{post.category}</p>
+                    <p className="text-orange-600 text-[10px] font-bold uppercase tracking-widest">{tr(post, 'category', locale)}</p>
                     <h4 className="text-lg font-bold font-display text-primary group-hover:text-orange-500 transition-colors leading-snug">
-                      {post.title}
+                      {tr(post, 'title', locale)}
                     </h4>
                   </div>
                 </Link>

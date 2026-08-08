@@ -3,8 +3,11 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { FileText, ShieldCheck } from 'lucide-react';
+import { tr } from '@/lib/tr';
+import { useLocale } from '@/components/providers/useLocale';
 
 export default function LegalContentPage({ slug }) {
+  const { locale } = useLocale();
   const [doc, setDoc] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -36,7 +39,7 @@ export default function LegalContentPage({ slug }) {
             <Icon className="w-8 h-8 text-orange-400" />
           </div>
           <h1 className="text-4xl md:text-6xl font-bold font-display text-white tracking-tight leading-tight">
-            {doc?.title || (isPrivacy ? 'Personvern' : 'Betingelser')}
+            {tr(doc, 'title', locale) || (isPrivacy ? 'Personvern' : 'Betingelser')}
           </h1>
           <Link href="/" className="inline-flex items-center text-xs font-bold uppercase tracking-wider text-emerald-200 hover:text-white transition-colors mt-8">
             &larr; Tilbake til forsiden
@@ -48,7 +51,7 @@ export default function LegalContentPage({ slug }) {
         <article className="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 p-8 sm:p-12 md:p-16">
           <div
             className="prose prose-lg max-w-none text-gray-600 font-light leading-relaxed [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:text-primary [&_h2]:font-display [&_h2]:mt-10 [&_h2]:mb-4 [&_h3]:text-lg [&_h3]:font-bold [&_h3]:text-primary [&_h3]:mt-8 [&_h3]:mb-3 [&_p]:my-4 [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6 [&_li]:my-2"
-            dangerouslySetInnerHTML={{ __html: doc?.content || '' }}
+            dangerouslySetInnerHTML={{ __html: tr(doc, 'content', locale) }}
           />
         </article>
       </div>

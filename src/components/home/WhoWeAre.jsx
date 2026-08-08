@@ -4,9 +4,10 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ShieldCheck, Award, Users } from 'lucide-react';
 import { useLocale } from '@/components/providers/useLocale';
+import { tr } from '@/lib/tr';
 
 export default function WhoWeAre({ content }) {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   return (
     <section className="py-40 bg-gray-50/50 overflow-hidden relative">
       {/* Decorative Background Text */}
@@ -60,7 +61,7 @@ export default function WhoWeAre({ content }) {
                 {content?.yearsOfExperience || '15'}
               </span>
               <span className="text-[10px] uppercase font-black tracking-[0.3em] text-orange-500 block">
-                {content?.yearsOfExperienceLabel || t.whoWeAre.yearsLabel}
+                {tr(content, 'yearsOfExperienceLabel', locale) || t.whoWeAre.yearsLabel}
               </span>
               <div className="mt-6 flex justify-center space-x-1">
                 {[1, 2, 3, 4, 5].map(i => (
@@ -78,15 +79,15 @@ export default function WhoWeAre({ content }) {
               viewport={{ once: true }}
             >
               <h5 className="text-orange-500 font-bold uppercase tracking-wider text-xs mb-6 flex items-center">
-                <span className="w-12 h-[2px] bg-orange-500 mr-4" /> {content?.subtitle || t.whoWeAre.subtitle}
+                <span className="w-12 h-[2px] bg-orange-500 mr-4" /> {tr(content, 'subtitle', locale) || t.whoWeAre.subtitle}
               </h5>
               <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold font-display text-primary leading-tight mb-8 tracking-tight">
-                {content?.title || t.whoWeAre.title}
+                {tr(content, 'title', locale) || t.whoWeAre.title}
               </h2>
               
               <div className="space-y-8 text-gray-500 leading-relaxed text-lg font-light">
                 <p>
-                  {content?.description || t.whoWeAre.description}
+                  {tr(content, 'description', locale) || t.whoWeAre.description}
                 </p>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 pt-4">
@@ -95,8 +96,8 @@ export default function WhoWeAre({ content }) {
                       <ShieldCheck className="w-6 h-6" />
                     </div>
                     <div>
-                      <h4 className="text-sm font-bold uppercase tracking-wider text-primary mb-1">{content?.feature1Title || t.whoWeAre.feature1Title}</h4>
-                      <p className="text-xs">{content?.feature1Desc || t.whoWeAre.feature1Desc}</p>
+                      <h4 className="text-sm font-bold uppercase tracking-wider text-primary mb-1">{tr(content, 'feature1Title', locale) || t.whoWeAre.feature1Title}</h4>
+                      <p className="text-xs">{tr(content, 'feature1Desc', locale) || t.whoWeAre.feature1Desc}</p>
                     </div>
                   </div>
                   <div className="flex items-start space-x-4">
@@ -104,8 +105,8 @@ export default function WhoWeAre({ content }) {
                       <Users className="w-6 h-6" />
                     </div>
                     <div>
-                      <h4 className="text-sm font-bold uppercase tracking-wider text-primary mb-1">{content?.feature2Title || t.whoWeAre.feature2Title}</h4>
-                      <p className="text-xs">{content?.feature2Desc || t.whoWeAre.feature2Desc}</p>
+                      <h4 className="text-sm font-bold uppercase tracking-wider text-primary mb-1">{tr(content, 'feature2Title', locale) || t.whoWeAre.feature2Title}</h4>
+                      <p className="text-xs">{tr(content, 'feature2Desc', locale) || t.whoWeAre.feature2Desc}</p>
                     </div>
                   </div>
                 </div>

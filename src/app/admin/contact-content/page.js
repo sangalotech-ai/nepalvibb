@@ -100,12 +100,24 @@ export default function AdminContactContentPage() {
               <input value={content.hero.title} onChange={e => updateNested('hero', 'title', e.target.value)} className="w-full bg-gray-50 border-0 rounded-xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-primary transition-all" />
             </div>
             <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">Main Title (English)</label>
+              <input value={content.hero.titleEn || ''} onChange={e => updateNested('hero', 'titleEn', e.target.value)} className="w-full bg-gray-50 border-0 rounded-xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-primary transition-all" />
+            </div>
+            <div className="space-y-2">
               <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">Subtitle / Badge</label>
               <input value={content.hero.subtitle} onChange={e => updateNested('hero', 'subtitle', e.target.value)} className="w-full bg-gray-50 border-0 rounded-xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-primary transition-all" />
             </div>
             <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">Subtitle / Badge (English)</label>
+              <input value={content.hero.subtitleEn || ''} onChange={e => updateNested('hero', 'subtitleEn', e.target.value)} className="w-full bg-gray-50 border-0 rounded-xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-primary transition-all" />
+            </div>
+            <div className="space-y-2">
               <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">Hero Description</label>
               <textarea value={content.hero.description} onChange={e => updateNested('hero', 'description', e.target.value)} rows={3} className="w-full bg-gray-50 border-0 rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all resize-none" />
+            </div>
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">Hero Description (English)</label>
+              <textarea value={content.hero.descriptionEn || ''} onChange={e => updateNested('hero', 'descriptionEn', e.target.value)} rows={3} className="w-full bg-gray-50 border-0 rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all resize-none" />
             </div>
           </div>
         </section>
@@ -125,8 +137,16 @@ export default function AdminContactContentPage() {
               <input value={content.form.title} onChange={e => updateNested('form', 'title', e.target.value)} className="w-full bg-gray-50 border-0 rounded-xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-primary transition-all" />
             </div>
             <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">Form Title (English)</label>
+              <input value={content.form.titleEn || ''} onChange={e => updateNested('form', 'titleEn', e.target.value)} className="w-full bg-gray-50 border-0 rounded-xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-primary transition-all" />
+            </div>
+            <div className="space-y-2">
               <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">Form Subtitle</label>
               <textarea value={content.form.subtitle} onChange={e => updateNested('form', 'subtitle', e.target.value)} rows={3} className="w-full bg-gray-50 border-0 rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all resize-none" />
+            </div>
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">Form Subtitle (English)</label>
+              <textarea value={content.form.subtitleEn || ''} onChange={e => updateNested('form', 'subtitleEn', e.target.value)} rows={3} className="w-full bg-gray-50 border-0 rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all resize-none" />
             </div>
           </div>
         </section>

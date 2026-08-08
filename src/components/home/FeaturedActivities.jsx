@@ -5,9 +5,10 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowRight, Compass, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useLocale } from '@/components/providers/useLocale';
+import { tr } from '@/lib/tr';
 
 export default function FeaturedActivities({ content }) {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
   const scrollRef = useRef(null);
@@ -85,10 +86,10 @@ export default function FeaturedActivities({ content }) {
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
           <div className="max-w-2xl space-y-3">
             <h5 className="text-orange-500 font-bold uppercase tracking-wider text-xs">
-              {content?.subtitle || t.activities.subtitle}
+              {tr(content, 'subtitle', locale) || t.activities.subtitle}
             </h5>
             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold font-display text-primary tracking-tight leading-tight">
-              {content?.title || t.activities.title}
+              {tr(content, 'title', locale) || t.activities.title}
             </h2>
           </div>
           
@@ -143,7 +144,7 @@ export default function FeaturedActivities({ content }) {
                   <img 
                     src={activity.image} 
                     className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" 
-                    alt={activity.name} 
+                    alt={tr(activity, 'name', locale)} 
                     loading="lazy"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/30 to-transparent" />
@@ -153,11 +154,11 @@ export default function FeaturedActivities({ content }) {
                       <Compass className="w-5 h-5" />
                     </div>
                     <h3 className="text-xl sm:text-2xl font-bold font-display text-white tracking-tight mb-2 leading-tight">
-                      {activity.name}
+                      {tr(activity, 'name', locale)}
                     </h3>
                     <div
                       className="hidden sm:block text-sm text-white/70 font-light line-clamp-2 mb-6 group-hover:text-white transition-colors [&_p]:m-0 [&_p]:inline"
-                      dangerouslySetInnerHTML={{ __html: activity.description }}
+                      dangerouslySetInnerHTML={{ __html: tr(activity, 'description', locale) }}
                     />
                     <div className="flex items-center space-x-2 text-xs font-bold uppercase tracking-wider text-orange-400">
                       <span>{t.activities.explore}</span>

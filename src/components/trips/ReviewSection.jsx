@@ -4,10 +4,11 @@ import { useState, useEffect } from 'react';
 import { Star, Send, User, Calendar, CheckCircle2, MessageSquare } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { tr } from '@/lib/tr';
 import { useLocale } from '@/components/providers/useLocale';
 
 export default function ReviewSection({ tripId }) {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -217,7 +218,7 @@ export default function ReviewSection({ tripId }) {
                   </div>
                 </div>
                 <p className="text-gray-600 font-light leading-relaxed text-base border-l-4 border-orange-500 pl-6 ml-1">
-                  &ldquo;{review.comment}&rdquo;
+                  &ldquo;{tr(review, 'comment', locale)}&rdquo;
                 </p>
               </motion.div>
             ))}

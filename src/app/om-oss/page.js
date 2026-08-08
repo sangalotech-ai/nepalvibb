@@ -11,8 +11,11 @@ import Link from 'next/link';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { cn } from '@/lib/utils';
+import { tr, trItem } from '@/lib/tr';
+import { useLocale } from '@/components/providers/useLocale';
 
 export default function AboutPage() {
+  const { locale } = useLocale();
   const [content, setContent] = useState(null);
   const [team, setTeam] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -90,10 +93,10 @@ export default function AboutPage() {
             className="space-y-4"
           >
             <h5 className="text-orange-500 font-bold uppercase tracking-wider text-xs">
-              {content?.hero?.subtitle}
+              {tr(content?.hero, 'subtitle', locale)}
             </h5>
             <h1 className="text-4xl md:text-7xl font-bold font-display text-white tracking-tight leading-tight drop-shadow-2xl max-w-4xl mx-auto">
-              {content?.hero?.title}
+              {tr(content?.hero, 'title', locale)}
             </h1>
           </motion.div>
         </div>
@@ -104,16 +107,16 @@ export default function AboutPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
           <div className="space-y-8">
             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold font-display text-primary tracking-tight leading-tight">
-              {content?.mission?.title}
+              {tr(content?.mission, 'title', locale)}
             </h2>
             <div className="space-y-6 text-lg text-gray-600 font-light leading-relaxed border-l-2 border-orange-500 pl-6">
-              <p>{content?.mission?.description}</p>
+              <p>{tr(content?.mission, 'description', locale)}</p>
             </div>
             <div className="flex items-center space-x-12 pt-4">
               {content?.mission?.stats?.map((stat, i) => (
                 <div key={i} className="text-center">
                   <p className="text-4xl font-bold text-primary">{stat.number}</p>
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mt-1">{stat.label}</p>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mt-1">{trItem(stat, 'label', locale)}</p>
                 </div>
               ))}
             </div>
@@ -130,7 +133,7 @@ export default function AboutPage() {
             <div className="absolute -bottom-6 -left-6 bg-white p-6 sm:p-8 rounded-2xl shadow-xl space-y-3 max-w-xs border border-gray-100">
               <Heart className="w-8 h-8 text-red-500 fill-current" />
               <p className="text-sm font-light text-primary leading-relaxed">
-                {content?.mission?.quote}
+                {tr(content?.mission, 'quote', locale)}
               </p>
             </div>
           </div>
@@ -185,8 +188,8 @@ export default function AboutPage() {
       <section className="py-20 md:py-32">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16 space-y-3">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold font-display text-primary tracking-tight">{content?.valuesTitle}</h2>
-            <p className="text-gray-500 font-light max-w-xl mx-auto text-base">{content?.valuesSubtitle}</p>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold font-display text-primary tracking-tight">{tr(content, 'valuesTitle', locale)}</h2>
+            <p className="text-gray-500 font-light max-w-xl mx-auto text-base">{tr(content, 'valuesSubtitle', locale)}</p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -195,8 +198,8 @@ export default function AboutPage() {
                 <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center mb-6 group-hover:scale-105 transition-transform", v.bg)}>
                   <v.icon className={cn("w-6 h-6", v.color)} />
                 </div>
-                <h3 className="text-lg font-bold text-primary tracking-tight mb-3">{v.title}</h3>
-                <p className="text-sm text-gray-500 font-light leading-relaxed">{v.desc}</p>
+                <h3 className="text-lg font-bold text-primary tracking-tight mb-3">{trItem(v, 'title', locale)}</h3>
+                <p className="text-sm text-gray-500 font-light leading-relaxed">{trItem(v, 'desc', locale)}</p>
               </div>
             ))}
           </div>

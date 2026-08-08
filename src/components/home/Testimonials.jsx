@@ -5,9 +5,10 @@ import { motion } from 'framer-motion';
 import { Star, MessageSquare, Quote } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useLocale } from '@/components/providers/useLocale';
+import { tr, trItem } from '@/lib/tr';
 
 export default function Testimonials({ content }) {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -33,10 +34,10 @@ export default function Testimonials({ content }) {
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16 space-y-3">
           <h5 className="text-orange-500 font-bold uppercase tracking-wider text-xs">
-            {content?.subtitle || t.testimonials.subtitle}
+            {tr(content, 'subtitle', locale) || t.testimonials.subtitle}
           </h5>
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold font-display text-primary tracking-tight leading-tight">
-            {content?.title || t.testimonials.title}
+            {tr(content, 'title', locale) || t.testimonials.title}
           </h2>
         </div>
 
@@ -61,7 +62,7 @@ export default function Testimonials({ content }) {
                   </div>
                   
                   <p className="text-gray-600 font-light leading-relaxed text-base">
-                    &ldquo;{review.comment.length > 120 ? review.comment.substring(0, 120) + '...' : review.comment}&rdquo;
+                    &ldquo;{tr(review, 'comment', locale).length > 120 ? tr(review, 'comment', locale).substring(0, 120) + '...' : tr(review, 'comment', locale)}&rdquo;
                   </p>
                 </div>
 
@@ -71,7 +72,7 @@ export default function Testimonials({ content }) {
                   </div>
                   <div>
                     <h4 className="text-sm font-bold text-primary tracking-tight">{review.userName}</h4>
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-orange-500">{review.tripId?.title || t.testimonials.guest}</p>
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-orange-500">{trItem(review.tripId, 'title', locale) || t.testimonials.guest}</p>
                   </div>
                 </div>
               </div>

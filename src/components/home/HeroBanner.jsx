@@ -5,9 +5,10 @@ import Link from 'next/link';
 import { ArrowRight, Play, ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useLocale } from '@/components/providers/useLocale';
+import { tr } from '@/lib/tr';
 
 export default function HeroBanner({ initialBanners }) {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
 
   const FALLBACK_BANNER = {
     title: t.hero.title,
@@ -66,19 +67,19 @@ export default function HeroBanner({ initialBanners }) {
           <div className="inline-flex items-center gap-3 bg-white/10 backdrop-blur-md px-5 py-2.5 rounded-full border border-white/10 mb-8">
             <span className="w-2 h-2 rounded-full bg-orange-400 animate-pulse" />
             <span className="text-orange-300 text-[11px] font-bold uppercase tracking-[0.25em]">
-              {currentBanner.badgeText || t.hero.badgeFallback}
+              {tr(currentBanner, 'badgeText', locale) || t.hero.badgeFallback}
             </span>
           </div>
 
           {/* Title */}
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold font-display text-white leading-[1.1] tracking-tight">
-            {currentBanner.title}{' '}
-            {currentBanner.highlightText && (
+            {tr(currentBanner, 'title', locale)}{' '}
+            {tr(currentBanner, 'highlightText', locale) && (
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-orange-300 to-amber-200">
-                {currentBanner.highlightText}
+                {tr(currentBanner, 'highlightText', locale)}
               </span>
             )}{' '}
-            {currentBanner.subtitle}
+            {tr(currentBanner, 'subtitle', locale)}
           </h1>
 
           {/* Actions */}
@@ -87,7 +88,7 @@ export default function HeroBanner({ initialBanners }) {
               href={currentBanner.buttonLink || "/trips"}
               className="group inline-flex items-center gap-3 bg-orange-500 hover:bg-orange-600 text-white px-10 py-4 text-xs font-black uppercase tracking-[0.25em] rounded-full shadow-[0_15px_35px_rgba(249,115,22,0.35)] hover:shadow-[0_20px_50px_rgba(249,115,22,0.45)] hover:scale-105 transition-all duration-300"
             >
-              {currentBanner.buttonText || t.hero.buttonFallback}
+              {tr(currentBanner, 'buttonText', locale) || t.hero.buttonFallback}
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform" />
             </Link>
 

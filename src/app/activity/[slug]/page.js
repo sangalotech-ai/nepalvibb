@@ -9,10 +9,11 @@ import {
 import { motion } from 'framer-motion';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
+import { tr } from '@/lib/tr';
 import { useLocale } from '@/components/providers/useLocale';
 
 export default function ActivityDetailPage({ params }) {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const { slug } = use(params);
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -56,7 +57,7 @@ export default function ActivityDetailPage({ params }) {
         <img
           src={activity.image || 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1920&q=80'}
           className="absolute inset-0 w-full h-full object-cover"
-          alt={activity.name}
+          alt={tr(activity, 'name', locale)}
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent" />
 
@@ -68,11 +69,11 @@ export default function ActivityDetailPage({ params }) {
           >
             <h5 className="text-orange-500 font-bold uppercase tracking-wider text-[10px]">{t.activityDetail.heroSubtitle}</h5>
             <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold font-display text-white tracking-tight leading-tight">
-              {activity.name}
+              {tr(activity, 'name', locale)}
             </h1>
             <div
               className="text-lg sm:text-xl text-white/90 font-light leading-relaxed border-l-4 border-orange-500 pl-6 [&_p]:m-0"
-              dangerouslySetInnerHTML={{ __html: activity.description || `${t.activityDetail.descriptionFallbackPrefix} ${activity.name.toLowerCase()} ${t.activityDetail.descriptionFallbackSuffix}` }}
+              dangerouslySetInnerHTML={{ __html: tr(activity, 'description', locale) || `${t.activityDetail.descriptionFallbackPrefix} ${tr(activity, 'name', locale).toLowerCase()} ${t.activityDetail.descriptionFallbackSuffix}` }}
             />
           </motion.div>
         </div>
@@ -84,7 +85,7 @@ export default function ActivityDetailPage({ params }) {
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
             <div className="space-y-4">
               <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold font-display text-primary tracking-tight leading-tight">{t.activityDetail.recommendedTitle}</h2>
-              <p className="text-sm text-gray-500 font-light uppercase tracking-wider">{t.activityDetail.recommendedSubtitlePrefix} {activity.name} {t.activityDetail.recommendedSubtitleSuffix}</p>
+              <p className="text-sm text-gray-500 font-light uppercase tracking-wider">{t.activityDetail.recommendedSubtitlePrefix} {tr(activity, 'name', locale)} {t.activityDetail.recommendedSubtitleSuffix}</p>
             </div>
             <div className="flex items-center space-x-4 bg-white px-6 py-3 rounded-2xl shadow-sm border border-gray-100">
               <span className="text-[10px] font-bold uppercase tracking-wider text-primary">{trips.length} {t.activityDetail.tripsFound}</span>
@@ -105,23 +106,23 @@ export default function ActivityDetailPage({ params }) {
                   <img
                     src={trip.image}
                     className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
-                    alt={trip.title}
+                    alt={tr(trip, 'title', locale)}
                   />
                   <div className="absolute top-6 left-6 bg-black/40 backdrop-blur-md text-white text-[9px] font-bold uppercase px-4 py-1.5 rounded-full tracking-wider">
-                    {trip.difficulty || t.activityDetail.difficultyFallback}
+                    {tr(trip, 'difficulty', locale) || t.activityDetail.difficultyFallback}
                   </div>
                 </div>
                 <div className="p-8 space-y-6">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-orange-500">{trip.duration}</span>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">{trip.destination}</span>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-orange-500">{tr(trip, 'duration', locale)}</span>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">{tr(trip, 'destination', locale)}</span>
                   </div>
                   <h3 className="text-xl font-bold font-display text-primary tracking-tight group-hover:text-orange-500 transition-colors line-clamp-2 leading-snug">
-                    {trip.title}
+                    {tr(trip, 'title', locale)}
                   </h3>
                   <div
                     className="text-sm font-light text-gray-500 line-clamp-2 leading-relaxed [&_p]:m-0 [&_p]:inline"
-                    dangerouslySetInnerHTML={{ __html: trip.summary }}
+                    dangerouslySetInnerHTML={{ __html: tr(trip, 'summary', locale) }}
                   />
                   <div className="pt-6 border-t border-gray-100 flex items-center justify-between">
                     <div className="text-primary">

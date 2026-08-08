@@ -19,7 +19,9 @@ export default function AdminActivitiesPage() {
     name: '',
     description: '',
     image: '',
-    isFeatured: false
+    isFeatured: false,
+    nameEn: '',
+    descriptionEn: ''
   });
 
   useEffect(() => {
@@ -81,7 +83,7 @@ export default function AdminActivitiesPage() {
         </div>
         <button 
           onClick={() => {
-            setFormData({ name: '', description: '', image: '', isFeatured: false });
+            setFormData({ name: '', description: '', image: '', isFeatured: false, nameEn: '', descriptionEn: '' });
             setIsEditing('new');
           }}
           className="bg-primary text-white px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-primary/20 hover:bg-orange-500 transition-all flex items-center space-x-3"
@@ -202,6 +204,16 @@ export default function AdminActivitiesPage() {
                   </div>
 
                   <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 px-2">Activity Name (English)</label>
+                    <input 
+                      type="text" 
+                      value={formData.nameEn}
+                      onChange={e => setFormData({...formData, nameEn: e.target.value})}
+                      className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-primary transition-all"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
                     <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 px-2">Activity Banner</label>
                     <ImageUpload 
                       value={formData.image}
@@ -214,6 +226,16 @@ export default function AdminActivitiesPage() {
                     <textarea 
                       value={formData.description}
                       onChange={e => setFormData({...formData, description: e.target.value})}
+                      rows={4}
+                      className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all resize-none"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 px-2">Description (English)</label>
+                    <textarea 
+                      value={formData.descriptionEn}
+                      onChange={e => setFormData({...formData, descriptionEn: e.target.value})}
                       rows={4}
                       className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all resize-none"
                     />

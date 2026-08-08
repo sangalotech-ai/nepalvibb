@@ -7,10 +7,11 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
+import { tr } from '@/lib/tr';
 import { useLocale } from '@/components/providers/useLocale';
 
 export default function DestinationDetailPage({ params }) {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const { slug } = use(params);
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -76,7 +77,7 @@ export default function DestinationDetailPage({ params }) {
             {t.destinationDetail.heroSubtitle}
           </p>
           <h1 className="text-5xl md:text-8xl lg:text-[10rem] font-bold font-display text-white tracking-tight leading-[1] drop-shadow-2xl">
-            {destination?.name}
+            {tr(destination, 'name', locale)}
           </h1>
         </div>
       </div>
@@ -87,11 +88,11 @@ export default function DestinationDetailPage({ params }) {
         <div className="bg-white rounded-3xl shadow-sm p-8 sm:p-12 lg:p-16 border border-gray-100 mb-16">
           <div className="">
             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold font-display text-primary tracking-tight mb-8">
-              {t.destinationDetail.aboutLabel} <span className="text-orange-500">{destination.name}</span>
+              {t.destinationDetail.aboutLabel} <span className="text-orange-500">{tr(destination, 'name', locale)}</span>
             </h2>
             <div
               className="space-y-6 text-gray-600 font-light leading-relaxed text-lg border-l-2 border-orange-500 pl-6 [&_p]:m-0"
-              dangerouslySetInnerHTML={{ __html: destination.description || t.destinationDetail.descriptionFallback }}
+              dangerouslySetInnerHTML={{ __html: tr(destination, 'description', locale) || t.destinationDetail.descriptionFallback }}
             />
           </div>
         </div>
@@ -100,7 +101,7 @@ export default function DestinationDetailPage({ params }) {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 px-2">
           <div>
             <h3 className="text-2xl sm:text-3xl font-bold font-display text-primary tracking-tight">{t.destinationDetail.availableExperiences}</h3>
-            <p className="text-xs text-gray-400 font-bold uppercase tracking-wider mt-1">{filteredTours.length} {t.destinationDetail.experiencesFound} {destination.name}</p>
+            <p className="text-xs text-gray-400 font-bold uppercase tracking-wider mt-1">{filteredTours.length} {t.destinationDetail.experiencesFound} {tr(destination, 'name', locale)}</p>
           </div>
 
           <div className="flex items-center space-x-2 bg-gray-100/60 p-1.5 rounded-xl border border-gray-100 shadow-sm">
@@ -181,7 +182,7 @@ export default function DestinationDetailPage({ params }) {
               <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full blur-2xl -mr-12 -mt-12 group-hover:scale-150 transition-transform duration-1000" />
               <div className="relative z-10 space-y-6">
                 <h4 className="text-xl font-bold font-display text-white tracking-tight">{t.destinationDetail.needHelp}</h4>
-                <p className="text-emerald-100/80 text-xs font-light leading-relaxed">{t.destinationDetail.helpDescription} {destination.name}.</p>
+                <p className="text-emerald-100/80 text-xs font-light leading-relaxed">{t.destinationDetail.helpDescription} {tr(destination, 'name', locale)}.</p>
                 <Link href="/plan-your-trip" className="inline-flex items-center text-[10px] font-bold uppercase tracking-wider bg-white text-primary px-6 py-3 rounded-full hover:bg-orange-500 hover:text-white hover:scale-105 transition-all shadow-sm">
                   {t.destinationDetail.contactSpecialist} <ArrowRight className="w-3.5 h-3.5 ml-2" />
                 </Link>
@@ -218,20 +219,22 @@ export default function DestinationDetailPage({ params }) {
                     )}
                   >
                     <div className={cn("relative overflow-hidden border-b border-gray-50 md:border-b-0 md:border-r border-gray-50", view === 'list' ? "w-full md:w-[280px] h-52 md:h-full" : "h-64")}>
-                      <img src={tour.image} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" alt={tour.title} loading="lazy" />
+                      <img src={tour.image} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" alt={tr(tour, 'title', locale)} loading="lazy" />
                       <div className="absolute top-4 left-4 bg-primary/95 text-white text-[9px] font-bold uppercase px-3 py-1.5 rounded-full tracking-wider shadow-md backdrop-blur-sm">
-                        {Array.isArray(tour.category) ? tour.category[0] : tour.category || t.destinationDetail.categoryFallback}
+                        {(locale === 'en'
+                          ? (Array.isArray(tour.categoryEn) ? tour.categoryEn[0] : (tour.categoryEn || tour.category))
+                          : (Array.isArray(tour.category) ? tour.category[0] : tour.category)) || t.destinationDetail.categoryFallback}
                       </div>
                     </div>
 
                     <div className="p-6 sm:p-8 flex-1 flex flex-col justify-between">
                       <div className="space-y-3">
                         <h3 className="text-lg sm:text-xl font-bold font-display text-primary mb-3 line-clamp-2 leading-snug group-hover:text-orange-500 transition-colors">
-                          {tour.title}
+                          {tr(tour, 'title', locale)}
                         </h3>
                         <div
                           className="text-sm text-gray-500 font-light line-clamp-2 leading-relaxed [&_p]:m-0 [&_p]:inline"
-                          dangerouslySetInnerHTML={{ __html: tour.summary }}
+                          dangerouslySetInnerHTML={{ __html: tr(tour, 'summary', locale) }}
                         />
                       </div>
 
@@ -239,7 +242,7 @@ export default function DestinationDetailPage({ params }) {
                         <div className="flex items-center space-x-6">
                           <div className="flex items-center space-x-1.5 text-xs font-bold text-gray-400 uppercase tracking-wider">
                             <Clock className="w-4 h-4 text-gray-300" />
-                            <span>{tour.duration}</span>
+                            <span>{tr(tour, 'duration', locale)}</span>
                           </div>
                           <div className="text-primary font-bold text-lg">
                             NOK {tour.price?.toLocaleString()}

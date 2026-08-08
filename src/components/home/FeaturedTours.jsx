@@ -3,11 +3,12 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { useLocale } from '@/components/providers/useLocale';
+import { tr } from '@/lib/tr';
 
 import { useState, useEffect } from 'react';
 
 export default function FeaturedTours({ content }) {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const [tours, setTours] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -41,10 +42,10 @@ export default function FeaturedTours({ content }) {
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="text-center mb-12">
           <h5 className="text-orange-500 font-bold uppercase tracking-wider text-xs mb-3">
-            {content?.subtitle || t.tours.subtitle}
+            {tr(content, 'subtitle', locale) || t.tours.subtitle}
           </h5>
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold font-display text-primary tracking-tight mb-8 leading-tight">
-            {content?.title || t.tours.title}
+            {tr(content, 'title', locale) || t.tours.title}
           </h2>
           <div className="flex justify-center">
             <Link
@@ -67,12 +68,12 @@ export default function FeaturedTours({ content }) {
               <div className="relative h-56 sm:h-72 overflow-hidden">
                 <img
                   src={tour.image}
-                  alt={tour.title}
+                  alt={tr(tour, 'title', locale)}
                   loading="lazy"
                   className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
                 />
                 <div className="absolute top-4 left-4 bg-primary/95 text-white text-[9px] font-bold uppercase px-3 py-1.5 rounded-full tracking-wider shadow-md backdrop-blur-sm">
-                  {Array.isArray(tour.category) ? tour.category[0] : tour.category || t.tours.categoryFallback}
+                  {Array.isArray(tour.category) ? tr(tour, 'category', locale)[0] : (tr(tour, 'category', locale) || t.tours.categoryFallback)}
                 </div>
                 <div className="absolute bottom-4 right-4 bg-orange-500 text-white font-bold px-4 py-2 rounded-2xl shadow-md transition-transform duration-500">
                   <p className="text-[9px] block font-light text-orange-200 uppercase tracking-wider leading-none mb-0.5">{t.common.fra}</p>
@@ -82,11 +83,11 @@ export default function FeaturedTours({ content }) {
 
               <div className="p-6 sm:p-8 flex-1 flex flex-col">
                 <h3 className="text-lg sm:text-xl font-bold font-display text-primary mb-3 line-clamp-2 leading-snug group-hover:text-orange-500 transition-colors">
-                  {tour.title}
+                  {tr(tour, 'title', locale)}
                 </h3>
                 <div
                   className="text-gray-500 font-light text-sm mb-6 line-clamp-3 leading-relaxed [&_p]:m-0"
-                  dangerouslySetInnerHTML={{ __html: tour.summary }}
+                  dangerouslySetInnerHTML={{ __html: tr(tour, 'summary', locale) }}
                 />
                 <Link href={`/trips/${tour.slug}`} className="mt-auto inline-flex items-center text-primary font-bold uppercase text-xs tracking-wider gap-2 hover:text-orange-500 transition-colors">
                   <span>{t.common.lesMer}</span>

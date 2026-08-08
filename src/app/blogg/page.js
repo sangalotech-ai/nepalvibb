@@ -4,10 +4,11 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Calendar, User, Tag, ArrowRight, Newspaper } from 'lucide-react';
+import { tr } from '@/lib/tr';
 import { useLocale } from '@/components/providers/useLocale';
 
 export default function BlogListPage() {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -87,21 +88,21 @@ export default function BlogListPage() {
                 >
                   <Link href={`/blogg/${blog.slug}`}>
                     <div className="overflow-hidden rounded-3xl mb-6 shadow-md h-80 relative border-2 border-white group-hover:border-orange-500/20 transition-all">
-                      <img src={blog.image} alt={blog.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" loading="lazy" />
+                      <img src={blog.image} alt={tr(blog, 'title', locale)} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" loading="lazy" />
                       <div className="absolute inset-0 bg-primary/20 group-hover:bg-transparent transition-all duration-500"></div>
                       <div className="absolute top-6 left-6">
                         <span className="bg-white/95 backdrop-blur-md px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-wider text-primary flex items-center shadow-sm">
-                          <Tag className="w-3 h-3 mr-1.5 text-orange-500" /> {blog.category}
+                          <Tag className="w-3 h-3 mr-1.5 text-orange-500" /> {tr(blog, 'category', locale)}
                         </span>
                       </div>
                     </div>
                     <div className="space-y-3 px-2">
                       <div className="flex items-center space-x-6 text-[10px] font-bold uppercase tracking-wider text-gray-400">
                         <span className="flex items-center"><Calendar className="w-3.5 h-3.5 mr-2" /> {new Date(blog.createdAt).toLocaleDateString()}</span>
-                        <span className="flex items-center"><User className="w-3.5 h-3.5 mr-2" /> {blog.author}</span>
+                        <span className="flex items-center"><User className="w-3.5 h-3.5 mr-2" /> {tr(blog, 'author', locale)}</span>
                       </div>
                       <h3 className="text-lg sm:text-xl font-bold font-display text-primary tracking-tight leading-snug group-hover:text-orange-500 transition-colors line-clamp-2">
-                        {blog.title}
+                        {tr(blog, 'title', locale)}
                       </h3>
                       <div className="flex items-center space-x-2 text-orange-500 text-[10px] font-bold uppercase tracking-wider">
                         <span>{t.common.lesMer}</span>
