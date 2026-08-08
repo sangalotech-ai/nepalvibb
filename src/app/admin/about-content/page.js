@@ -59,10 +59,13 @@ export default function AdminAboutContentPage() {
       const data = await res.json();
       if (data.url) {
         if (isNested) {
-          setContent(prev => ({
-            ...prev,
-            [section]: { ...prev[section], [field]: data.url }
-          }));
+          setContent(prev => {
+            if (!prev) return prev;
+            return {
+              ...prev,
+              [section]: { ...prev[section], [field]: data.url }
+            };
+          });
         } else {
           setContent(prev => ({ ...prev, [field]: data.url }));
         }
@@ -73,15 +76,32 @@ export default function AdminAboutContentPage() {
   };
 
   const updateNested = (section, field, value) => {
-    setContent(prev => ({
-      ...prev,
-      [section]: { ...prev[section], [field]: value }
-    }));
+    setContent(prev => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        [section]: { ...prev[section], [field]: value }
+      };
+    });
   };
 
   if (loading) return (
     <div className="flex items-center justify-center h-[60vh]">
       <div className="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+    </div>
+  );
+
+  if (!content) return (
+    <div className="flex flex-col items-center justify-center h-[60vh] gap-4 text-center">
+      <p className="text-lg font-bold text-primary">Failed to load about content</p>
+      <p className="text-gray-400 text-sm max-w-md">The content could not be fetched. This is usually a database connection problem on the server.</p>
+      <button
+        type="button"
+        onClick={() => window.location.reload()}
+        className="bg-primary text-white px-6 py-3 rounded-full text-xs font-bold uppercase tracking-wider hover:bg-emerald-900 transition-all"
+      >
+        Reload
+      </button>
     </div>
   );
 

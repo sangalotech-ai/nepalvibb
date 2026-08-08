@@ -73,7 +73,9 @@ export default function FeaturedTours({ content }) {
                   className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
                 />
                 <div className="absolute top-4 left-4 bg-primary/95 text-white text-[9px] font-bold uppercase px-3 py-1.5 rounded-full tracking-wider shadow-md backdrop-blur-sm">
-                  {Array.isArray(tour.category) ? tr(tour, 'category', locale)[0] : (tr(tour, 'category', locale) || t.tours.categoryFallback)}
+                  {(locale === 'en'
+                    ? (tour.categoryEn?.[0] || tour.category?.[0])
+                    : (Array.isArray(tour.category) ? tour.category[0] : tour.category)) || t.tours.categoryFallback}
                 </div>
                 <div className="absolute bottom-4 right-4 bg-orange-500 text-white font-bold px-4 py-2 rounded-2xl shadow-md transition-transform duration-500">
                   <p className="text-[9px] block font-light text-orange-200 uppercase tracking-wider leading-none mb-0.5">{t.common.fra}</p>
@@ -89,10 +91,10 @@ export default function FeaturedTours({ content }) {
                   className="text-gray-500 font-light text-sm mb-6 line-clamp-3 leading-relaxed [&_p]:m-0"
                   dangerouslySetInnerHTML={{ __html: tr(tour, 'summary', locale) }}
                 />
-                <Link href={`/trips/${tour.slug}`} className="mt-auto inline-flex items-center text-primary font-bold uppercase text-xs tracking-wider gap-2 hover:text-orange-500 transition-colors">
+                <span className="mt-auto inline-flex items-center text-primary font-bold uppercase text-xs tracking-wider gap-2 hover:text-orange-500 transition-colors cursor-pointer">
                   <span>{t.common.lesMer}</span>
                   <span className="text-orange-500 text-base group-hover:translate-x-1.5 transition-transform">→</span>
-                </Link>
+                </span>
               </div>
               </Link>
             </div>
