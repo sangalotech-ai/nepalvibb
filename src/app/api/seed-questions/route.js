@@ -37,14 +37,6 @@ export async function GET() {
         isActive: true
       },
       {
-        question: 'Travel information',
-        description: 'Er det noe spesielt vi bør vite om din reise?',
-        type: 'text',
-        options: [],
-        order: 2,
-        isActive: true
-      },
-      {
         question: 'Tour details',
         description: 'Vennligst oppgi detaljer om din ønskede tur.',
         type: 'text', // Using text as a placeholder for the complex step
@@ -74,7 +66,7 @@ export async function GET() {
             description: 'You will have a different experience' 
           }
         ],
-        order: 3,
+        order: 2,
         isActive: true
       }
     ];

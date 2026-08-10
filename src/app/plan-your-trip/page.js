@@ -4,11 +4,11 @@ import { useState, useEffect, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSession } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
-import { 
+import {
   Calendar, Users, MapPin, Compass,
   Send, ChevronRight, ChevronLeft, CheckCircle2,
   Mountain, Landmark, Heart, Sparkles, Layout, Mail, User, MessageSquare, Globe, Zap,
-  MessageCircle, ArrowUp, ChevronDown, Check, Info, Shield, Star, Edit2
+  MessageCircle, ArrowUp, ChevronDown, Check, Info, Shield, Star, Edit2, Lock
 } from 'lucide-react';
 import Link from 'next/link';
 import { signIn } from 'next-auth/react';
@@ -19,6 +19,65 @@ import { useLocale } from '@/components/providers/useLocale';
 const IconMap = {
   MapPin, Mountain, Landmark, Heart, Sparkles, Calendar, Users, Send, Mail, User, MessageSquare, Globe, Zap, Compass, Layout, Star
 };
+
+const DEFAULT_QUESTIONS = [
+  {
+    _id: 'def-1',
+    question: 'Your group size',
+    description: 'Hvem skal du reise sammen med?',
+    type: 'select',
+    options: [
+      { label: 'Solo', value: 'solo', icon: 'User' },
+      { label: 'Par', value: 'couple', icon: 'Users' },
+      { label: 'Familie', value: 'family', icon: 'Users' },
+      { label: 'Gruppe', value: 'group', icon: 'Users' }
+    ]
+  },
+  {
+    _id: 'def-2',
+    question: 'Travel dates',
+    description: 'Når planlegger du å besøke Himalaya?',
+    type: 'select',
+    options: [
+      { label: 'Fleksibel', value: 'flexible', icon: 'Calendar' },
+      { label: 'Spesifikke datoer', value: 'fixed', icon: 'Calendar' },
+      { label: 'Vår (Mars-Mai)', value: 'spring', icon: 'Calendar' },
+      { label: 'Høst (Sept-Nov)', value: 'autumn', icon: 'Calendar' }
+    ]
+  },
+  {
+    _id: 'def-3',
+    question: 'Tour details',
+    description: 'Vennligst oppgi detaljer om din ønskede tur.',
+    type: 'text',
+    options: [
+      { 
+        label: 'Comfortable', 
+        value: 'comfortable', 
+        icon: 'Heart',
+        description: 'Equivalent to 3-star hotels. We will strive to provide comfortable, but not luxurious accommodation.' 
+      },
+      { 
+        label: 'Luxury', 
+        value: 'luxury', 
+        icon: 'Sparkles',
+        description: 'Equivalent to 4 star hotels and above. We offer the best luxury accommodation available throughout the tour.' 
+      },
+      { 
+        label: 'Luxury Plus', 
+        value: 'luxury-plus', 
+        icon: 'Sparkles',
+        description: 'Equivalent to 5 star hotels or more, we offer the best luxury accommodation available throughout the tour.' 
+      },
+      { 
+        label: 'Camping', 
+        value: 'camping', 
+        icon: 'Mountain',
+        description: 'You will have a different experience' 
+      }
+    ]
+  }
+];
 
 function DateField({ label, value, min, onChange }) {
   const { t } = useLocale();
@@ -54,7 +113,7 @@ function PlanYourTripContent() {
   const [loading, setLoading] = useState(true);
   const [submitted, setSubmitted] = useState(false);
   const [createdTripId, setCreatedTripId] = useState(null);
-  
+
   const [responses, setResponses] = useState(() => {
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem("trip_responses");
@@ -72,9 +131,9 @@ function PlanYourTripContent() {
   const [contactInfo, setContactInfo] = useState(() => {
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem("trip_contact");
-      return saved ? JSON.parse(saved) : { name: '', email: '', message: '' };
+      return saved ? JSON.parse(saved) : { name: '', email: '', password: '' };
     }
-    return { name: '', email: '', message: '' };
+    return { name: '', email: '', password: '' };
   });
 
   useEffect(() => {
@@ -103,8 +162,19 @@ function PlanYourTripContent() {
 
   useEffect(() => {
     const savedStep = localStorage.getItem('trip_step');
-    if (savedStep) setCurrentStepIdx(parseInt(savedStep));
+    if (savedStep) {
+      const parsed = parseInt(savedStep);
+      if (!isNaN(parsed)) {
+        setCurrentStepIdx(parsed);
+      }
+    }
   }, []);
+
+  useEffect(() => {
+    if (questions.length > 0 && currentStepIdx >= questions.length + 1) {
+      setCurrentStepIdx(0);
+    }
+  }, [questions, currentStepIdx]);
 
   useEffect(() => {
     localStorage.setItem('trip_step', currentStepIdx.toString());
@@ -115,14 +185,20 @@ function PlanYourTripContent() {
       try {
         const [qRes, tRes, dRes, aRes] = await Promise.all([
           fetch('/api/plan-trip/questions'),
-          fetch('/api/trips'),
+          fetch('/api/trips?limit=1000'),
           fetch('/api/destinations'),
           fetch('/api/activities')
         ]);
         const [qData, tData, dData, aData] = await Promise.all([
           qRes.json(), tRes.json(), dRes.json(), aRes.json()
         ]);
-        setQuestions(Array.isArray(qData) ? qData.filter(q => !q.question?.toLowerCase().includes('oppleve')) : []);
+        const filtered = Array.isArray(qData)
+          ? qData.filter(q => {
+              const title = q.question?.toLowerCase() || '';
+              return !title.includes('oppleve') && !title.includes('travel information');
+            })
+          : [];
+        setQuestions(filtered.length > 0 ? filtered : DEFAULT_QUESTIONS);
         setTours(Array.isArray(tData?.tours) ? tData.tours : Array.isArray(tData) ? tData : []);
         setDestinations(Array.isArray(dData) ? dData : []);
         setActivities(Array.isArray(aData) ? aData : []);
@@ -198,7 +274,7 @@ function PlanYourTripContent() {
         }
       }
     } else {
-      if (!contactInfo.name.trim() || !contactInfo.email.trim()) {
+      if (!contactInfo.name.trim() || !contactInfo.email.trim() || !contactInfo.password?.trim()) {
         setError(t.planTrip.errorNameEmail);
         return;
       }
@@ -300,15 +376,15 @@ function PlanYourTripContent() {
               const isCompleted = currentStepIdx > i;
               return (
                 <div key={i} className="relative z-10 flex flex-col items-center">
-                  <motion.div 
-                    animate={{ 
-                      scale: isActive ? 1.3 : 1, 
-                      backgroundColor: isCompleted ? "var(--color-primary)" : "#ffffff", 
-                      borderColor: isCompleted || isActive ? "var(--color-primary)" : "#F3F4F6", 
-                      color: isCompleted ? "#ffffff" : isActive ? "var(--color-primary)" : "#D1D5DB", 
-                      boxShadow: isActive ? "0 10px 25px -5px rgba(0,0,0,0.1), 0 0 0 8px rgba(0,0,0,0.03)" : "none" 
-                    }} 
-                    transition={{ type: "spring", stiffness: 300, damping: 20 }} 
+                  <motion.div
+                    animate={{
+                      scale: isActive ? 1.3 : 1,
+                      backgroundColor: isCompleted ? "var(--color-primary)" : "#ffffff",
+                      borderColor: isCompleted || isActive ? "var(--color-primary)" : "#F3F4F6",
+                      color: isCompleted ? "#ffffff" : isActive ? "var(--color-primary)" : "#D1D5DB",
+                      boxShadow: isActive ? "0 10px 25px -5px rgba(0,0,0,0.1), 0 0 0 8px rgba(0,0,0,0.03)" : "none"
+                    }}
+                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
                     className={cn("w-12 h-12 rounded-2xl border-4 flex items-center justify-center transition-all duration-300", isActive && "ring-8 ring-primary/5")}
                   >
                     {isCompleted ? <Check className="w-6 h-6 stroke-[4px]" /> : <span className="text-[13px] font-black">{i + 1}</span>}
@@ -386,14 +462,14 @@ function PlanYourTripContent() {
                                 <select value={responses['tour'] || ''} onChange={(e) => setResponses({ ...responses, tour: e.target.value })} className="w-full bg-white border-2 border-gray-100 rounded-[2rem] px-8 py-5 text-sm font-bold text-gray-900 focus:border-primary appearance-none pr-12 relative z-10 cursor-pointer shadow-sm transition-all">
                                   <option value="">{t.planTrip.noTour}</option>
                                   {tours
-                                    .filter(tr => { 
-                                      if (!responses["destination"]) return true; 
-                                      const selectedDest = destinations.find(d => d.slug === responses["destination"]); 
-                                      const selectedName = selectedDest?.name; 
-                                      return tr.destination === responses["destination"] || 
-                                             tr.destination === selectedName || 
-                                             tr.destination?.toLowerCase() === responses["destination"]?.toLowerCase() || 
-                                             tr.destination?.toLowerCase() === selectedName?.toLowerCase(); 
+                                    .filter(tr => {
+                                      if (!responses["destination"]) return true;
+                                      const selectedDest = destinations.find(d => d.slug === responses["destination"]);
+                                      const selectedName = selectedDest?.name;
+                                      return tr.destination === responses["destination"] ||
+                                        tr.destination === selectedName ||
+                                        tr.destination?.toLowerCase() === responses["destination"]?.toLowerCase() ||
+                                        tr.destination?.toLowerCase() === selectedName?.toLowerCase();
                                     })
                                     .map(tour => <option key={tour._id} value={tour.slug}>{tr(tour, 'title', locale)}</option>)
                                   }
@@ -411,8 +487,8 @@ function PlanYourTripContent() {
                               </div>
                             </div>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                              {(currentQuestion.options || []).map(opt => { 
-                                const isSelected = responses['accommodation'] === opt.value; 
+                              {(currentQuestion.options || []).map(opt => {
+                                const isSelected = responses['accommodation'] === opt.value;
                                 return (
                                   <motion.button key={opt.value} whileHover={{ y: -4 }} whileTap={{ scale: 0.98 }} onClick={() => setResponses({ ...responses, accommodation: opt.value })} className={cn("p-6 rounded-[2.5rem] border-2 text-left transition-all relative overflow-hidden", isSelected ? "border-primary bg-emerald-50/30 shadow-xl shadow-primary/5" : "border-gray-50 bg-white hover:border-gray-200")}>
                                     <div className="flex items-start justify-between mb-4">
@@ -424,7 +500,7 @@ function PlanYourTripContent() {
                                     <p className="text-sm font-black text-primary uppercase tracking-tight mb-1">{opt.label}</p>
                                     <p className="text-[10px] text-gray-400 font-medium leading-relaxed">{opt.description}</p>
                                   </motion.button>
-                                ); 
+                                );
                               })}
                             </div>
                           </div>
@@ -435,15 +511,25 @@ function PlanYourTripContent() {
                                 <Sparkles className="w-4 h-4" />
                                 <label className="text-[11px] font-black uppercase tracking-widest">{t.planTrip.budgetLabel}</label>
                               </div>
-                              <div className="relative group">
-                                <div className="absolute left-5 top-1/2 -translate-y-1/2 z-10 flex items-center gap-1.5 bg-gray-100 rounded-xl px-3 py-2 group-focus-within:bg-primary/10 group-focus-within:text-primary transition-all">
-                                  <span className="text-xs font-black text-gray-400 group-focus-within:text-primary transition-colors">{t.planTrip.kr}</span>
+                              <div className="relative group flex items-center">
+                                <div className="absolute left-3 top-1/2 -translate-y-1/2 z-10">
+                                  <select 
+                                    value={responses['currency'] || 'NOK'} 
+                                    onChange={e => setResponses({ ...responses, currency: e.target.value })}
+                                    className="bg-gray-100 font-black text-xs text-gray-800 rounded-xl px-3 py-2 border-0 focus:ring-2 focus:ring-primary cursor-pointer uppercase tracking-wider hover:bg-gray-200 transition-colors"
+                                  >
+                                    <option value="NOK">NOK</option>
+                                    <option value="DKK">DKK</option>
+                                    <option value="SEK">SEK</option>
+                                    <option value="EURO">EURO</option>
+                                    <option value="USD">USD</option>
+                                  </select>
                                 </div>
-                                <input type="number" placeholder="0" value={responses['budget'] || ''} onChange={e => setResponses({ ...responses, 'budget': e.target.value })} className="w-full bg-white border-2 border-gray-100 rounded-[2rem] pl-[4.5rem] pr-8 py-5 text-lg font-bold text-primary focus:outline-none focus:border-primary focus:bg-white transition-all shadow-sm placeholder:text-gray-200" />
+                                <input type="number" placeholder="0" value={responses['budget'] || ''} onChange={e => setResponses({ ...responses, 'budget': e.target.value })} className="w-full bg-white border-2 border-gray-100 rounded-[2rem] pl-[7rem] pr-8 py-5 text-lg font-bold text-primary focus:outline-none focus:border-primary focus:bg-white transition-all shadow-sm placeholder:text-gray-200" />
                               </div>
-                              <div className="flex gap-2 pt-1">
+                              <div className="flex flex-wrap gap-2 pt-1">
                                 {[5000, 10000, 15000, 25000].map(amount => (
-                                  <button key={amount} type="button" onClick={() => setResponses({ ...responses, 'budget': String(amount), 'budget_flexible': responses['budget_flexible'] || 'enough' })} className={`px-4 py-2 rounded-xl text-[11px] font-bold uppercase tracking-wider border transition-all ${responses['budget'] === String(amount) ? 'bg-primary text-white border-primary' : 'bg-white text-gray-400 border-gray-100 hover:border-primary/30 hover:text-primary'}`}>{amount.toLocaleString('no-NO')} {t.planTrip.kr}</button>
+                                  <button key={amount} type="button" onClick={() => setResponses({ ...responses, 'budget': String(amount), 'budget_flexible': responses['budget_flexible'] || 'enough' })} className={`px-4 py-2 rounded-xl text-[11px] font-bold uppercase tracking-wider border transition-all ${responses['budget'] === String(amount) ? 'bg-primary text-white border-primary' : 'bg-white text-gray-400 border-gray-100 hover:border-primary/30 hover:text-primary'}`}>{amount.toLocaleString('no-NO')} {responses['currency'] || 'NOK'}</button>
                                 ))}
                               </div>
                             </div>
@@ -478,9 +564,9 @@ function PlanYourTripContent() {
                               <textarea rows={6} value={responses[currentQuestion._id]?.[0] || ''} onChange={e => setResponses({ ...responses, [currentQuestion._id]: [e.target.value] })} className="w-full bg-white border-2 border-gray-100 rounded-3xl px-6 py-5 text-sm font-light text-gray-800 focus:outline-none focus:border-primary focus:bg-white transition-all shadow-sm resize-none" placeholder={t.planTrip.textPlaceholder} />
                             </motion.div>
                           ) : (
-                            currentQuestion.options.map((opt, i) => { 
-                              const Icon = IconMap[opt.icon] || Layout; 
-                              const isSelected = (responses[currentQuestion._id] || []).includes(opt.value); 
+                            currentQuestion.options.map((opt, i) => {
+                              const Icon = IconMap[opt.icon] || Layout;
+                              const isSelected = (responses[currentQuestion._id] || []).includes(opt.value);
                               return (
                                 <motion.button key={opt.value} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }} whileHover={{ y: -4 }} whileTap={{ scale: 0.98 }} onClick={() => handleOptionToggle(currentQuestion._id, opt.value, currentQuestion.type === 'multi-select')} className={cn("p-6 rounded-3xl border-2 transition-all flex flex-col items-start space-y-6 text-left relative group overflow-hidden", isSelected ? "border-primary bg-emerald-50/20 shadow-md" : "border-gray-50 bg-white hover:border-primary/20")}>
                                   <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-500 relative z-10", isSelected ? "bg-primary text-white rotate-12 scale-110 shadow-sm" : "bg-gray-50 text-gray-400 group-hover:bg-primary group-hover:text-white")}>
@@ -496,15 +582,15 @@ function PlanYourTripContent() {
                                     </motion.div>
                                   )}
                                 </motion.button>
-                              ); 
+                              );
                             })
                           )}
                         </div>
                       )}
-                      {(() => { 
-                        const selected = responses[currentQuestion._id] || []; 
-                        const showCounter = selected.some(v => v?.toLowerCase().includes('famil') || v?.toLowerCase().includes('group') || v?.toLowerCase().includes('gruppe')); 
-                        if (!showCounter) return null; 
+                      {(() => {
+                        const selected = responses[currentQuestion._id] || [];
+                        const showCounter = selected.some(v => v?.toLowerCase().includes('famil') || v?.toLowerCase().includes('group') || v?.toLowerCase().includes('gruppe'));
+                        if (!showCounter) return null;
                         return (
                           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="p-8 rounded-3xl border-2 border-primary/5 bg-emerald-50/30 space-y-6 shadow-inner">
                             <div className="flex items-center space-x-2.5">
@@ -536,7 +622,7 @@ function PlanYourTripContent() {
                               </div>
                             </div>
                           </motion.div>
-                        ); 
+                        );
                       })()}
                     </div>
                   ) : (
@@ -563,13 +649,16 @@ function PlanYourTripContent() {
                                 <input type="email" required placeholder={t.planTrip.emailPlaceholder} value={contactInfo.email} onChange={e => setContactInfo({ ...contactInfo, email: e.target.value })} className="w-full bg-gray-50/50 border-2 border-gray-50 rounded-2xl px-14 py-5 text-sm font-bold focus:outline-none focus:border-primary focus:bg-white transition-all" />
                               </div>
                             </div>
-                            <div className={cn("space-y-2", session?.user ? "col-span-2" : "")}>
-                              <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">{t.planTrip.specialRequests}</label>
-                              <textarea rows={session?.user ? 6 : 4} value={contactInfo.message} onChange={e => setContactInfo({ ...contactInfo, message: e.target.value })} className="w-full bg-gray-50/50 border-2 border-gray-50 rounded-[2rem] px-8 py-6 text-sm font-medium focus:outline-none focus:border-primary focus:bg-white transition-all resize-none shadow-sm" placeholder={t.planTrip.specialRequestsPlaceholder} />
+                            <div className="space-y-2">
+                              <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">{t.planTrip.passwordLabel}</label>
+                              <div className="relative group">
+                                <Lock className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 group-focus-within:text-primary transition-colors" />
+                                <input type="password" required placeholder={t.planTrip.passwordPlaceholder} value={contactInfo.password || ''} onChange={e => setContactInfo({ ...contactInfo, password: e.target.value })} className="w-full bg-gray-50/50 border-2 border-gray-50 rounded-2xl px-14 py-5 text-sm font-bold focus:outline-none focus:border-primary focus:bg-white transition-all" />
+                              </div>
                             </div>
                           </div>
                         </div>
-                        
+
                         {!session?.user && (
                           <div className="space-y-8 order-1 lg:order-2">
                             <div className="bg-gray-50/50 rounded-[2.5rem] p-8 border-2 border-gray-100/50 space-y-8">
@@ -583,10 +672,10 @@ function PlanYourTripContent() {
                               <div className="space-y-4">
                                 <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => signIn('google')} className="w-full bg-white border-2 border-gray-100 text-gray-700 px-6 py-4 rounded-2xl text-xs font-bold flex items-center justify-center space-x-3 shadow-sm hover:border-primary/20 transition-all">
                                   <svg className="w-5 h-5" viewBox="0 0 24 24">
-                                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
-                                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 6.23l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05" />
+                                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 6.23l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
                                   </svg>
                                   <span>{t.planTrip.loginGoogle}</span>
                                 </motion.button>

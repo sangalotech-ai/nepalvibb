@@ -14,6 +14,11 @@ const SiteSettingsSchema = new mongoose.Schema({
     default: 'Nepalvibb er din personlige portal til Himalaya. Vi kobler deg med lokale eksperter for å skape uforglemmelige og bærekraftige reiseopplevelser i hjertet av Asia.' 
   },
   
+  welcomeMessage: {
+    type: String,
+    default: 'Hei {name}! Takk for at du planlegger reisen din med Nepalvibb. Jeg har mottatt din forespørsel og ser frem til å hjelpe deg med å skreddersy det perfekte Himalaya-eventyret. 🙏'
+  },
+  
   socialLinks: {
     facebook: { type: String, default: '#' },
     instagram: { type: String, default: '#' },

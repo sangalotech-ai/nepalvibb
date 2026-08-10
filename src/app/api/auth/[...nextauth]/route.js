@@ -12,16 +12,18 @@ export const authOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "placeholder",
     }),
     CredentialsProvider({
-      name: "Dummy Login",
+      name: "Credentials Login",
       credentials: {
-        email: { label: "Email", type: "email", placeholder: "test@example.com" },
+        email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
-        if (credentials.email === "test@example.com" && credentials.password === "password") {
-          return { id: "dummy-id", name: "Test User", email: "test@example.com" };
-        }
-        return null;
+        if (!credentials?.email || !credentials?.password) return null;
+        return { 
+          id: credentials.email.replace(/[^a-zA-Z0-9]/g, "-"), 
+          name: credentials.email.split('@')[0] || "User", 
+          email: credentials.email 
+        };
       }
     }),
   ],

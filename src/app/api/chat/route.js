@@ -76,12 +76,36 @@ export async function GET(req) {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get('id');
     
-    if (id) {
-      const trip = await TripRequest.findById(id);
-      return NextResponse.json(trip);
+    if (id && id !== 'undefined' && id !== 'null') {
+      let trip = await TripRequest.findById(id).catch(() => null);
+      if (!trip) {
+        trip = await TripRequest.findOne({ _id: id }).catch(() => null);
+      }
+
+      if (trip) {
+        const tripObj = trip.toObject();
+        const hasUserMsg = tripObj.messages?.some(m => m.sender === 'user');
+        if (!hasUserMsg) {
+          const clientDesc = tripObj.trip_description || tripObj.message || tripObj.notes;
+          const userText = clientDesc && clientDesc.trim() 
+            ? clientDesc.trim() 
+            : `Hei! Jeg ønsker å planlegge en tur til ${tripObj.destination || 'Nepal'}${tripObj.tour ? ` (${tripObj.tour})` : ''}.`;
+          
+          tripObj.messages = [
+            {
+              _id: 'init-user-msg',
+              sender: 'user',
+              text: userText,
+              timestamp: tripObj.createdAt || new Date()
+            },
+            ...(tripObj.messages || [])
+          ];
+        }
+        return NextResponse.json(tripObj);
+      }
     }
     
-    return NextResponse.json({ error: 'ID required' }, { status: 400 });
+    return NextResponse.json({ error: 'Trip not found' }, { status: 404 });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

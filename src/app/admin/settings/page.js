@@ -222,6 +222,36 @@ export default function SettingsAdminPage() {
           </div>
         </section>
 
+        {/* Chat & Welcome Message */}
+        <section className="bg-white rounded-[3rem] border border-gray-100 p-10 space-y-8 shadow-sm">
+          <div className="flex items-center space-x-4">
+            <div className="p-3 bg-blue-50 text-blue-500 rounded-2xl">
+              <MessageSquare className="w-6 h-6" />
+            </div>
+            <div>
+              <h2 className="text-xl font-black text-primary uppercase tracking-tight italic">Chat & Velkomstmelding</h2>
+              <p className="text-gray-400 text-xs font-medium mt-0.5">Konfigurer automatisk første melding sendt fra reisespesialist til nye kunder.</p>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">Første velkomstmelding (Spesialist)</label>
+              <textarea 
+                name="welcomeMessage" 
+                value={settings.welcomeMessage || ''} 
+                onChange={handleChange} 
+                rows={4} 
+                placeholder="Hei {name}! Takk for at du planlegger reisen din med Nepalvibb. Jeg har mottatt din forespørsel og ser frem til å hjelpe deg..."
+                className="w-full bg-gray-50 border-0 rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all resize-none" 
+              />
+              <p className="text-[11px] text-gray-400 font-medium ml-2">
+                💡 Bruk <code className="bg-gray-100 text-primary px-1.5 py-0.5 rounded font-mono font-bold">{"{name}"}</code> for å automatisk sette inn kunden sitt navn.
+              </p>
+            </div>
+          </div>
+        </section>
+
         {/* Social Links */}
         <section className="bg-white rounded-[3rem] border border-gray-100 p-10 space-y-8 shadow-sm">
           <div className="flex items-center space-x-4">

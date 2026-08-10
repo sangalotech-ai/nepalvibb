@@ -80,6 +80,7 @@ export default function ChatPage({ params }) {
   const [connected, setConnected] = useState(false);
   const [messagesRead, setMessagesRead] = useState(false);
   const [showNewMsg, setShowNewMsg] = useState(false);
+  const [showMobileSidebar, setShowMobileSidebar] = useState(false);
 
   const endRef = useRef(null);
   const chatContainerRef = useRef(null);
@@ -174,18 +175,25 @@ export default function ChatPage({ params }) {
       try {
         const res = await fetch(`/api/chat?id=${id}`);
         const data = await res.json();
-        if (data) {
+        if (data && !data.error) {
           setRequest(data);
-          if (data.messages) {
+          if (data.messages && data.messages.length > 0) {
             setMessages(data.messages.map((m, i) => ({
               id: m._id || `db-${i}`,
               from: m.sender === 'user' ? 'user' : 'specialist',
               text: m.text,
               attachment: m.attachment || null,
-              time: new Date(m.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+              time: m.timestamp ? new Date(m.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '',
               read: m.read || false,
               timestamp: m.timestamp
             })));
+          } else {
+            const clientDesc = data.trip_description || data.message || data.notes;
+            const initialText = clientDesc && clientDesc.trim() ? clientDesc.trim() : `Hei! Jeg ønsker å planlegge en tur til ${data.destination || 'Nepal'}.`;
+            setMessages([
+              { id: 'fallback-1', from: 'user', text: initialText, time: t.chatPage.timeNow },
+              { id: 'fallback-2', from: 'specialist', text: t.chatPage.helloMsg, time: t.chatPage.timeJustNow }
+            ]);
           }
         }
       } catch (error) {
@@ -378,16 +386,25 @@ export default function ChatPage({ params }) {
                 </div>
               </div>
             </div>
-            <div className="flex items-center space-x-6 text-[10px] font-bold uppercase tracking-widest text-gray-400">
-              <div className="flex items-center space-x-1.5">
-                <Star className="w-3.5 h-3.5 text-yellow-400 fill-yellow-400" />
-                <span className="text-primary font-black">{SPECIALIST.rating}</span>
-                <span>({SPECIALIST.trips} {t.chatPage.trips})</span>
+            <div className="flex items-center space-x-4">
+              <div className="hidden sm:flex items-center space-x-6 text-[10px] font-bold uppercase tracking-widest text-gray-400">
+                <div className="flex items-center space-x-1.5">
+                  <Star className="w-3.5 h-3.5 text-yellow-400 fill-yellow-400" />
+                  <span className="text-primary font-black">{SPECIALIST.rating}</span>
+                  <span>({SPECIALIST.trips} {t.chatPage.trips})</span>
+                </div>
+                <div className="flex items-center space-x-1.5">
+                  <Clock className="w-3.5 h-3.5" />
+                  <span>{t.chatPage.respondsIn} {SPECIALIST.responseTime}</span>
+                </div>
               </div>
-              <div className="flex items-center space-x-1.5">
-                <Clock className="w-3.5 h-3.5" />
-                <span>{t.chatPage.respondsIn} {SPECIALIST.responseTime}</span>
-              </div>
+              <button
+                onClick={() => setShowMobileSidebar(!showMobileSidebar)}
+                className="lg:hidden text-[10px] font-black uppercase tracking-widest bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-xl transition-all flex items-center space-x-1"
+              >
+                <Edit2 className="w-3.5 h-3.5" />
+                <span>{showMobileSidebar ? 'Chat' : 'Info'}</span>
+              </button>
             </div>
           </div>
 
@@ -405,16 +422,46 @@ export default function ChatPage({ params }) {
               href={`/payment?tripId=${id}&amount=${tripSummary.price}`}
               className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all shadow-lg flex items-center space-x-2"
             >
-<span>{t.chatPage.book}</span>
-                <ArrowRight className="w-3 h-3" />
+              <span>{t.chatPage.book}</span>
+              <ArrowRight className="w-3 h-3" />
             </Link>
           </div>
 
           <div 
             ref={chatContainerRef}
             onScroll={handleScroll}
-            className="p-8 space-y-8 flex-1 overflow-y-auto relative"
+            className="p-6 sm:p-8 space-y-6 flex-1 overflow-y-auto relative"
           >
+            {/* Interactive Trip Request Summary Card */}
+            <div className="bg-emerald-50/60 border border-emerald-100/80 rounded-3xl p-6 mb-6 space-y-4 shadow-sm">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3 text-primary">
+                  <Sparkles className="w-5 h-5 text-orange-500 animate-pulse" />
+                  <h4 className="font-black text-xs sm:text-sm uppercase tracking-tight italic">Din Himalaya Reiseforespørsel</h4>
+                </div>
+                <span className="bg-primary/10 text-primary text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border border-primary/10">
+                  {request?.status || 'Aktiv'}
+                </span>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1">
+                <div className="bg-white p-3 rounded-2xl border border-emerald-50 shadow-xs">
+                  <p className="text-[9px] font-black uppercase tracking-widest text-gray-400">Destinasjon</p>
+                  <p className="text-xs font-bold text-primary truncate mt-0.5">{tripSummary.destination}</p>
+                </div>
+                <div className="bg-white p-3 rounded-2xl border border-emerald-50 shadow-xs">
+                  <p className="text-[9px] font-black uppercase tracking-widest text-gray-400">Reisende</p>
+                  <p className="text-xs font-bold text-primary truncate mt-0.5">{tripSummary.travelers}</p>
+                </div>
+                <div className="bg-white p-3 rounded-2xl border border-emerald-50 shadow-xs">
+                  <p className="text-[9px] font-black uppercase tracking-widest text-gray-400">Datoer</p>
+                  <p className="text-xs font-bold text-primary truncate mt-0.5">{tripSummary.dates}</p>
+                </div>
+                <div className="bg-white p-3 rounded-2xl border border-emerald-50 shadow-xs">
+                  <p className="text-[9px] font-black uppercase tracking-widest text-gray-400">Budsjett</p>
+                  <p className="text-xs font-bold text-primary truncate mt-0.5">{tripSummary.budget}</p>
+                </div>
+              </div>
+            </div>
             <AnimatePresence initial={false}>
               {messages.map((msg) => (
                 <motion.div
@@ -565,7 +612,18 @@ export default function ChatPage({ params }) {
           </div>
         </div>
 
-        <aside className="w-full lg:w-[360px] bg-white border-l border-gray-100 flex flex-col hidden lg:flex">
+        <aside className={cn(
+          "w-full lg:w-[360px] bg-white border-l border-gray-100 flex flex-col transition-all duration-300",
+          showMobileSidebar ? "fixed inset-0 z-50 pt-20 overflow-y-auto bg-white" : "hidden lg:flex"
+        )}>
+          {showMobileSidebar && (
+            <button 
+              onClick={() => setShowMobileSidebar(false)}
+              className="lg:hidden absolute top-6 right-6 p-2 bg-gray-100 rounded-full text-gray-700 hover:bg-gray-200 z-50"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          )}
           <div className="flex border-b border-gray-100 px-6 pt-4 sticky top-[72px] bg-white z-40">
             {['oversikt', 'sjekkliste'].map(tab => (
               <button
@@ -613,6 +671,15 @@ export default function ChatPage({ params }) {
                     ))}
                   </div>
                 </div>
+
+                {(request?.trip_description || request?.message || request?.notes) && (
+                  <div className="bg-gray-50 rounded-2xl p-4 space-y-2 border border-gray-100">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Din Beskrivelse</span>
+                    <p className="text-xs text-gray-700 font-medium italic leading-relaxed">
+                      "{request.trip_description || request.message || request.notes}"
+                    </p>
+                  </div>
+                )}
 
                 <button className="w-full flex items-center justify-center space-x-3 border-2 border-dashed border-gray-200 rounded-2xl py-4 text-[11px] font-black uppercase tracking-widest text-gray-400 hover:border-primary hover:text-primary transition-all">
                   <Edit2 className="w-4 h-4" />
