@@ -8,7 +8,7 @@ import {
   Clock, Edit2, ChevronRight, Paperclip,
   CheckCircle2, Circle, MoreHorizontal,
   MessageCircle, Phone, Star, X, CreditCard, ArrowRight, Shield,
-  Check, CheckCheck, Image as ImageIcon, FileIcon, ExternalLink
+  Check, CheckCheck, Image as ImageIcon, FileIcon, ExternalLink, Sparkles
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -243,30 +243,60 @@ export default function ChatPage({ params }) {
     }
   }, [messages]);
 
-  const sendMessage = async (text) => {
-    const msg = text || input.trim();
-    if (!msg) return;
+  const sendMessage = async (text, attachment = null) => {
+    const msg = (typeof text === 'string' ? text : input).trim();
+    if (!msg && !attachment) return;
     setInput('');
     setSending(true);
 
-    const userMsg = { id: `temp-${Date.now()}`, from: 'user', text: msg, time: t.chatPage.timeJustNow };
+    const userMsg = {
+      id: `temp-${Date.now()}`,
+      from: 'user',
+      text: msg,
+      attachment: attachment || null,
+      time: t.chatPage.timeJustNow,
+      timestamp: new Date().toISOString()
+    };
 
-    if (id !== 'new' && socketRef.current?.connected) {
-      socketRef.current.emit('send-message', {
-        tripId: id,
-        message: msg,
-        from: 'user'
+    setMessages(prev => [...prev, userMsg]);
+
+    try {
+      if (id !== 'new' && socketRef.current?.connected) {
+        socketRef.current.emit('send-message', {
+          tripId: id,
+          message: msg,
+          from: 'user',
+          attachment
+        });
+      }
+
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tripId: id,
+          message: msg,
+          sender: 'user',
+          attachment
+        })
       });
+
+      const data = await res.json();
+      if (data && data.messages && data.messages.length > 0) {
+        setMessages(data.messages.map((m, i) => ({
+          id: m._id || `db-${i}`,
+          from: m.sender === 'user' ? 'user' : 'specialist',
+          text: m.text,
+          attachment: m.attachment || null,
+          time: m.timestamp ? new Date(m.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '',
+          read: m.read || false,
+          timestamp: m.timestamp
+        })));
+      }
+    } catch (err) {
+      console.error('Failed to send/persist message:', err);
+    } finally {
       setSending(false);
-    } else {
-      // Local only / fallback
-      setMessages(prev => [...prev, userMsg]);
-      // For 'new' trips or if socket fails
-      setTimeout(() => {
-        const botMsg = { id: Date.now() + 1, from: 'specialist', text: t.chatPage.botReply, time: t.chatPage.timeJustNow };
-        setMessages(prev => [...prev, botMsg]);
-        setSending(false);
-      }, 1000);
     }
   };
 
@@ -290,34 +320,16 @@ export default function ChatPage({ params }) {
       const data = await res.json();
 
       if (data.url) {
-        if (socketRef.current?.connected) {
-          socketRef.current.emit('send-message', {
-            tripId: id,
-            message: '',
-            from: 'user',
-            attachment: {
-              url: data.url,
-              type: data.type,
-              name: data.name
-            }
-          });
-        } else {
-          // No socket - just add locally (user chat usually doesn't have a REST respond API like admin)
-          setMessages(prev => [...prev, {
-            id: `fb-file-${Date.now()}`,
-            from: 'user',
-            text: '',
-            attachment: { url: data.url, type: data.type, name: data.name },
-            time: t.chatPage.timeJustNow,
-            read: false,
-            timestamp: new Date().toISOString()
-          }]);
-        }
+        await sendMessage('', {
+          url: data.url,
+          type: data.type,
+          name: data.name
+        });
       }
     } catch (err) {
       console.error('File upload failed:', err);
-    } finally {
       setSending(false);
+    } finally {
       if (fileInputRef.current) fileInputRef.current.value = '';
     }
   };
@@ -695,11 +707,8 @@ export default function ChatPage({ params }) {
                       <p className="text-[10px] text-gray-400">{SPECIALIST.title}</p>
                     </div>
                   </div>
-                  <div className="flex space-x-3">
-                    <button className="flex-1 bg-primary text-white py-3 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center space-x-2">
-                      <MessageCircle className="w-3.5 h-3.5" /><span>{t.chatPage.message}</span>
-                    </button>
-                    <button className="flex-1 border-2 border-gray-100 text-gray-600 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center space-x-2 hover:border-primary hover:text-primary transition-all">
+                  <div>
+                    <button className="w-full bg-primary text-white py-3 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center space-x-2 hover:bg-emerald-900 transition-all shadow-md">
                       <Phone className="w-3.5 h-3.5" /><span>{t.chatPage.call}</span>
                     </button>
                   </div>
@@ -720,7 +729,7 @@ export default function ChatPage({ params }) {
                       </Link>
 
                     <Link
-                      href={`/trips/${tripSlug}`}
+                      href={`/destination/${tripSummary.destination?.toLowerCase() || 'nepal'}`}
                       className="block w-full text-center border-2 border-gray-200 text-gray-500 hover:border-primary hover:text-primary py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all"
                     >
 {t.chatPage.viewFullItinerary}

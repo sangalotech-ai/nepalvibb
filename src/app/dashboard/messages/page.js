@@ -10,24 +10,28 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 export default function MessagesPage() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const [trips, setTrips] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (status === "loading") return;
+
     const fetchTrips = async () => {
       try {
+        setLoading(true);
         const res = await fetch('/api/plan-trip');
         const data = await res.json();
         setTrips(Array.isArray(data) ? data : []);
       } catch (err) {
         console.error(err);
+        setTrips([]);
       } finally {
         setLoading(false);
       }
     };
     fetchTrips();
-  }, []);
+  }, [status, session]);
 
   if (loading) return (
     <div className="flex items-center justify-center py-20">
@@ -46,6 +50,10 @@ export default function MessagesPage() {
         <div className="grid grid-cols-1 gap-6">
           {trips.map((trip) => {
             const lastMessage = trip.messages?.[trip.messages.length - 1];
+            const msgText = lastMessage 
+              ? (lastMessage.text || (lastMessage.attachment ? `[${lastMessage.attachment.name || 'Vedlegg'}]` : 'Melding mottatt'))
+              : 'Ingen meldinger ennå.';
+
             return (
               <Link 
                 key={trip._id} 
@@ -62,14 +70,14 @@ export default function MessagesPage() {
                   <div className="flex-1">
                     <div className="flex items-center justify-between mb-1">
                       <h4 className="text-lg font-black text-primary uppercase tracking-tight">
-                        {trip.trip_title || trip.destination || 'Trip Discussion'}
+                        {trip.trip_title || trip.title || trip.destination || 'Reiseforespørsel'}
                       </h4>
                       <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                        {lastMessage ? new Date(lastMessage.timestamp).toLocaleDateString() : ''}
+                        {lastMessage ? new Date(lastMessage.timestamp).toLocaleDateString('no-NO') : ''}
                       </span>
                     </div>
                     <p className="text-sm text-gray-500 line-clamp-1 italic">
-                      {lastMessage ? `${lastMessage.sender === 'specialist' ? 'Spesialist: ' : 'Deg: '}${lastMessage.text}` : 'Ingen meldinger ennå.'}
+                      {lastMessage ? `${lastMessage.sender === 'specialist' ? 'Spesialist: ' : 'Deg: '}${msgText}` : msgText}
                     </p>
                   </div>
                 </div>

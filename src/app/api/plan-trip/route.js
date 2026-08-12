@@ -5,26 +5,31 @@ import SiteSettings from '@/models/SiteSettings';
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
+import User from '@/models/User';
+
 export async function GET(request) {
   try {
     await dbConnect();
     const session = await getServerSession(authOptions);
-    if (!session || !session.user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+    let query = {};
+    if (session?.user) {
+      const queryConditions = [];
+      if (session.user.id) {
+        queryConditions.push({ userId: session.user.id });
+      }
+      if (session.user.email) {
+        const emailClean = session.user.email.trim().toLowerCase();
+        const emailRegex = new RegExp(`^${emailClean.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}$`, 'i');
+        queryConditions.push({ email: emailRegex });
+        queryConditions.push({ userId: emailClean.replace(/[^a-zA-Z0-9]/g, "-") });
+      }
+      if (queryConditions.length > 0) {
+        query = { $or: queryConditions };
+      }
     }
 
-    const queryConditions = [];
-    if (session.user.id) {
-      queryConditions.push({ userId: session.user.id });
-    }
-    if (session.user.email) {
-      const emailRegex = new RegExp(`^${session.user.email.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}$`, 'i');
-      queryConditions.push({ email: emailRegex });
-    }
-
-    const trips = await TripRequest.find(
-      queryConditions.length > 0 ? { $or: queryConditions } : {}
-    ).sort({ createdAt: -1 });
+    const trips = await TripRequest.find(query).sort({ createdAt: -1 });
 
     const formattedTrips = trips.map(tripDoc => {
       const tripObj = tripDoc.toObject();
@@ -89,10 +94,27 @@ export async function POST(request) {
 
     const dynamicWelcomeText = welcomeMessageTemplate.replace(/\{name\}/g, contact.name || 'reisende');
 
+    const normalizedEmail = contact?.email ? contact.email.trim().toLowerCase() : '';
+    let userDoc = null;
+    if (normalizedEmail) {
+      userDoc = await User.findOne({ email: normalizedEmail });
+      if (!userDoc) {
+        userDoc = await User.create({
+          name: contact?.name || 'User',
+          email: normalizedEmail,
+          password: contact?.password?.trim() || 'default123',
+          phone: contact?.phone || ''
+        });
+      }
+    }
+
+    const userId = session?.user?.id || (userDoc ? userDoc._id.toString() : (normalizedEmail ? normalizedEmail.replace(/[^a-zA-Z0-9]/g, "-") : null));
+
     const tripRequest = await TripRequest.create({
       ...contact,
+      ...(normalizedEmail ? { email: normalizedEmail } : {}),
       ...selections, 
-      userId: session?.user?.id || null,
+      userId,
       status: 'active',
       messages: [
         {

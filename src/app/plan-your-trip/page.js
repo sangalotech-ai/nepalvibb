@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSession } from 'next-auth/react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import {
   Calendar, Users, MapPin, Compass,
   Send, ChevronRight, ChevronLeft, CheckCircle2,
@@ -102,6 +102,7 @@ function DateField({ label, value, min, onChange }) {
 function PlanYourTripContent() {
   const { t, locale } = useLocale();
   const { data: session } = useSession();
+  const router = useRouter();
   const searchParams = useSearchParams();
   const tourParam = searchParams.get('tour') || searchParams.get('slug');
   const destParam = searchParams.get('dest');
@@ -290,6 +291,7 @@ function PlanYourTripContent() {
 
   const submitForm = async () => {
     try {
+      setLoading(true);
       const res = await fetch('/api/plan-trip', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -300,14 +302,33 @@ function PlanYourTripContent() {
       });
       if (res.ok) {
         const data = await res.json();
-        setCreatedTripId(data._id);
-        setSubmitted(true);
+        
+        if (!session?.user && contactInfo.email && contactInfo.password) {
+          try {
+            await signIn('credentials', {
+              redirect: false,
+              email: contactInfo.email.trim(),
+              password: contactInfo.password.trim(),
+              name: contactInfo.name?.trim()
+            });
+          } catch (loginErr) {
+            console.error("Auto login error:", loginErr);
+          }
+        }
+
         localStorage.removeItem('trip_responses');
         localStorage.removeItem('trip_contact');
         localStorage.removeItem('trip_step');
+
+        router.push(`/plan-your-trip/chat/${data._id}`);
+      } else {
+        setLoading(false);
+        setError('Kunne ikke sende forespørsel. Vennligst prøv igjen.');
       }
     } catch (err) {
       console.error(err);
+      setLoading(false);
+      setError('Kunne ikke sende forespørsel. Vennligst prøv igjen.');
     }
   };
 

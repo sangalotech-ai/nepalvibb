@@ -12,24 +12,28 @@ import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 export default function DashboardPage() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const [trips, setTrips] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (status === "loading") return;
+
     const fetchTrips = async () => {
       try {
+        setLoading(true);
         const res = await fetch('/api/plan-trip');
         const data = await res.json();
         setTrips(Array.isArray(data) ? data : []);
       } catch (err) {
         console.error(err);
+        setTrips([]);
       } finally {
         setLoading(false);
       }
     };
     fetchTrips();
-  }, []);
+  }, [status, session]);
 
   const stats = [
     { label: 'Aktive reiser', value: trips.filter(t => t.status === 'active').length, icon: Calendar, color: 'text-emerald-500', bg: 'bg-emerald-50' },

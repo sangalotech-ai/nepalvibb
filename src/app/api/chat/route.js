@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import TripRequest from '@/models/TripRequest';
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 const SPECIALIST_RESPONSES = [
   "That's a wonderful choice! The mountain trekking and culture in Nepal is truly world-class. I'd love to weave that into your itinerary. Would you like to spend more time in the mountains or also include some time in Kathmandu valley?",
@@ -23,7 +25,7 @@ export async function POST(req) {
   try {
     await dbConnect();
     const body = await req.json();
-    const { message, tripId, type, ...onboardingData } = body;
+    const { message, tripId, type, sender, attachment, ...onboardingData } = body;
     
     let trip;
 
@@ -44,16 +46,42 @@ export async function POST(req) {
       });
     } else {
       // Update existing trip with new message
-      trip = await TripRequest.findById(tripId);
+      if (tripId && tripId !== 'new') {
+        trip = await TripRequest.findById(tripId).catch(() => null);
+        if (!trip) {
+          trip = await TripRequest.findOne({ _id: tripId }).catch(() => null);
+        }
+      }
+
       if (!trip) {
-        // Fallback for demo if ID is string based
-        trip = await TripRequest.findOne({ _id: tripId }).catch(() => null);
+        // Fallback: search by user session if tripId is not found
+        const session = await getServerSession(authOptions);
+        if (session?.user?.email) {
+          const emailClean = session.user.email.trim().toLowerCase();
+          const emailRegex = new RegExp(`^${emailClean.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}$`, 'i');
+          trip = await TripRequest.findOne({
+            $or: [{ userId: session.user.id }, { email: emailRegex }]
+          }).sort({ createdAt: -1 });
+        }
       }
 
       if (trip) {
-        const replyText = generateReply(message || '');
-        trip.messages.push({ sender: 'user', text: message });
-        trip.messages.push({ sender: 'specialist', text: replyText });
+        const msgSender = sender || 'user';
+        trip.messages.push({
+          sender: msgSender,
+          text: message || '',
+          attachment: attachment || null,
+          timestamp: new Date()
+        });
+
+        if (msgSender === 'user') {
+          const replyText = generateReply(message || 'file attachment');
+          trip.messages.push({
+            sender: 'specialist',
+            text: replyText,
+            timestamp: new Date(Date.now() + 500)
+          });
+        }
         await trip.save();
       }
     }
@@ -61,7 +89,8 @@ export async function POST(req) {
     return NextResponse.json({
       success: true,
       tripId: trip?._id || tripId,
-      reply: trip?.messages[trip.messages.length - 1]?.text || "I've received your message.",
+      messages: trip?.messages || [],
+      reply: trip?.messages?.[trip.messages.length - 1]?.text || "I've received your message.",
     });
 
   } catch (error) {
@@ -76,33 +105,52 @@ export async function GET(req) {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get('id');
     
-    if (id && id !== 'undefined' && id !== 'null') {
-      let trip = await TripRequest.findById(id).catch(() => null);
+    let trip = null;
+
+    if (id && id !== 'undefined' && id !== 'null' && id !== 'latest') {
+      trip = await TripRequest.findById(id).catch(() => null);
       if (!trip) {
         trip = await TripRequest.findOne({ _id: id }).catch(() => null);
       }
+    }
 
-      if (trip) {
-        const tripObj = trip.toObject();
-        const hasUserMsg = tripObj.messages?.some(m => m.sender === 'user');
-        if (!hasUserMsg) {
-          const clientDesc = tripObj.trip_description || tripObj.message || tripObj.notes;
-          const userText = clientDesc && clientDesc.trim() 
-            ? clientDesc.trim() 
-            : `Hei! Jeg ønsker å planlegge en tur til ${tripObj.destination || 'Nepal'}${tripObj.tour ? ` (${tripObj.tour})` : ''}.`;
-          
-          tripObj.messages = [
-            {
-              _id: 'init-user-msg',
-              sender: 'user',
-              text: userText,
-              timestamp: tripObj.createdAt || new Date()
-            },
-            ...(tripObj.messages || [])
-          ];
+    if (!trip) {
+      const session = await getServerSession(authOptions);
+      if (session?.user) {
+        const queryConditions = [];
+        if (session.user.id) queryConditions.push({ userId: session.user.id });
+        if (session.user.email) {
+          const emailClean = session.user.email.trim().toLowerCase();
+          const emailRegex = new RegExp(`^${emailClean.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}$`, 'i');
+          queryConditions.push({ email: emailRegex });
+          queryConditions.push({ userId: emailClean.replace(/[^a-zA-Z0-9]/g, "-") });
         }
-        return NextResponse.json(tripObj);
+        if (queryConditions.length > 0) {
+          trip = await TripRequest.findOne({ $or: queryConditions }).sort({ createdAt: -1 });
+        }
       }
+    }
+
+    if (trip) {
+      const tripObj = trip.toObject();
+      const hasUserMsg = tripObj.messages?.some(m => m.sender === 'user');
+      if (!hasUserMsg) {
+        const clientDesc = tripObj.trip_description || tripObj.message || tripObj.notes;
+        const userText = clientDesc && clientDesc.trim() 
+          ? clientDesc.trim() 
+          : `Hei! Jeg ønsker å planlegge en tur til ${tripObj.destination || 'Nepal'}${tripObj.tour ? ` (${tripObj.tour})` : ''}.`;
+        
+        tripObj.messages = [
+          {
+            _id: 'init-user-msg',
+            sender: 'user',
+            text: userText,
+            timestamp: tripObj.createdAt || new Date()
+          },
+          ...(tripObj.messages || [])
+        ];
+      }
+      return NextResponse.json(tripObj);
     }
     
     return NextResponse.json({ error: 'Trip not found' }, { status: 404 });
