@@ -271,29 +271,50 @@ function PaymentContent() {
                   <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-primary">Steg 2: Betalingsmetode</h3>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <button 
                     onClick={() => setPaymentMethod('paypal')}
+                    type="button"
                     className={cn(
-                      "p-6 rounded-2xl border-2 transition-all flex flex-col items-center space-y-3",
-                      paymentMethod === 'paypal' ? "border-primary bg-emerald-50/30" : "border-gray-50 hover:border-gray-200"
+                      "p-6 rounded-3xl border-2 transition-all flex flex-col items-center space-y-3 relative overflow-hidden group",
+                      paymentMethod === 'paypal' ? "border-primary bg-emerald-50/40 shadow-md" : "border-gray-100 bg-white hover:border-gray-200"
                     )}
                   >
-                    <img src="https://www.svgrepo.com/show/303247/paypal-logo.svg" className="h-6 w-auto" alt="PayPal" />
-                    <span className="text-[10px] font-black uppercase tracking-widest text-primary">PayPal / Kort</span>
+                    <div className="flex items-center space-x-2">
+                      <svg className="h-7 w-auto" viewBox="0 0 124 33" fill="none">
+                        <path d="M46.211 6.749h-6.839a.95.95 0 00-.939.802l-2.766 17.537a.57.57 0 00.564.658h3.265c.475 0 .882-.35.955-.819l.781-4.954a.95.95 0 01.939-.802h2.247c4.606 0 7.247-2.235 7.944-6.66.326-2.072-.05-3.619-1.077-4.633-1.096-1.082-2.92-1.63-5.074-1.63z" fill="#003087"/>
+                        <path d="M47.16 11.968c-.4.257-2.607.257-2.607.257h-1.391l.86-5.452h1.455c1.472 0 2.378.361 2.651.986.262.598.05 1.543-.968 4.209z" fill="#003087"/>
+                        <path d="M68.868 6.749h-3.265a.95.95 0 00-.939.802l-.128.813h-.177c-.571-.853-1.89-1.182-3.255-1.182-3.053 0-5.65 2.311-6.155 5.518-.258 1.637.108 3.197.981 4.175.795.892 1.944 1.258 3.238 1.258 2.327 0 3.633-1.464 3.633-1.464l-.128.813a.57.57 0 00.564.658h2.951c.475 0 .882-.35.955-.819l2.766-17.537a.57.57 0 00-.564-.658zm-4.301 7.151c-.266 1.656-1.564 2.822-3.15 2.822-.843 0-1.503-.277-1.862-.781-.358-.505-.445-1.228-.246-2.037.266-1.656 1.572-2.822 3.15-2.822.828 0 1.488.277 1.854.781.366.505.453 1.228.254 2.037z" fill="#003087"/>
+                        <path d="M84.444 6.749h-3.265a.95.95 0 00-.939.802l-.781 4.954h-2.247c-.475 0-.882.35-.955.819l-.361 2.29a.57.57 0 00.564.658h2.247l-.781 4.954a.57.57 0 00.564.658h3.265a.95.95 0 00.939-.802l.781-4.954h2.247c3.053 0 5.65-2.311 6.155-5.518.258-1.637-.108-3.197-.981-4.175-.795-.892-1.944-1.258-3.238-1.258zm-1.077 4.954c-.266 1.656-1.564 2.822-3.15 2.822h-1.455l.504-3.197h1.455c.828 0 1.488.277 1.854.781.366.505.453 1.228.254 2.037z" fill="#003087"/>
+                        <path d="M12.911 0H3.666A1.855 1.855 0 001.83 1.566L.007 13.125a1.113 1.113 0 001.101 1.285h3.693c.928 0 1.724-.684 1.867-1.6L7.9 4.96a.742.742 0 01.734-.627h3.766c3.606 0 6.425 1.464 5.378 6.033-.475 2.072-2.124 4.093-4.981 4.093h-2.45a1.113 1.113 0 00-1.101.942l-1.042 6.608a.742.742 0 00.734.858h3.047c.928 0 1.724-.684 1.867-1.6l.872-5.534a1.855 1.855 0 011.835-1.566h.749c5.155 0 9.176-2.094 10.394-7.44C31.066 1.696 25.109 0 12.911 0z" fill="#003087"/>
+                        <path d="M14.931 7.227h-3.766a.742.742 0 00-.734.627l-1.232 7.848a1.113 1.113 0 01-1.101.942H4.405l-1.042 6.608a.742.742 0 00.734.858h3.047c.928 0 1.724-.684 1.867-1.6l.872-5.534a1.855 1.855 0 011.835-1.566h.749c5.155 0 9.176-2.094 10.394-7.44.757-3.327-.991-5.743-7.93-5.743z" fill="#0079C1"/>
+                      </svg>
+                    </div>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-primary">PayPal / Rask Sjekk</span>
+                    <div className="flex items-center space-x-1.5 pt-1">
+                      <span className="px-2 py-0.5 bg-blue-50 text-blue-700 rounded text-[8px] font-black uppercase tracking-wider">PayPal Express</span>
+                    </div>
                   </button>
+
                   <button 
                     onClick={() => setPaymentMethod('stripe')}
+                    type="button"
                     className={cn(
-                      "p-6 rounded-2xl border-2 transition-all flex flex-col items-center space-y-3",
-                      paymentMethod === 'stripe' ? "border-primary bg-emerald-50/30" : "border-gray-50 hover:border-gray-200"
+                      "p-6 rounded-3xl border-2 transition-all flex flex-col items-center space-y-3 relative overflow-hidden group",
+                      paymentMethod === 'stripe' ? "border-primary bg-emerald-50/40 shadow-md" : "border-gray-100 bg-white hover:border-gray-200"
                     )}
                   >
                     <div className="flex items-center space-x-2">
                        <CreditCard className="w-6 h-6 text-primary" />
-                       <span className="font-black italic text-primary">Kort</span>
+                       <span className="font-black text-sm text-primary uppercase tracking-tight">Betalingskort</span>
                     </div>
-                    <span className="text-[10px] font-black uppercase tracking-widest text-primary">Stripe betaling</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-primary">Kreditt- / Debetkort</span>
+                    <div className="flex items-center space-x-1.5 pt-1">
+                      <span className="px-1.5 py-0.5 bg-blue-900 text-white rounded text-[8px] font-black italic tracking-tighter">VISA</span>
+                      <span className="px-1.5 py-0.5 bg-red-600 text-white rounded text-[8px] font-black italic tracking-tighter">MC</span>
+                      <span className="px-1.5 py-0.5 bg-blue-500 text-white rounded text-[8px] font-black tracking-tighter">AMEX</span>
+                      <span className="px-1.5 py-0.5 bg-gray-900 text-white rounded text-[8px] font-black tracking-tighter">APPLE</span>
+                    </div>
                   </button>
                 </div>
 
