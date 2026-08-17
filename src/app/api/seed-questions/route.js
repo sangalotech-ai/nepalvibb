@@ -11,7 +11,7 @@ export async function GET() {
 
     const initialQuestions = [
       {
-        question: 'Your group size',
+        question: 'Din gruppestørrelse',
         description: 'Hvem skal du reise sammen med?',
         type: 'select',
         options: [
@@ -24,7 +24,7 @@ export async function GET() {
         isActive: true
       },
       {
-        question: 'Travel dates',
+        question: 'Reisedatoer',
         description: 'Når planlegger du å besøke Himalaya?',
         type: 'select',
         options: [
@@ -37,33 +37,33 @@ export async function GET() {
         isActive: true
       },
       {
-        question: 'Tour details',
+        question: 'Turdetaljer',
         description: 'Vennligst oppgi detaljer om din ønskede tur.',
         type: 'text', // Using text as a placeholder for the complex step
         options: [
           { 
-            label: 'Comfortable', 
+            label: 'Komfortabel', 
             value: 'comfortable', 
             icon: 'Heart',
-            description: 'Equivalent to 3-star hotels. We will strive to provide comfortable, but not luxurious accommodation.' 
+            description: 'Tilsvarer 3-stjerners hotell. Vi vil tilstrebe å tilby komfortabel, men ikke luksuriøs overnatting.' 
           },
           { 
-            label: 'Luxury', 
+            label: 'Luksus', 
             value: 'luxury', 
             icon: 'Sparkles',
-            description: 'Equivalent to 4 star hotels and above. We offer the best luxury accommodation available throughout the tour.' 
+            description: 'Tilsvarer 4-stjerners hotell og over. Vi tilbyr den beste luksuriøse overnattingen tilgjengelig gjennom hele turen.' 
           },
           { 
-            label: 'Luxury Plus', 
+            label: 'Luksus Pluss', 
             value: 'luxury-plus', 
             icon: 'Sparkles',
-            description: 'Equivalent to 5 star hotels or more, we offer the best luxury accommodation available throughout the tour.' 
+            description: 'Tilsvarer 5-stjerners hotell eller mer, vi tilbyr den beste luksuriøse overnattingen tilgjengelig gjennom hele turen.' 
           },
           { 
             label: 'Camping', 
             value: 'camping', 
             icon: 'Mountain',
-            description: 'You will have a different experience' 
+            description: 'Du vil få en annerledes opplevelse.' 
           }
         ],
         order: 2,

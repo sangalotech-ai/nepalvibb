@@ -23,7 +23,7 @@ const IconMap = {
 const DEFAULT_QUESTIONS = [
   {
     _id: 'def-1',
-    question: 'Your group size',
+    question: 'Din gruppestørrelse',
     description: 'Hvem skal du reise sammen med?',
     type: 'select',
     options: [
@@ -35,7 +35,7 @@ const DEFAULT_QUESTIONS = [
   },
   {
     _id: 'def-2',
-    question: 'Travel dates',
+    question: 'Reisedatoer',
     description: 'Når planlegger du å besøke Himalaya?',
     type: 'select',
     options: [
@@ -47,33 +47,33 @@ const DEFAULT_QUESTIONS = [
   },
   {
     _id: 'def-3',
-    question: 'Tour details',
+    question: 'Turdetaljer',
     description: 'Vennligst oppgi detaljer om din ønskede tur.',
     type: 'text',
     options: [
       { 
-        label: 'Comfortable', 
+        label: 'Komfortabel', 
         value: 'comfortable', 
         icon: 'Heart',
-        description: 'Equivalent to 3-star hotels. We will strive to provide comfortable, but not luxurious accommodation.' 
+        description: 'Tilsvarer 3-stjerners hotell. Vi vil tilstrebe å tilby komfortabel, men ikke luksuriøs overnatting.' 
       },
       { 
-        label: 'Luxury', 
+        label: 'Luksus', 
         value: 'luxury', 
         icon: 'Sparkles',
-        description: 'Equivalent to 4 star hotels and above. We offer the best luxury accommodation available throughout the tour.' 
+        description: 'Tilsvarer 4-stjerners hotell og over. Vi tilbyr den beste luksuriøse overnattingen tilgjengelig gjennom hele turen.' 
       },
       { 
-        label: 'Luxury Plus', 
+        label: 'Luksus Pluss', 
         value: 'luxury-plus', 
         icon: 'Sparkles',
-        description: 'Equivalent to 5 star hotels or more, we offer the best luxury accommodation available throughout the tour.' 
+        description: 'Tilsvarer 5-stjerners hotell eller mer, vi tilbyr den beste luksuriøse overnattingen tilgjengelig gjennom hele turen.' 
       },
       { 
         label: 'Camping', 
         value: 'camping', 
         icon: 'Mountain',
-        description: 'You will have a different experience' 
+        description: 'Du vil få en annerledes opplevelse.' 
       }
     ]
   }
@@ -128,7 +128,6 @@ function PlanYourTripContent() {
   const [children, setChildren] = useState(0);
   const [error, setError] = useState('');
 
-  const [loginInfo, setLoginInfo] = useState({ email: '', password: '' });
   const [contactInfo, setContactInfo] = useState(() => {
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem("trip_contact");
@@ -250,7 +249,7 @@ function PlanYourTripContent() {
   const nextStep = () => {
     setError('');
     if (currentStepIdx < questions.length) {
-      if (currentQuestion.question === 'Tour details') {
+      if (currentQuestion.question === 'Tour details' || currentQuestion.question === 'Turdetaljer') {
         if (!responses['accommodation']) {
           setError(t.planTrip.errorAccommodation);
           return;
@@ -259,7 +258,8 @@ function PlanYourTripContent() {
       } else {
         const isTravelDateStep = currentQuestion.question?.toLowerCase().includes('date') ||
           currentQuestion.question?.toLowerCase().includes('when') ||
-          currentQuestion.question?.toLowerCase().includes('reisedato');
+          currentQuestion.question?.toLowerCase().includes('reisedato') ||
+          currentQuestion.question?.toLowerCase().includes('reisedatoer');
 
         if (isTravelDateStep) {
           if (!responses['startDate']) {
@@ -432,7 +432,7 @@ function PlanYourTripContent() {
                         <motion.h2 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="text-4xl lg:text-5xl font-black text-primary uppercase tracking-tighter leading-[0.95] italic">{currentQuestion.question}</motion.h2>
                       </div>
 
-                      {currentQuestion.question?.toLowerCase().includes('date') || currentQuestion.question?.toLowerCase().includes('when') || currentQuestion.question?.toLowerCase().includes('reisedato') ? (
+                      {currentQuestion.question?.toLowerCase().includes('date') || currentQuestion.question?.toLowerCase().includes('when') || currentQuestion.question?.toLowerCase().includes('reisedato') || currentQuestion.question?.toLowerCase().includes('reisedatoer') ? (
                         <div className="space-y-10">
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                             <DateField
@@ -458,7 +458,7 @@ function PlanYourTripContent() {
                             </div>
                           </motion.label>
                         </div>
-                      ) : currentQuestion.question === 'Tour details' ? (
+                      ) : (currentQuestion.question === 'Tour details' || currentQuestion.question === 'Turdetaljer') ? (
                         <div className="space-y-12">
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div className="space-y-4">
@@ -700,16 +700,6 @@ function PlanYourTripContent() {
                                   </svg>
                                   <span>{t.planTrip.loginGoogle}</span>
                                 </motion.button>
-                                <div className="relative flex items-center py-2">
-                                  <div className="flex-grow border-t border-gray-200"></div>
-                                  <span className="flex-shrink mx-4 text-[9px] font-black text-gray-300 uppercase tracking-widest">{t.planTrip.orEmail}</span>
-                                  <div className="flex-grow border-t border-gray-200"></div>
-                                </div>
-                                <div className="space-y-3">
-                                  <input type="email" placeholder={t.planTrip.loginEmailPlaceholder} value={loginInfo.email} onChange={e => setLoginInfo({ ...loginInfo, email: e.target.value })} className="w-full px-6 py-4 border-2 border-white bg-white/70 rounded-2xl text-xs font-bold focus:outline-none focus:border-primary transition-all shadow-sm" />
-                                  <input type="password" placeholder={t.planTrip.loginPasswordPlaceholder} value={loginInfo.password} onChange={e => setLoginInfo({ ...loginInfo, password: e.target.value })} className="w-full px-6 py-4 border-2 border-white bg-white/70 rounded-2xl text-xs font-bold focus:outline-none focus:border-primary transition-all shadow-sm" />
-                                  <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={async () => { const result = await signIn('credentials', { redirect: false, email: loginInfo.email, password: loginInfo.password }); if (result?.ok) { setError(''); nextStep(); } else { setError(t.planTrip.errorLoginFailed); } }} className="w-full bg-primary text-white px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-lg hover:bg-emerald-900 transition-all">{t.planTrip.login}</motion.button>
-                                </div>
                               </div>
                             </div>
                           </div>
@@ -781,7 +771,7 @@ function PlanYourTripContent() {
                       </motion.div>
                     );
                   })}
-                  {(!responses[questions.find(q => q.question === 'Tour details')?._id]) && (responses['tour'] || responses['destination']) && (
+                  {(!responses[questions.find(q => q.question === 'Tour details' || q.question === 'Turdetaljer')?._id]) && (responses['tour'] || responses['destination']) && (
                     <div className="space-y-6 pt-6 border-t border-white/10">
                       {responses['destination'] && (
                         <div className="space-y-2">
