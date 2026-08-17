@@ -13,9 +13,15 @@ export default function TripPlannerChat() {
   const [isLoading, setIsLoading] = useState(false);
   const [tripRequestId, setTripRequestId] = useState(null);
   const messagesEndRef = useRef(null);
+  const chatContainerRef = useRef(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTo({
+        top: chatContainerRef.current.scrollHeight,
+        behavior: 'smooth'
+      });
+    }
   };
 
   useEffect(() => {
@@ -77,7 +83,7 @@ export default function TripPlannerChat() {
         </div>
       </div>
 
-      <div className="flex-1 p-6 overflow-y-auto bg-gray-50 space-y-6">
+      <div ref={chatContainerRef} className="flex-1 p-6 overflow-y-auto bg-gray-50 space-y-6">
         {messages.map((msg, index) => (
           <div 
             key={index} 

@@ -75,12 +75,15 @@ export async function POST(req) {
         });
 
         if (msgSender === 'user') {
-          const replyText = generateReply(message || 'file attachment');
-          trip.messages.push({
-            sender: 'specialist',
-            text: replyText,
-            timestamp: new Date(Date.now() + 500)
-          });
+          const userMsgCount = trip.messages.filter(m => m.sender === 'user').length;
+          if (userMsgCount <= 1) {
+            const replyText = generateReply(message || 'file attachment');
+            trip.messages.push({
+              sender: 'specialist',
+              text: replyText,
+              timestamp: new Date(Date.now() + 500)
+            });
+          }
         }
         await trip.save();
       }
