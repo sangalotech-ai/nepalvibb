@@ -251,7 +251,7 @@ export default function Navbar() {
                       <span>{t.nav.myDashboard}</span>
                     </Link>
                     <button 
-                      onClick={() => signOut({ callbackUrl: pathname === '/plan-your-trip' ? '/login' : undefined })}
+                      onClick={() => signOut({ callbackUrl: pathname === '/plan-your-trip' || pathname.startsWith('/plan-your-trip/chat') ? '/login' : undefined })}
                       className={cn(
                         "flex items-center space-x-2 text-[10px] font-black uppercase tracking-widest hover:text-red-500 transition-colors",
                         isScrolled ? "text-gray-800" : "text-white"
@@ -347,7 +347,7 @@ export default function Navbar() {
                         <span>{t.nav.myDashboard}</span>
                       </Link>
                       <button 
-                        onClick={() => signOut({ callbackUrl: pathname === '/plan-your-trip' ? '/login' : undefined })}
+                        onClick={() => signOut({ callbackUrl: pathname === '/plan-your-trip' || pathname.startsWith('/plan-your-trip/chat') ? '/login' : undefined })}
                         className="flex items-center space-x-4 text-xl font-black text-red-500 uppercase tracking-tighter font-display"
                       >
                         <LogOut className="w-6 h-6" />

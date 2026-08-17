@@ -2,7 +2,8 @@
 
 import { useState, useRef, useEffect, use } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { 
   Send, MapPin, Calendar, Users, 
   Clock, Edit2, ChevronRight, Paperclip,
@@ -36,6 +37,8 @@ export default function ChatPage({ params }) {
   const { t } = useLocale();
   const { id } = use(params);
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const { status } = useSession();
 
   const SPECIALIST = {
     name: t.chatPage.specialistName,
@@ -88,6 +91,12 @@ export default function ChatPage({ params }) {
   const typingTimeoutRef = useRef(null);
   const fileInputRef = useRef(null);
   const isAtBottomRef = useRef(true);
+
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push(`/login?callbackUrl=/plan-your-trip/chat/${id}`);
+    }
+  }, [status, router, id]);
 
   useEffect(() => {
     let socket;
