@@ -100,40 +100,44 @@ export default function ActivityDetailPage({ params }) {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 key={trip._id}
-                className="bg-white rounded-3xl overflow-hidden shadow-md border border-gray-100/50 group transition-all hover:-translate-y-2 hover:shadow-lg"
+                className="bg-white rounded-3xl overflow-hidden shadow-md border border-gray-100/50 group transition-all hover:-translate-y-2 hover:shadow-lg flex"
               >
-                <div className="h-64 overflow-hidden relative">
-                  <img
-                    src={trip.image}
-                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
-                    alt={tr(trip, 'title', locale)}
-                  />
-                  <div className="absolute top-6 left-6 bg-black/40 backdrop-blur-md text-white text-[9px] font-bold uppercase px-4 py-1.5 rounded-full tracking-wider">
-                    {tr(trip, 'difficulty', locale) || t.activityDetail.difficultyFallback}
-                  </div>
-                </div>
-                <div className="p-8 space-y-6">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-orange-500">{tr(trip, 'duration', locale)}</span>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">{tr(trip, 'destination', locale)}</span>
-                  </div>
-                  <h3 className="text-xl font-bold font-display text-primary tracking-tight group-hover:text-orange-500 transition-colors line-clamp-2 leading-snug">
-                    {tr(trip, 'title', locale)}
-                  </h3>
-                  <div
-                    className="text-sm font-light text-gray-500 line-clamp-2 leading-relaxed [&_p]:m-0 [&_p]:inline"
-                    dangerouslySetInnerHTML={{ __html: tr(trip, 'summary', locale) }}
-                  />
-                  <div className="pt-6 border-t border-gray-100 flex items-center justify-between">
-                    <div className="text-primary">
-                      <span className="text-[9px] block font-bold uppercase tracking-wider text-gray-400 mb-1">{t.activityDetail.priceFrom}</span>
-                      <span className="text-xl font-bold font-display text-primary">NOK {trip.price?.toLocaleString()}</span>
+                <Link href={`/trips/${trip.slug}`} className="flex flex-col w-full h-full">
+                  <div className="h-64 overflow-hidden relative">
+                    <img
+                      src={trip.image}
+                      className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                      alt={tr(trip, 'title', locale)}
+                    />
+                    <div className="absolute top-6 left-6 bg-black/40 backdrop-blur-md text-white text-[9px] font-bold uppercase px-4 py-1.5 rounded-full tracking-wider">
+                      {tr(trip, 'difficulty', locale) || t.activityDetail.difficultyFallback}
                     </div>
-                    <Link href={`/trips/${trip.slug}`} className="w-12 h-12 rounded-xl bg-gray-50 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all shadow-sm">
-                      <ArrowRight className="w-5 h-5" />
-                    </Link>
                   </div>
-                </div>
+                  <div className="p-8 space-y-6 flex-1 flex flex-col justify-between">
+                    <div className="space-y-6">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-orange-500">{tr(trip, 'duration', locale)}</span>
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">{tr(trip, 'destination', locale)}</span>
+                      </div>
+                      <h3 className="text-xl font-bold font-display text-primary tracking-tight group-hover:text-orange-500 transition-colors line-clamp-2 leading-snug">
+                        {tr(trip, 'title', locale)}
+                      </h3>
+                      <div
+                        className="text-sm font-light text-gray-500 line-clamp-2 leading-relaxed [&_p]:m-0 [&_p]:inline"
+                        dangerouslySetInnerHTML={{ __html: tr(trip, 'summary', locale) }}
+                      />
+                    </div>
+                    <div className="pt-6 border-t border-gray-100 flex items-center justify-between mt-auto">
+                      <div className="text-primary">
+                        <span className="text-[9px] block font-bold uppercase tracking-wider text-gray-400 mb-1">{t.activityDetail.priceFrom}</span>
+                        <span className="text-xl font-bold font-display text-primary">NOK {trip.price?.toLocaleString()}</span>
+                      </div>
+                      <div className="w-12 h-12 rounded-xl bg-gray-50 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all shadow-sm">
+                        <ArrowRight className="w-5 h-5" />
+                      </div>
+                    </div>
+                  </div>
+                </Link>
               </motion.div>
             )) : (
               <div className="col-span-full py-24 text-center space-y-6">

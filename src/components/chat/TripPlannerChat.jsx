@@ -34,7 +34,7 @@ export default function TripPlannerChat() {
 
     const userMsg = input.trim();
     setInput('');
-    
+
     // Optimistic UI update
     setMessages(prev => [...prev, { sender: 'user', text: userMsg }]);
     setIsLoading(true);
@@ -47,7 +47,7 @@ export default function TripPlannerChat() {
       });
 
       const data = await response.json();
-      
+
       if (data.success) {
         if (!tripRequestId) {
           setTripRequestId(data.tripRequestId);
@@ -85,29 +85,27 @@ export default function TripPlannerChat() {
 
       <div ref={chatContainerRef} className="flex-1 p-6 overflow-y-auto bg-gray-50 space-y-6">
         {messages.map((msg, index) => (
-          <div 
-            key={index} 
+          <div
+            key={index}
             className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
           >
             <div className={`flex max-w-[80%] ${msg.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
-              
-              <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
-                msg.sender === 'user' ? 'bg-emerald-100 ml-3' : 'bg-emerald-600 mr-3'
-              }`}>
+
+              <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${msg.sender === 'user' ? 'bg-emerald-100 ml-3' : 'bg-emerald-600 mr-3'
+                }`}>
                 {msg.sender === 'user' ? (
                   <User className="w-4 h-4 text-emerald-700" />
                 ) : (
                   <MapPin className="w-4 h-4 text-white" />
                 )}
               </div>
-              
-              <div className={`rounded-2xl px-5 py-3 shadow-sm ${
-                msg.sender === 'user' 
-                  ? 'bg-emerald-600 text-white rounded-tr-none' 
+
+              <div className={`rounded-2xl px-5 py-3 shadow-sm ${msg.sender === 'user'
+                  ? 'bg-emerald-600 text-white rounded-tr-none'
                   : msg.sender === 'system'
                     ? 'bg-red-50 text-red-600 border border-red-100'
                     : 'bg-white text-gray-800 rounded-tl-none border border-gray-100'
-              }`}>
+                }`}>
                 <p className="whitespace-pre-wrap leading-relaxed">{msg.text}</p>
               </div>
             </div>

@@ -200,6 +200,8 @@ export const no = {
     talkToExpert: 'Snakk med ekspert',
     securePayment: 'Sikker Betaling',
     localExperts: 'Lokale Eksperter',
+    showAllPhotos: 'Vis alle bilder',
+    photoOf: 'av',
   },
   destinationDetail: {
     notFoundTitle: 'Destinasjonen ble ikke funnet',

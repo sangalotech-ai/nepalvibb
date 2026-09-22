@@ -200,6 +200,8 @@ export const en = {
     talkToExpert: 'Talk to an expert',
     securePayment: 'Secure Payment',
     localExperts: 'Local Experts',
+    showAllPhotos: 'Show all photos',
+    photoOf: 'of',
   },
   destinationDetail: {
     notFoundTitle: 'Destination not found',

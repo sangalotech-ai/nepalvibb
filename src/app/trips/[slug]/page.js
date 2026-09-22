@@ -4,7 +4,7 @@ import { useState, useEffect, use } from 'react';
 import { 
   Clock, Globe, User, Users, Star, Check, CheckCircle,
   MapPin, MessageCircle, ArrowRight, Shield,
-  Share2, Heart, Printer, ChevronRight,
+  Share2, Heart, Printer, ChevronRight, ChevronLeft, X,
   Info, Compass, Home, Tag, Calendar,
   Mountain, Wind, Zap, ShieldCheck, XCircle,
   Camera, Utensils, Bed, CreditCard, Briefcase
@@ -23,6 +23,22 @@ export default function TripDetailPage({ params }) {
   const [trip, setTrip] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeSection, setActiveSection] = useState('oversikt');
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [activePhotoIndex, setActivePhotoIndex] = useState(0);
+  const [isSaved, setIsSaved] = useState(false);
+  const [bannerIndex, setBannerIndex] = useState(0);
+
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: trip ? tr(trip, 'title', locale) : '',
+        url: window.location.href,
+      }).catch(console.error);
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      alert(locale === 'en' ? 'Link copied to clipboard!' : 'Lenke kopiert til utklippstavlen!');
+    }
+  };
 
   const tabs = [
     { id: 'oversikt', label: t.tripDetail.tabOverview },
@@ -92,6 +108,35 @@ export default function TripDetailPage({ params }) {
     }
   };
 
+  const allImages = trip ? [trip.image, ...(trip.gallery || [])].filter(Boolean) : [];
+
+  useEffect(() => {
+    if (!isLightboxOpen || allImages.length === 0) return;
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'ArrowRight') {
+        setActivePhotoIndex((prev) => (prev + 1) % allImages.length);
+      } else if (e.key === 'ArrowLeft') {
+        setActivePhotoIndex((prev) => (prev - 1 + allImages.length) % allImages.length);
+      } else if (e.key === 'Escape') {
+        setIsLightboxOpen(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isLightboxOpen, allImages.length]);
+
+  useEffect(() => {
+    if (allImages.length <= 1 || isLightboxOpen) return;
+
+    const timer = setInterval(() => {
+      setBannerIndex((prev) => (prev + 1) % allImages.length);
+    }, 5000);
+
+    return () => clearInterval(timer);
+  }, [allImages.length, isLightboxOpen]);
+
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center bg-white">
       <Navbar />
@@ -117,28 +162,134 @@ export default function TripDetailPage({ params }) {
     <div className="min-h-screen bg-[#FAFAF9] selection:bg-orange-500 selection:text-white">
       <Navbar />
       
-      {/* Cinematic Hero */}
-      <section className="relative h-[60vh] md:h-[75vh] min-h-[400px] overflow-hidden">
-        <img src={trip.image} className="w-full h-full object-cover" alt={tr(trip, 'title', locale)} fetchPriority="high" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-        
-        <div className="absolute inset-0 flex items-end">
-          <div className="max-w-[85rem] mx-auto px-6 pb-12 md:pb-16 w-full">
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-4xl space-y-6">
+      {/* Sliding Hero Banner */}
+      <section className="relative h-[65vh] md:h-[80vh] min-h-[450px] overflow-hidden group bg-gray-900">
+        {/* Slideshow Images */}
+        <div 
+          className="absolute inset-0 cursor-pointer"
+          onClick={() => {
+            setActivePhotoIndex(bannerIndex);
+            setIsLightboxOpen(true);
+          }}
+        >
+          <AnimatePresence mode="wait">
+            <motion.img
+              key={bannerIndex}
+              src={allImages[bannerIndex]}
+              initial={{ opacity: 0, scale: 1.05 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.8, ease: "easeInOut" }}
+              className="w-full h-full object-cover select-none"
+              alt={tr(trip, 'title', locale)}
+              fetchPriority={bannerIndex === 0 ? "high" : "low"}
+            />
+          </AnimatePresence>
+        </div>
+
+        {/* Gradient dark overlay for text readability */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-black/10 pointer-events-none" />
+
+        {/* Floating Breadcrumbs / Category (top-left) */}
+        <div className="absolute top-6 left-6 hidden sm:flex items-center space-x-2 text-[10px] font-bold uppercase tracking-widest text-white/70 z-10 bg-black/30 px-4 py-2 rounded-xl backdrop-blur-sm">
+          <Link href="/" className="hover:text-white transition-colors">
+            {locale === 'en' ? 'Home' : 'Hjem'}
+          </Link>
+          <ChevronRight className="w-3 h-3 text-white/40" />
+          <Link href="/trips" className="hover:text-white transition-colors">
+            {locale === 'en' ? 'Trips' : 'Turer'}
+          </Link>
+          <ChevronRight className="w-3 h-3 text-white/40" />
+          <span className="text-orange-400">
+            {locale === 'en'
+              ? (trip.categoryEn?.[0] || trip.category?.[0])
+              : (trip.category?.[0])}
+          </span>
+        </div>
+
+        {/* Floating Share/Save top-right on banner */}
+        <div className="absolute top-6 right-6 flex items-center space-x-3 z-10">
+          <button 
+            onClick={handleShare}
+            className="flex items-center space-x-2 px-4 py-2.5 bg-black/40 hover:bg-black/60 border border-white/10 text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-all shadow-md active:scale-95 cursor-pointer backdrop-blur-sm"
+          >
+            <Share2 className="w-4 h-4 text-orange-400" />
+            <span className="hidden sm:inline">{locale === 'en' ? 'Share' : 'Del'}</span>
+          </button>
+          <button 
+            onClick={() => setIsSaved(!isSaved)}
+            className={cn(
+              "flex items-center space-x-2 px-4 py-2.5 border text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-all shadow-md active:scale-95 cursor-pointer backdrop-blur-sm",
+              isSaved 
+                ? "bg-red-500/25 border-red-500/30 text-red-200" 
+                : "bg-black/40 border-white/10 hover:bg-black/60"
+            )}
+          >
+            <Heart className={cn("w-4 h-4", isSaved ? "fill-red-500 text-red-400" : "text-white/80")} />
+            <span>{isSaved ? (locale === 'en' ? 'Saved' : 'Lagret') : (locale === 'en' ? 'Save' : 'Lagre')}</span>
+          </button>
+        </div>
+
+        {/* Slide Navigation Arrows */}
+        {allImages.length > 1 && (
+          <>
+            <button
+              onClick={() => setBannerIndex((prev) => (prev - 1 + allImages.length) % allImages.length)}
+              className="absolute left-6 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/30 hover:bg-black/60 border border-white/15 text-white transition-all opacity-0 group-hover:opacity-100 z-10 active:scale-95 cursor-pointer backdrop-blur-sm"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <button
+              onClick={() => setBannerIndex((prev) => (prev + 1) % allImages.length)}
+              className="absolute right-6 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/30 hover:bg-black/60 border border-white/15 text-white transition-all opacity-0 group-hover:opacity-100 z-10 active:scale-95 cursor-pointer backdrop-blur-sm"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </>
+        )}
+
+        {/* Banner Details Overlay (Bottom) */}
+        <div className="absolute inset-x-0 bottom-0 flex items-end pb-12 md:pb-16 pt-32 pointer-events-none">
+          <div className="max-w-[85rem] mx-auto px-6 w-full flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }} 
+              animate={{ opacity: 1, y: 0 }} 
+              transition={{ delay: 0.2 }}
+              className="max-w-4xl space-y-4 pointer-events-auto"
+            >
               <span className="inline-block bg-orange-500 text-white px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-md">
                 {locale === 'en'
                   ? (trip.categoryEn?.[0] || trip.category?.[0])
                   : (trip.category?.[0])}
               </span>
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold font-display text-white tracking-tight leading-tight">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold font-display text-white tracking-tight leading-tight drop-shadow-sm">
                 {tr(trip, 'title', locale)}
               </h1>
-              <div className="flex flex-wrap gap-x-8 gap-y-3 text-white/90 text-xs font-medium tracking-wide">
-                <span className="flex items-center"><Clock className="w-4 h-4 mr-2 text-orange-500" /> {tr(trip, 'duration', locale)}</span>
-                <span className="flex items-center"><Mountain className="w-4 h-4 mr-2 text-orange-500" /> {tr(trip, 'difficulty', locale)}</span>
-                <span className="flex items-center"><MapPin className="w-4 h-4 mr-2 text-orange-500" /> {tr(trip, 'destination', locale)}</span>
+              <div className="flex flex-wrap gap-x-8 gap-y-3 text-white/90 text-xs font-semibold tracking-wide">
+                <span className="flex items-center"><Clock className="w-4 h-4 mr-2 text-orange-400" /> {tr(trip, 'duration', locale)}</span>
+                <span className="flex items-center"><Mountain className="w-4 h-4 mr-2 text-orange-400" /> {tr(trip, 'difficulty', locale)}</span>
+                <span className="flex items-center"><MapPin className="w-4 h-4 mr-2 text-orange-400" /> {tr(trip, 'destination', locale)}</span>
               </div>
             </motion.div>
+
+            {/* Photo Counter / Action Button (Bottom Right) */}
+            <div className="pointer-events-auto flex items-center gap-3">
+              {allImages.length > 1 && (
+                <div className="hidden sm:flex items-center gap-1.5 bg-black/40 border border-white/10 px-3.5 py-2.5 rounded-2xl text-[10px] font-bold uppercase tracking-widest text-white/80 backdrop-blur-sm select-none">
+                  {bannerIndex + 1} / {allImages.length}
+                </div>
+              )}
+              <button 
+                onClick={() => {
+                  setActivePhotoIndex(bannerIndex);
+                  setIsLightboxOpen(true);
+                }}
+                className="bg-white hover:bg-gray-50 border border-gray-200 text-primary font-bold uppercase tracking-wider text-[10px] px-5 py-3 rounded-2xl flex items-center space-x-2 transition-all shadow-md active:scale-95 cursor-pointer z-10"
+              >
+                <Camera className="w-4 h-4 text-orange-500" />
+                <span>{t.tripDetail.showAllPhotos} ({allImages.length})</span>
+              </button>
+            </div>
           </div>
         </div>
       </section>
@@ -286,7 +437,14 @@ export default function TripDetailPage({ params }) {
             <h2 className="text-xl sm:text-2xl md:text-3xl font-bold font-display text-primary tracking-tight">{t.tripDetail.galleryTitle}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
               {trip.gallery?.map((img, i) => (
-                <div key={i} className="h-64 md:h-72 rounded-2xl overflow-hidden shadow-sm">
+                <div 
+                  key={i} 
+                  className="h-64 md:h-72 rounded-2xl overflow-hidden shadow-sm cursor-pointer group"
+                  onClick={() => {
+                    setActivePhotoIndex(i + 1);
+                    setIsLightboxOpen(true);
+                  }}
+                >
                   <img src={img} className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" alt="" loading="lazy" />
                 </div>
               ))}
@@ -341,6 +499,83 @@ export default function TripDetailPage({ params }) {
         </aside>
       </div>
 
+      {/* Lightbox Modal */}
+      <AnimatePresence>
+        {isLightboxOpen && (
+          <motion.div 
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-sm flex flex-col justify-between"
+          >
+            {/* Top Bar */}
+            <div className="flex justify-between items-center px-6 py-4 text-white z-10">
+              <span className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+                {activePhotoIndex + 1} {t.tripDetail.photoOf} {allImages.length}
+              </span>
+              <button 
+                onClick={() => setIsLightboxOpen(false)}
+                className="p-2.5 rounded-full bg-white/10 hover:bg-white/20 transition-colors cursor-pointer text-white active:scale-95"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Main Image Slider Area */}
+            <div className="flex-1 flex items-center justify-between px-4 sm:px-8 md:px-16 relative">
+              {/* Prev Button */}
+              <button 
+                onClick={() => setActivePhotoIndex((prev) => (prev - 1 + allImages.length) % allImages.length)}
+                className="p-3.5 rounded-full bg-white/10 hover:bg-white/20 transition-colors text-white z-10 active:scale-95 cursor-pointer disabled:opacity-50"
+              >
+                <ChevronLeft className="w-6 h-6" />
+              </button>
+
+              {/* Centered Image Container */}
+              <div className="relative max-w-4xl max-h-[70vh] flex items-center justify-center overflow-hidden px-4 select-none">
+                <AnimatePresence mode="wait">
+                  <motion.img 
+                    key={activePhotoIndex}
+                    src={allImages[activePhotoIndex]} 
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.2 }}
+                    className="max-w-full max-h-[70vh] object-contain rounded-xl shadow-2xl" 
+                    alt="" 
+                  />
+                </AnimatePresence>
+              </div>
+
+              {/* Next Button */}
+              <button 
+                onClick={() => setActivePhotoIndex((prev) => (prev + 1) % allImages.length)}
+                className="p-3.5 rounded-full bg-white/10 hover:bg-white/20 transition-colors text-white z-10 active:scale-95 cursor-pointer"
+              >
+                <ChevronRight className="w-6 h-6" />
+              </button>
+            </div>
+
+            {/* Bottom Thumbnail Strip */}
+            <div className="w-full bg-black/60 border-t border-white/5 py-4 px-6 overflow-x-auto no-scrollbar flex justify-center gap-3">
+              <div className="flex gap-2 mx-auto">
+                {allImages.map((img, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setActivePhotoIndex(idx)}
+                    className={cn(
+                      "w-16 h-12 rounded-lg overflow-hidden flex-shrink-0 transition-all cursor-pointer border-2",
+                      activePhotoIndex === idx ? "border-orange-500 scale-105 opacity-100 shadow-lg" : "border-transparent opacity-50 hover:opacity-80"
+                    )}
+                  >
+                    <img src={img} className="w-full h-full object-cover" alt="" />
+                  </button>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
