@@ -72,7 +72,7 @@ export default function Navbar() {
     {
       name: t.nav.activities,
       dropdown: dynamicActivities.map(a => ({
-        name: a.name,
+        name: isNo ? a.name : (a.nameEn || a.name),
         href: `/activity/${a.slug}`
       }))
     },
