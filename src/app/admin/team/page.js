@@ -242,26 +242,49 @@ export default function AdminTeamPage() {
                           className="w-full bg-gray-50 border-0 rounded-xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-primary transition-all" 
                         />
                       </div>
-                      <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">Rolle (f.eks Spesialist)</label>
-                        <input 
-                          required
-                          value={editingMember.role} 
-                          onChange={e => setEditingMember({...editingMember, role: e.target.value})}
-                          className="w-full bg-gray-50 border-0 rounded-xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-primary transition-all" 
-                        />
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">Rolle (Norsk)</label>
+                          <input 
+                            required
+                            value={editingMember.role} 
+                            onChange={e => setEditingMember({...editingMember, role: e.target.value})}
+                            className="w-full bg-gray-50 border-0 rounded-xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-primary transition-all" 
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-[10px] font-black uppercase tracking-widest text-blue-500 ml-2">Role (English)</label>
+                          <input 
+                            value={editingMember.roleEn || ''} 
+                            onChange={e => setEditingMember({...editingMember, roleEn: e.target.value})}
+                            placeholder="e.g. CEO & Founder"
+                            className="w-full bg-gray-50 border-0 rounded-xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-primary transition-all" 
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2 flex items-center">Bio / Beskrivelse</label>
-                    <textarea 
-                      value={editingMember.bio} 
-                      onChange={e => setEditingMember({...editingMember, bio: e.target.value})}
-                      rows={4}
-                      className="w-full bg-gray-50 border-0 rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all resize-none" 
-                    />
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2 flex items-center">Bio (Norsk)</label>
+                      <textarea 
+                        value={editingMember.bio || ''} 
+                        onChange={e => setEditingMember({...editingMember, bio: e.target.value})}
+                        rows={4}
+                        className="w-full bg-gray-50 border-0 rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all resize-none" 
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-blue-500 ml-2 flex items-center">Bio (English)</label>
+                      <textarea 
+                        value={editingMember.bioEn || ''} 
+                        onChange={e => setEditingMember({...editingMember, bioEn: e.target.value})}
+                        rows={4}
+                        placeholder="English bio..."
+                        className="w-full bg-gray-50 border-0 rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all resize-none" 
+                      />
+                    </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-6">
