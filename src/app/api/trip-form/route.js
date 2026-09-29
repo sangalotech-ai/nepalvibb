@@ -6,7 +6,13 @@ export async function GET() {
   try {
     await dbConnect();
     const steps = await TripForm.find({ isActive: true }).sort({ step: 1 });
-    return NextResponse.json(steps);
+    return NextResponse.json(steps, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      }
+    });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

@@ -21,7 +21,7 @@ export default function AdminReviewsPage() {
 
   const fetchReviews = async () => {
     try {
-      const res = await fetch('/api/admin/reviews');
+      const res = await fetch('/api/admin/reviews', { cache: 'no-store' });
       const data = await res.json();
       setReviews(Array.isArray(data) ? data : []);
     } catch (err) {

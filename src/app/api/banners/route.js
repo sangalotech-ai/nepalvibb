@@ -2,11 +2,18 @@ import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import Banner from '@/models/Banner';
 
-export async function GET() {
+export async function GET(request) {
   try {
     await dbConnect();
-    const banners = await Banner.find({ isActive: true }).sort({ order: 1 });
-    return NextResponse.json(banners);
+    const { searchParams } = new URL(request.url);
+    const showAll = searchParams.get('all') === 'true';
+    const filter = showAll ? {} : { isActive: true };
+    const banners = await Banner.find(filter).sort({ order: 1 }).lean();
+    return NextResponse.json(banners, {
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+      },
+    });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

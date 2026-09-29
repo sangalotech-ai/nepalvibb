@@ -21,9 +21,9 @@ export default function AdminTeamPage() {
 
   const fetchMembers = async () => {
     try {
-      const res = await fetch('/api/team-members');
+      const res = await fetch('/api/team-members', { cache: 'no-store' });
       const data = await res.json();
-      setMembers(data);
+      setMembers(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error(error);
     } finally {
@@ -40,7 +40,7 @@ export default function AdminTeamPage() {
     setEditingMember({
       name: '',
       role: '',
-      image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=400&q=80',
+      image: '',
       bio: '',
       order: members.length,
       socialLinks: { facebook: '', instagram: '', linkedin: '', twitter: '' }
@@ -80,9 +80,13 @@ export default function AdminTeamPage() {
       if (res.ok) {
         setIsModalOpen(false);
         fetchMembers();
+      } else {
+        const data = await res.json();
+        alert("Kunne ikke lagre: " + (data.error || "Ukjent feil"));
       }
     } catch (error) {
       console.error(error);
+      alert("Feil ved lagring av teammedlem.");
     } finally {
       setSaving(false);
     }

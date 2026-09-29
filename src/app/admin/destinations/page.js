@@ -22,7 +22,7 @@ export default function DestinationsAdminPage() {
 
   const fetchDestinations = async () => {
     try {
-      const res = await fetch('/api/admin/destinations');
+      const res = await fetch('/api/admin/destinations', { cache: 'no-store' });
       const data = await res.json();
       setDestinations(Array.isArray(data) ? data : []);
     } catch (error) {
@@ -41,14 +41,18 @@ export default function DestinationsAdminPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
+      const data = await res.json();
       if (res.ok) {
         fetchDestinations();
         setShowModal(false);
         setIsEditing(null);
         setFormData({ name: '', slug: '', image: '', description: '', nameEn: '', descriptionEn: '' });
+      } else {
+        alert("Kunne ikke lagre destinasjon: " + (data.error || "Ukjent feil"));
       }
     } catch (error) {
       console.error(error);
+      alert("Feil ved tilkobling til serveren.");
     }
   };
 

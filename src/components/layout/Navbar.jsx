@@ -154,12 +154,9 @@ export default function Navbar() {
           <div className="flex justify-between items-center h-full">
             <Link href="/" className="flex-shrink-0 flex items-center group">
               <img
-                src="https://nepalvibb.com/wp-content/uploads/2025/05/logo-w.svg"
+                src={isScrolled ? "/logo-d.svg" : "/logo-w.svg"}
                 alt="Nepalvibb Logo"
-                className={cn(
-                  "h-12 w-auto transition-all duration-500",
-                  isScrolled ? "brightness-0" : "brightness-100"
-                )}
+                className="h-10 md:h-12 w-auto transition-all duration-300"
                 fetchPriority="high"
               />
             </Link>

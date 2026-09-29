@@ -73,7 +73,7 @@ export default function Footer() {
   const s = dynamicData.settings ? {
     ...fallbackSettings,
     ...dynamicData.settings,
-    affiliations: (dynamicData.settings.affiliations && dynamicData.settings.affiliations.length > 0)
+    affiliations: Array.isArray(dynamicData.settings.affiliations)
       ? dynamicData.settings.affiliations
       : fallbackSettings.affiliations
   } : fallbackSettings;
@@ -126,9 +126,9 @@ export default function Footer() {
           <div className="lg:col-span-4 space-y-10">
             <Link href="/" className="inline-block group">
               <img
-                src="https://nepalvibb.com/wp-content/uploads/2025/05/logo-w.svg"
+                src="/logo-w.svg"
                 alt="Nepalvibb"
-                className="h-14 w-auto brightness-0 invert"
+                className="h-12 md:h-14 w-auto"
               />
             </Link>
             <p className="text-sm text-stone-200/80 font-light leading-relaxed max-w-sm">

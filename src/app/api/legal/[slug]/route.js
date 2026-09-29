@@ -21,7 +21,13 @@ export async function GET(request, { params }) {
     if (!doc && DEFAULT_CONTENT[slug]) {
       doc = await LegalContent.create({ slug, ...DEFAULT_CONTENT[slug] });
     }
-    return NextResponse.json(doc);
+    return NextResponse.json(doc, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      }
+    });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

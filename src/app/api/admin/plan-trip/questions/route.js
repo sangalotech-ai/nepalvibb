@@ -6,7 +6,13 @@ export async function GET() {
   try {
     await dbConnect();
     const questions = await PlanTripQuestion.find({}).sort({ order: 1 });
-    return NextResponse.json(questions);
+    return NextResponse.json(questions, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      }
+    });
   } catch (error) {
     return NextResponse.json({ error: 'Failed to fetch questions' }, { status: 500 });
   }

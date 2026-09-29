@@ -9,7 +9,13 @@ export async function GET() {
     if (!content) {
       content = await AboutContent.create({});
     }
-    return NextResponse.json(content);
+    return NextResponse.json(content, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      }
+    });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

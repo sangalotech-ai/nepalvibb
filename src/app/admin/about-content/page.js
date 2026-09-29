@@ -11,7 +11,7 @@ export default function AdminAboutContentPage() {
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    fetch('/api/about-content')
+    fetch('/api/about-content', { cache: 'no-store' })
       .then(res => res.json())
       .then(data => {
         setContent(data);

@@ -17,8 +17,8 @@ export default function AdminLegalPage() {
     const fetchAll = async () => {
       try {
         const [termsRes, privacyRes] = await Promise.all([
-          fetch('/api/legal/betingelser'),
-          fetch('/api/legal/personvern'),
+          fetch('/api/legal/betingelser', { cache: 'no-store' }),
+          fetch('/api/legal/personvern', { cache: 'no-store' }),
         ]);
         const [terms, privacy] = await Promise.all([termsRes.json(), privacyRes.json()]);
         setDocs({

@@ -6,7 +6,13 @@ export async function GET() {
   await dbConnect();
   try {
     const docs = await LegalContent.find({}).sort({ slug: 1 });
-    return NextResponse.json(docs);
+    return NextResponse.json(docs, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      }
+    });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

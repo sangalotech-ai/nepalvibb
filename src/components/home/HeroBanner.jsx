@@ -17,7 +17,7 @@ export default function HeroBanner({ initialBanners }) {
     badgeText: t.hero.badgeText,
     image: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1920&q=80",
     buttonText: t.hero.bannerButton,
-    buttonLink: "/trips"
+    buttonLink: "/turer"
   };
   const [banners, setBanners] = useState(initialBanners || []);
   const [current, setCurrent] = useState(0);

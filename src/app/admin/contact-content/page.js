@@ -11,7 +11,7 @@ export default function AdminContactContentPage() {
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    fetch('/api/contact-content')
+    fetch('/api/contact-content', { cache: 'no-store' })
       .then(res => res.json())
       .then(data => {
         setContent(data);

@@ -11,7 +11,7 @@ export default function AdminHomeContentPage() {
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    fetch('/api/home-content')
+    fetch('/api/home-content', { cache: 'no-store' })
       .then(res => res.json())
       .then(data => {
         setContent(data);

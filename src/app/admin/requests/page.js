@@ -18,7 +18,7 @@ export default function RequestsAdminPage() {
 
   const fetchRequests = async () => {
     try {
-      const res = await fetch('/api/admin/requests');
+      const res = await fetch('/api/admin/requests', { cache: 'no-store' });
       const data = await res.json();
       setRequests(Array.isArray(data) ? data : []);
     } catch (error) {

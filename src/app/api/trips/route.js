@@ -11,16 +11,28 @@ export async function GET(request) {
     const skip = (page - 1) * limit;
 
     const [tours, total] = await Promise.all([
-      Tour.find({}).sort({ createdAt: -1 }).skip(skip).limit(limit),
+      Tour.find({})
+        .select('title titleEn slug price duration difficulty image summary summaryEn category categoryEn isFeatured')
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean(),
       Tour.countDocuments({}),
     ]);
 
-    return NextResponse.json({
-      tours,
-      total,
-      totalPages: Math.ceil(total / limit),
-      currentPage: page,
-    });
+    return NextResponse.json(
+      {
+        tours,
+        total,
+        totalPages: Math.ceil(total / limit),
+        currentPage: page,
+      },
+      {
+        headers: {
+          'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400',
+        },
+      }
+    );
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

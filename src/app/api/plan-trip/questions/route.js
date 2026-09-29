@@ -69,17 +69,16 @@ export async function GET() {
     await dbConnect();
     let questions = await PlanTripQuestion.find({ isActive: true }).sort({ order: 1 });
     
-    const hasEnglishQuestions = questions.some(q => 
-      ['Your group size', 'Travel dates', 'Tour details'].includes(q.question)
-    );
-
-    if (!questions || questions.length === 0 || hasEnglishQuestions) {
-      await PlanTripQuestion.deleteMany({});
+    if (!questions || questions.length === 0) {
       questions = await PlanTripQuestion.insertMany(initialQuestions);
     }
 
-    return NextResponse.json(questions);
+    return NextResponse.json(questions, {
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+      },
+    });
   } catch (error) {
-    return NextResponse.json(initialQuestions);
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

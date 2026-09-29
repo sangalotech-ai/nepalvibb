@@ -10,8 +10,12 @@ const nextConfig = {
     formats: ['image/avif', 'image/webp'],
     minimumCacheTTL: 86400,
   },
+  experimental: {
+    optimizePackageImports: ['lucide-react', 'framer-motion'],
+  },
   reactStrictMode: true,
   compress: true,
+  poweredByHeader: false,
 };
 
 export default nextConfig;

@@ -34,7 +34,7 @@ export default function AdminPlanTripPage() {
 
   const fetchQuestions = async () => {
     try {
-      const res = await fetch('/api/admin/plan-trip/questions');
+      const res = await fetch('/api/admin/plan-trip/questions', { cache: 'no-store' });
       const data = await res.json();
       setQuestions(Array.isArray(data) ? data : []);
     } catch (err) {

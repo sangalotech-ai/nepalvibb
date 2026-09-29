@@ -32,7 +32,7 @@ export default function AdminBlogsPage() {
 
   const fetchBlogs = async () => {
     try {
-      const res = await fetch('/api/blogs');
+      const res = await fetch('/api/blogs?all=true', { cache: 'no-store' });
       const data = await res.json();
       setBlogs(Array.isArray(data) ? data : []);
     } catch (err) {
@@ -57,12 +57,16 @@ export default function AdminBlogsPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
       });
+      const data = await res.json();
       if (res.ok) {
         setIsEditing(null);
         fetchBlogs();
+      } else {
+        alert("Kunne ikke lagre artikkelen: " + (data.error || "Ukjent feil"));
       }
     } catch (err) {
       console.error(err);
+      alert("Feil ved tilkobling til serveren.");
     }
   };
 

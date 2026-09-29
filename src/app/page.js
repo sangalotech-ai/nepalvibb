@@ -1,9 +1,10 @@
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import { cookies } from 'next/headers';
 import { ArrowRight } from 'lucide-react';
 import HomeContent from '@/models/HomeContent';
 import Banner from '@/models/Banner';
+import Tour from '@/models/Tour';
+import Blog from '@/models/Blog';
 import dbConnect from '@/lib/mongodb';
 
 const HeroBanner = dynamic(() => import('@/components/home/HeroBanner'), { ssr: true });
@@ -69,24 +70,39 @@ export const metadata = {
 
 async function getHomeContent() {
   await dbConnect();
-  let content = await HomeContent.findOne({});
+  let content = await HomeContent.findOne({}).lean();
   if (!content) {
     content = await HomeContent.create({});
+    content = JSON.parse(JSON.stringify(content));
   }
   return JSON.parse(JSON.stringify(content));
 }
 
 export default async function Home() {
-  const [content, banners] = await Promise.all([
+  await dbConnect();
+  const [content, banners, featuredTours, latestBlogs] = await Promise.all([
     getHomeContent(),
     Banner.find({ isActive: true }).sort({ order: 1 }).lean().catch(() => []),
+    Tour.find({})
+      .select('title titleEn slug price duration difficulty image summary summaryEn category categoryEn isFeatured')
+      .limit(9)
+      .lean()
+      .catch(() => []),
+    Blog.find({ isPublished: { $ne: false } })
+      .select('title titleEn slug image category categoryEn createdAt')
+      .sort({ createdAt: -1 })
+      .limit(3)
+      .lean()
+      .catch(() => []),
   ]);
-  const cookieStore = await cookies();
-  const locale = cookieStore.get('NEXT_LOCALE')?.value === 'en' ? 'en' : 'no';
+
+  const serializedBanners = JSON.parse(JSON.stringify(banners));
+  const serializedTours = JSON.parse(JSON.stringify(featuredTours));
+  const serializedBlogs = JSON.parse(JSON.stringify(latestBlogs));
 
   return (
     <main className="relative bg-white">
-      <HeroBanner initialBanners={JSON.parse(JSON.stringify(banners))} />
+      <HeroBanner initialBanners={serializedBanners} />
       
       {/* Filter Section */}
       <SearchSection />
@@ -101,7 +117,7 @@ export default async function Home() {
       <WhoWeAre content={content.whoWeAre} />
       
       {/* Featured Tours */}
-      <FeaturedTours content={content.tours} />
+      <FeaturedTours content={content.tours} initialTours={serializedTours} />
     
       {/* Purpose Section */}
       <section className="relative py-20 sm:py-28 overflow-hidden bg-primary">
@@ -184,9 +200,7 @@ export default async function Home() {
                       </div>
                       <div className="text-white text-xs font-light">
                         <span className="font-bold text-orange-300">{content.purpose?.travelersValue || '200+'}</span>{' '}
-                        {locale === 'en'
-                          ? (content.purpose?.travelersLabelEn || 'happy travelers')
-                          : (content.purpose?.travelersLabel || 'reisende fornøyd')}
+                        {content.purpose?.travelersLabel || 'reisende fornøyd'}
                       </div>
                     </div>
                   </div>
@@ -212,7 +226,7 @@ export default async function Home() {
             </h2>
           </div>
           
-          <LatestBlogs />
+          <LatestBlogs initialBlogs={serializedBlogs} />
 
           <div className="mt-12 text-center">
             <Link href="/blogg" className="inline-flex items-center space-x-2 text-xs font-bold uppercase tracking-wider text-primary hover:text-orange-500 transition-colors group">

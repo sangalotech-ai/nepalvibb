@@ -5,11 +5,16 @@ import SiteSettings from '@/models/SiteSettings';
 export async function GET() {
   try {
     await dbConnect();
-    let settings = await SiteSettings.findOne({});
+    let settings = await SiteSettings.findOne({}).lean();
     if (!settings) {
       settings = await SiteSettings.create({});
+      settings = JSON.parse(JSON.stringify(settings));
     }
-    return NextResponse.json(settings);
+    return NextResponse.json(settings, {
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+      },
+    });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

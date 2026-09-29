@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 64" fill="none">
+  <!-- Mountain & Sunrise Mark -->
+  <g transform="translate(4, 6)">
+    <!-- Sun glow behind peak -->
+    <circle cx="26" cy="24" r="14" fill="#F97316" opacity="0.9" />
+    
+    <!-- Mountain Background Layer -->
+    <path d="M12 44 L28 14 L44 44 Z" fill="#0D5C46" />
+    <path d="M28 14 L33 24 L28 26 L23 24 Z" fill="#FFFFFF" opacity="0.9" />
+    
+    <!-- Mountain Foreground Layer -->
+    <path d="M22 44 L38 20 L54 44 Z" fill="#064E3B" />
+    <path d="M38 20 L42 27 L38 29 L34 27 Z" fill="#FFFFFF" opacity="0.95" />
+    
+    <!-- Dynamic Vibe Flow Lines -->
+    <path d="M4 44 C 18 42, 34 46, 56 44" stroke="#F97316" stroke-width="3.5" stroke-linecap="round" />
+  </g>
+
+  <!-- Typography -->
+  <text x="70" y="38" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="28" letter-spacing="-0.03em" fill="#064E3B">
+    NEPAL<tspan fill="#F97316">VIBB</tspan>
+  </text>
+  <text x="72" y="51" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="8.5" letter-spacing="0.25em" fill="#F97316" opacity="0.9">
+    HIMALAYA ADVENTURES
+  </text>
+</svg>

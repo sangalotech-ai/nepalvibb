@@ -6,7 +6,13 @@ export async function GET() {
   await dbConnect();
   try {
     const members = await TeamMember.find({}).sort({ order: 1 });
-    return NextResponse.json(members);
+    return NextResponse.json(members, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      }
+    });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

@@ -7,12 +7,13 @@ import { Calendar, Tag, ArrowRight } from 'lucide-react';
 import { useLocale } from '@/components/providers/useLocale';
 import { tr } from '@/lib/tr';
 
-export default function LatestBlogs() {
+export default function LatestBlogs({ initialBlogs = [] }) {
   const { t, locale } = useLocale();
-  const [blogs, setBlogs] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [blogs, setBlogs] = useState(initialBlogs);
+  const [loading, setLoading] = useState(!initialBlogs.length);
 
   useEffect(() => {
+    if (initialBlogs.length > 0) return;
     const fetchBlogs = async () => {
       try {
         const res = await fetch('/api/blogs');
@@ -26,7 +27,7 @@ export default function LatestBlogs() {
       }
     };
     fetchBlogs();
-  }, []);
+  }, [initialBlogs]);
 
   if (loading) {
     return (

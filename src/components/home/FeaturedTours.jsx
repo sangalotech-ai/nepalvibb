@@ -7,12 +7,13 @@ import { tr } from '@/lib/tr';
 
 import { useState, useEffect } from 'react';
 
-export default function FeaturedTours({ content }) {
+export default function FeaturedTours({ content, initialTours = [] }) {
   const { t, locale } = useLocale();
-  const [tours, setTours] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [tours, setTours] = useState(initialTours);
+  const [loading, setLoading] = useState(!initialTours.length);
 
   useEffect(() => {
+    if (initialTours.length > 0) return;
     const fetchTours = async () => {
       try {
         const res = await fetch('/api/trips/featured');
@@ -34,7 +35,7 @@ export default function FeaturedTours({ content }) {
       }
     };
     fetchTours();
-  }, []);
+  }, [initialTours]);
 
   if (loading) return null;
   return (

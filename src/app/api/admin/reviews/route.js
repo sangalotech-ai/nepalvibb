@@ -6,7 +6,13 @@ export async function GET() {
   try {
     await dbConnect();
     const reviews = await Review.find({}).populate('tripId', 'title').sort({ createdAt: -1 });
-    return NextResponse.json(reviews);
+    return NextResponse.json(reviews, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      }
+    });
   } catch (error) {
     return NextResponse.json({ error: 'Failed to fetch reviews' }, { status: 500 });
   }

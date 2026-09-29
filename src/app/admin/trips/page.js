@@ -50,9 +50,9 @@ export default function AdminTripsPage() {
 
   const fetchTrips = async () => {
     try {
-      const res = await fetch('/api/trips');
+      const res = await fetch('/api/admin/trips', { cache: 'no-store' });
       const data = await res.json();
-      setTrips(data?.tours || data || []);
+      setTrips(Array.isArray(data) ? data : (data?.tours || []));
     } catch (err) {
       console.error(err);
     } finally {
@@ -63,8 +63,8 @@ export default function AdminTripsPage() {
   const fetchOptions = async () => {
     try {
       const [destRes, actRes] = await Promise.all([
-        fetch('/api/destinations'),
-        fetch('/api/activities')
+        fetch('/api/destinations', { cache: 'no-store' }),
+        fetch('/api/activities', { cache: 'no-store' })
       ]);
       const destData = await destRes.json();
       const actData = await actRes.json();
@@ -82,14 +82,26 @@ export default function AdminTripsPage() {
 
   const handleSave = async (e) => {
     e.preventDefault();
-    const method = isEditing && isEditing !== 'new' ? 'PUT' : 'POST';
-    const url = isEditing && isEditing !== 'new' ? `/api/admin/trips/${isEditing._id}` : '/api/trips';
+    const isUpdating = isEditing && isEditing !== 'new' && isEditing._id;
+    const method = isUpdating ? 'PUT' : 'POST';
+    const url = isUpdating ? `/api/admin/trips/${isEditing._id}` : '/api/admin/trips';
+
+    const submitData = { ...formData };
+    if (!submitData.slug && submitData.title) {
+      submitData.slug = submitData.title
+        .toLowerCase()
+        .replace(/æ/g, 'ae')
+        .replace(/ø/g, 'oe')
+        .replace(/å/g, 'aa')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '');
+    }
 
     try {
       const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(submitData)
       });
       const data = await res.json();
       if (res.ok) {

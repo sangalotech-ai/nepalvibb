@@ -5,8 +5,9 @@ import {
   Settings, Save, Mail, Phone, 
   MapPin, Globe, Lock, Shield, 
   CheckCircle2, AlertCircle, Facebook, Instagram, Youtube, Linkedin,
-  Plus, Trash2, Link as LinkIcon, Building, Clock, MessageSquare, Info, ShieldCheck
+  Plus, Trash2, Link as LinkIcon, Building, Clock, MessageSquare, Info, ShieldCheck, Image as ImageIcon
 } from 'lucide-react';
+import ImageUpload from '@/components/admin/ImageUpload';
 
 export default function SettingsAdminPage() {
   const [settings, setSettings] = useState(null);
@@ -165,20 +166,21 @@ export default function SettingsAdminPage() {
           <div className="space-y-6">
             <div className="space-y-2">
               <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">Tilknyttet Etikett (f.eks. Vi er tilknyttet)</label>
-              <input name="affiliatedLabel" value={settings.affiliatedLabel} onChange={handleChange} className="w-full bg-gray-50 border-0 rounded-xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-primary transition-all" />
+              <input name="affiliatedLabel" value={settings?.affiliatedLabel || ''} onChange={handleChange} className="w-full bg-gray-50 border-0 rounded-xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-primary transition-all" />
             </div>
             <div className="space-y-2">
               <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">Datterselskap Etikett (f.eks. Datterselskap av)</label>
-              <input name="subsidiaryLabel" value={settings.subsidiaryLabel} onChange={handleChange} className="w-full bg-gray-50 border-0 rounded-xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-primary transition-all" />
+              <input name="subsidiaryLabel" value={settings?.subsidiaryLabel || ''} onChange={handleChange} className="w-full bg-gray-50 border-0 rounded-xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-primary transition-all" />
             </div>
-            <div className="grid grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">Logo URL</label>
-                <input name="subsidiaryLogo" value={settings.subsidiaryLogo} onChange={handleChange} className="w-full bg-gray-50 border-0 rounded-xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-primary transition-all" />
-              </div>
+            <div className="space-y-4">
+              <ImageUpload 
+                label="Datterselskap Logo"
+                value={settings?.subsidiaryLogo || ''}
+                onChange={(url) => setSettings(prev => ({ ...prev, subsidiaryLogo: url }))}
+              />
               <div className="space-y-2">
                 <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-2">Nettside URL</label>
-                <input name="subsidiaryUrl" value={settings.subsidiaryUrl} onChange={handleChange} className="w-full bg-gray-50 border-0 rounded-xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-primary transition-all" />
+                <input name="subsidiaryUrl" value={settings?.subsidiaryUrl || ''} onChange={handleChange} className="w-full bg-gray-50 border-0 rounded-xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-primary transition-all" />
               </div>
             </div>
           </div>
@@ -309,11 +311,15 @@ export default function SettingsAdminPage() {
               <div className="p-3 bg-emerald-50 text-emerald-500 rounded-2xl">
                 <ShieldCheck className="w-6 h-6" />
               </div>
-              <h2 className="text-xl font-black text-primary uppercase tracking-tight italic">Samarbeidspartnere & Sertifiseringer</h2>
+              <div>
+                <h2 className="text-xl font-black text-primary uppercase tracking-tight italic">Samarbeidspartnere & Sertifiseringer</h2>
+                <p className="text-gray-400 text-xs font-medium mt-0.5">Last opp logoer for partnere, sertifiseringer og medlemskap som vises i footeren.</p>
+              </div>
             </div>
             <button 
+              type="button"
               onClick={addAffiliation}
-              className="px-6 py-3 bg-gray-50 text-primary rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-primary hover:text-white transition-all flex items-center space-x-2"
+              className="px-6 py-3 bg-primary text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-orange-500 transition-all flex items-center space-x-2 shadow-md shadow-primary/20"
             >
               <Plus className="w-4 h-4" />
               <span>Legg til logo</span>
@@ -324,30 +330,38 @@ export default function SettingsAdminPage() {
             {settings.affiliations?.map((aff, idx) => (
               <div key={idx} className="p-6 bg-gray-50 rounded-[2rem] border border-gray-100 space-y-4 relative group">
                 <button 
+                  type="button"
                   onClick={() => removeAffiliation(idx)}
-                  className="absolute -top-2 -right-2 w-8 h-8 bg-white text-red-500 rounded-full shadow-lg border border-red-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-red-500 hover:text-white"
+                  className="absolute -top-2 -right-2 w-8 h-8 bg-white text-red-500 rounded-full shadow-lg border border-red-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-red-500 hover:text-white z-20"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
-                <div className="space-y-3">
-                  <input 
-                    placeholder="Navn (f.eks. NTB)"
-                    value={aff.name}
-                    onChange={(e) => handleAffiliationChange(idx, 'name', e.target.value)}
-                    className="w-full bg-white border-0 rounded-xl px-4 py-3 text-xs font-bold"
+                <div className="space-y-4">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Partner / Logo Navn</label>
+                    <input 
+                      placeholder="f.eks. NTB, TAAN, NATTA"
+                      value={aff.name || ''}
+                      onChange={(e) => handleAffiliationChange(idx, 'name', e.target.value)}
+                      className="w-full bg-white border-0 rounded-xl px-4 py-3 text-xs font-bold"
+                    />
+                  </div>
+
+                  <ImageUpload 
+                    label="Partner Logo"
+                    value={aff.logoUrl || ''}
+                    onChange={(url) => handleAffiliationChange(idx, 'logoUrl', url)}
                   />
-                  <input 
-                    placeholder="Logo URL"
-                    value={aff.logoUrl}
-                    onChange={(e) => handleAffiliationChange(idx, 'logoUrl', e.target.value)}
-                    className="w-full bg-white border-0 rounded-xl px-4 py-3 text-xs font-medium"
-                  />
-                  <input 
-                    placeholder="Nettside URL (valgfritt)"
-                    value={aff.url}
-                    onChange={(e) => handleAffiliationChange(idx, 'url', e.target.value)}
-                    className="w-full bg-white border-0 rounded-xl px-4 py-3 text-xs font-medium"
-                  />
+
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Nettside URL (valgfritt)</label>
+                    <input 
+                      placeholder="https://..."
+                      value={aff.url || ''}
+                      onChange={(e) => handleAffiliationChange(idx, 'url', e.target.value)}
+                      className="w-full bg-white border-0 rounded-xl px-4 py-3 text-xs font-medium"
+                    />
+                  </div>
                 </div>
               </div>
             ))}

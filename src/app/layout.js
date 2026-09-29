@@ -6,12 +6,14 @@ const sora = Sora({
   subsets: ["latin"],
   weight: ['400', '700'],
   variable: '--font-sora',
+  display: 'swap',
 });
 
 const inter = Inter({
   subsets: ["latin"],
   weight: ['300', '400', '600'],
   variable: '--font-inter',
+  display: 'swap',
 });
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://nepalvibb.com';

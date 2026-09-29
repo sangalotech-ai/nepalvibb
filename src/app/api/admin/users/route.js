@@ -8,7 +8,13 @@ export async function GET() {
     await dbConnect();
     const User = mongoose.models.User || mongoose.model('User', new mongoose.Schema({}, { strict: false }));
     const users = await User.find({}).sort({ createdAt: -1 });
-    return NextResponse.json(users);
+    return NextResponse.json(users, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      }
+    });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
