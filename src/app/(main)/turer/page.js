@@ -8,7 +8,7 @@ import { tr } from '@/lib/tr';
 import { useLocale } from '@/components/providers/useLocale';
 
 export default function TurerPage() {
-  const { locale } = useLocale();
+  const { t, locale } = useLocale();
   const [tours, setTours] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -43,17 +43,19 @@ export default function TurerPage() {
       <div className="max-w-7xl mx-auto px-6 lg:px-8 pt-36 pb-24">
         <div className="text-center mb-14">
           <h5 className="text-orange-500 font-bold uppercase tracking-wider text-xs mb-3">
-            Utforsk Nepal
+            {locale === 'en' ? 'Explore Nepal' : 'Utforsk Nepal'}
           </h5>
           <h1 className="text-4xl md:text-6xl font-bold font-display text-primary tracking-tight leading-tight">
-            Våre turer & trekk
+            {locale === 'en' ? 'Our Tours & Treks' : 'Våre turer & trekk'}
           </h1>
         </div>
 
         {loading ? (
           <div className="py-24 text-center">
             <div className="w-12 h-12 border-4 border-primary/10 border-t-orange-500 rounded-full animate-spin mx-auto mb-6" />
-            <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 animate-pulse">Laster turer...</p>
+            <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 animate-pulse">
+              {locale === 'en' ? 'Loading tours...' : 'Laster turer...'}
+            </p>
           </div>
         ) : tours.length === 0 ? (
           <div className="bg-white rounded-3xl p-10 md:p-20 text-center border border-gray-100 space-y-6 shadow-sm">
@@ -61,8 +63,12 @@ export default function TurerPage() {
               <Compass className="w-8 h-8 text-gray-200" />
             </div>
             <div className="space-y-3 max-w-md mx-auto">
-              <h3 className="text-2xl sm:text-3xl font-bold font-display text-primary tracking-tight">Ingen turer funnet</h3>
-              <p className="text-gray-500 font-light leading-relaxed text-sm">Det er ingen turer tilgjengelig for øyeblikket.</p>
+              <h3 className="text-2xl sm:text-3xl font-bold font-display text-primary tracking-tight">
+                {locale === 'en' ? 'No tours found' : 'Ingen turer funnet'}
+              </h3>
+              <p className="text-gray-500 font-light leading-relaxed text-sm">
+                {locale === 'en' ? 'There are no tours available right now.' : 'Det er ingen turer tilgjengelig for øyeblikket.'}
+              </p>
             </div>
           </div>
         ) : (
@@ -83,10 +89,10 @@ export default function TurerPage() {
                     <div className="absolute top-4 left-4 bg-primary/95 text-white text-[9px] font-bold uppercase px-3 py-1.5 rounded-full tracking-wider shadow-md backdrop-blur-sm">
                       {(locale === 'en'
                         ? (Array.isArray(tour.categoryEn) ? tour.categoryEn[0] : (tour.categoryEn || tour.category))
-                        : (Array.isArray(tour.category) ? tour.category[0] : tour.category)) || 'Eventyr'}
+                        : (Array.isArray(tour.category) ? tour.category[0] : tour.category)) || (locale === 'en' ? 'Adventure' : 'Eventyr')}
                     </div>
                     <div className="absolute bottom-4 right-4 bg-orange-500 text-white font-bold px-4 py-2 rounded-2xl shadow-md">
-                      <p className="text-[9px] block font-light text-orange-200 uppercase tracking-wider leading-none mb-0.5">Fra</p>
+                      <p className="text-[9px] block font-light text-orange-200 uppercase tracking-wider leading-none mb-0.5">{t?.common?.fra || (locale === 'en' ? 'From' : 'Fra')}</p>
                       <p className="text-sm">NOK {tour.price?.toLocaleString()}</p>
                     </div>
                   </div>
@@ -105,7 +111,7 @@ export default function TurerPage() {
                         <span>{tr(tour, 'duration', locale)}</span>
                       </div>
                       <Link href={`/trips/${tour.slug}`} className="text-[10px] font-bold uppercase tracking-wider text-primary flex items-center group-hover:text-orange-500 transition-all">
-                        <span>Les mer</span>
+                        <span>{t?.common?.lesMer || (locale === 'en' ? 'Read more' : 'Les mer')}</span>
                         <ArrowRight className="w-3.5 h-3.5 ml-1.5 text-orange-500 group-hover:translate-x-0.5 transition-transform" />
                       </Link>
                     </div>

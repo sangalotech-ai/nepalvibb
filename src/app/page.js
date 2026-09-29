@@ -84,7 +84,7 @@ export default async function Home() {
     getHomeContent(),
     Banner.find({ isActive: true }).sort({ order: 1 }).lean().catch(() => []),
     Tour.find({})
-      .select('title titleEn slug price duration difficulty image summary summaryEn category categoryEn isFeatured')
+      .select('title titleEn slug price duration durationEn difficulty difficultyEn image summary summaryEn category categoryEn isFeatured')
       .limit(9)
       .lean()
       .catch(() => []),

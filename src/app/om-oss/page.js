@@ -145,8 +145,12 @@ export default function AboutPage() {
         <section className="py-20 md:py-32 overflow-hidden bg-gray-50/50">
           <div className="max-w-7xl mx-auto px-6">
             <div className="text-center mb-16 space-y-3">
-              <h5 className="text-orange-500 font-bold uppercase tracking-wider text-xs">Menneskene bak</h5>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold font-display text-primary tracking-tight leading-tight">Vårt Ekspertteam</h2>
+              <h5 className="text-orange-500 font-bold uppercase tracking-wider text-xs">
+                {locale === 'en' ? 'The Team Behind' : 'Menneskene bak'}
+              </h5>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold font-display text-primary tracking-tight leading-tight">
+                {locale === 'en' ? 'Our Expert Team' : 'Vårt Ekspertteam'}
+              </h2>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -169,13 +173,21 @@ export default function AboutPage() {
                         {member.socialLinks?.linkedin && <a href={member.socialLinks.linkedin} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="text-white hover:text-orange-500"><Linkedin className="w-5 h-5" /></a>}
                         {member.socialLinks?.twitter && <a href={member.socialLinks.twitter} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="text-white hover:text-orange-500"><Twitter className="w-5 h-5" /></a>}
                       </div>
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-white/70 mt-4">Se profil →</p>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-white/70 mt-4">
+                        {locale === 'en' ? 'View profile →' : 'Se profil →'}
+                      </p>
                     </div>
                   </div>
                   <div className="text-center">
                     <h3 className="text-lg font-bold text-primary tracking-tight mb-1">{member.name}</h3>
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-orange-500">{member.role}</p>
-                    {member.bio && <p className="text-xs text-gray-500 mt-3 line-clamp-2 px-4 leading-relaxed font-light">&ldquo;{member.bio}&rdquo;</p>}
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-orange-500">
+                      {tr(member, 'role', locale)}
+                    </p>
+                    {(tr(member, 'bio', locale) || member.bio) && (
+                      <p className="text-xs text-gray-500 mt-3 line-clamp-2 px-4 leading-relaxed font-light">
+                        &ldquo;{tr(member, 'bio', locale) || member.bio}&rdquo;
+                      </p>
+                    )}
                   </div>
                 </motion.div>
               ))}
@@ -214,14 +226,18 @@ export default function AboutPage() {
           </div>
           <div className="relative z-10 space-y-8">
             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold font-display text-white tracking-tight leading-tight">
-              Klar for ditt<br />neste eventyr?
+              {locale === 'en' ? (
+                <>Ready for your<br />next adventure?</>
+              ) : (
+                <>Klar for ditt<br />neste eventyr?</>
+              )}
             </h2>
             <div className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6">
               <Link href="/plan-your-trip" className="bg-orange-500 text-white px-8 py-4 rounded-full text-xs font-bold uppercase tracking-wider shadow-md hover:bg-orange-600 hover:scale-105 transition-all">
-                Planlegg reisen
+                {locale === 'en' ? 'Plan your trip' : 'Planlegg reisen'}
               </Link>
               <Link href="/kontakt-oss" className="text-white text-xs font-bold uppercase tracking-wider hover:text-orange-500 transition-colors">
-                Kontakt oss →
+                {locale === 'en' ? 'Contact us →' : 'Kontakt oss →'}
               </Link>
             </div>
           </div>
@@ -266,16 +282,20 @@ export default function AboutPage() {
                 </div>
                 <div className="md:col-span-3 p-8 sm:p-10">
                   <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-orange-500 mb-2">
-                    {selectedMember.role}
+                    {tr(selectedMember, 'role', locale)}
                   </p>
                   <h3 className="text-2xl sm:text-3xl font-bold font-display text-primary tracking-tight mb-5">
                     {selectedMember.name}
                   </h3>
                   <div className="space-y-4 text-gray-600 font-light leading-relaxed text-sm sm:text-base">
-                    {selectedMember.bio ? (
-                      <p>{selectedMember.bio}</p>
+                    {(tr(selectedMember, 'bio', locale) || selectedMember.bio) ? (
+                      <p>{tr(selectedMember, 'bio', locale) || selectedMember.bio}</p>
                     ) : (
-                      <p>Vi er stolte av å ha {selectedMember.name} på teamet hos Nepalvibb.</p>
+                      <p>
+                        {locale === 'en'
+                          ? `We are proud to have ${selectedMember.name} on the Nepalvibb team.`
+                          : `Vi er stolte av å ha ${selectedMember.name} på teamet hos Nepalvibb.`}
+                      </p>
                     )}
                   </div>
 

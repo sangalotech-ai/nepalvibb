@@ -5,13 +5,25 @@ const BannerSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please provide a title'],
   },
+  titleEn: {
+    type: String,
+  },
   subtitle: {
+    type: String,
+  },
+  subtitleEn: {
     type: String,
   },
   highlightText: {
     type: String, // The "Kulturelle" part in the middle
   },
+  highlightTextEn: {
+    type: String,
+  },
   badgeText: {
+    type: String,
+  },
+  badgeTextEn: {
     type: String,
   },
   image: {
@@ -21,6 +33,10 @@ const BannerSchema = new mongoose.Schema({
   buttonText: {
     type: String,
     default: 'TA EN TUR',
+  },
+  buttonTextEn: {
+    type: String,
+    default: 'EXPLORE NOW',
   },
   buttonLink: {
     type: String,

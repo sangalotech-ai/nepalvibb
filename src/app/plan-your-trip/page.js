@@ -249,7 +249,7 @@ function PlanYourTripContent() {
   const nextStep = () => {
     setError('');
     if (currentStepIdx < questions.length) {
-      if (currentQuestion.question === 'Tour details' || currentQuestion.question === 'Turdetaljer') {
+      if (currentQuestion.question === 'Tour details' || currentQuestion.question === 'Turdetaljer' || currentQuestion.questionEn === 'Tour Details & Accommodation' || currentQuestion.question?.toLowerCase().includes('turdetalj') || currentQuestion.questionEn?.toLowerCase().includes('tour detail')) {
         if (!responses['accommodation']) {
           setError(t.planTrip.errorAccommodation);
           return;
@@ -429,7 +429,7 @@ function PlanYourTripContent() {
                     <div className="space-y-12">
                       <div className="space-y-4">
                         <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-[10px] font-black uppercase tracking-[0.5em] text-orange-500">{t.planTrip.stepOf.replace('{current}', currentStepIdx + 1).replace('{total}', totalSteps)}</motion.p>
-                        <motion.h2 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="text-4xl lg:text-5xl font-black text-primary uppercase tracking-tighter leading-[0.95] italic">{currentQuestion.question}</motion.h2>
+                        <motion.h2 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="text-4xl lg:text-5xl font-black text-primary uppercase tracking-tighter leading-[0.95] italic">{tr(currentQuestion, 'question', locale)}</motion.h2>
                       </div>
 
                       {currentQuestion.question?.toLowerCase().includes('date') || currentQuestion.question?.toLowerCase().includes('when') || currentQuestion.question?.toLowerCase().includes('reisedato') || currentQuestion.question?.toLowerCase().includes('reisedatoer') ? (
@@ -458,7 +458,7 @@ function PlanYourTripContent() {
                             </div>
                           </motion.label>
                         </div>
-                      ) : (currentQuestion.question === 'Tour details' || currentQuestion.question === 'Turdetaljer') ? (
+                      ) : (currentQuestion.question === 'Tour details' || currentQuestion.question === 'Turdetaljer' || currentQuestion.questionEn === 'Tour Details & Accommodation') ? (
                         <div className="space-y-12">
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div className="space-y-4">
@@ -518,8 +518,8 @@ function PlanYourTripContent() {
                                       </div>
                                       {isSelected && <div className="bg-primary text-white p-1 rounded-full"><Check className="w-3 h-3 stroke-[4px]" /></div>}
                                     </div>
-                                    <p className="text-sm font-black text-primary uppercase tracking-tight mb-1">{opt.label}</p>
-                                    <p className="text-[10px] text-gray-400 font-medium leading-relaxed">{opt.description}</p>
+                                    <p className="text-sm font-black text-primary uppercase tracking-tight mb-1">{tr(opt, 'label', locale)}</p>
+                                    <p className="text-[10px] text-gray-400 font-medium leading-relaxed">{tr(opt, 'description', locale)}</p>
                                   </motion.button>
                                 );
                               })}
@@ -594,7 +594,7 @@ function PlanYourTripContent() {
                                     <Icon className="w-6 h-6" />
                                   </div>
                                   <div className="space-y-1 relative z-10">
-                                    <p className={cn("text-base font-bold font-display tracking-tight transition-colors", isSelected ? "text-primary" : "text-gray-700 group-hover:text-primary")}>{opt.label}</p>
+                                    <p className={cn("text-base font-bold font-display tracking-tight transition-colors", isSelected ? "text-primary" : "text-gray-700 group-hover:text-primary")}>{tr(opt, 'label', locale)}</p>
                                     <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{isSelected ? t.planTrip.selected : t.planTrip.clickToSelect}</p>
                                   </div>
                                   {isSelected && (

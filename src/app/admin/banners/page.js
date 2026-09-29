@@ -12,11 +12,16 @@ import ImageUpload from '@/components/admin/ImageUpload';
 
 const DEFAULT_BANNER = {
   title: '',
+  titleEn: '',
   subtitle: '',
+  subtitleEn: '',
   highlightText: '',
+  highlightTextEn: '',
   badgeText: '',
+  badgeTextEn: '',
   image: '',
   buttonText: 'TA EN TUR',
+  buttonTextEn: 'EXPLORE NOW',
   buttonLink: '/turer',
   videoLink: '',
   order: 0,
@@ -65,11 +70,16 @@ export default function AdminBannersPage() {
     setIsEditing(banner);
     setFormData({
       title: banner.title || '',
+      titleEn: banner.titleEn || '',
       subtitle: banner.subtitle || '',
+      subtitleEn: banner.subtitleEn || '',
       highlightText: banner.highlightText || '',
+      highlightTextEn: banner.highlightTextEn || '',
       badgeText: banner.badgeText || '',
+      badgeTextEn: banner.badgeTextEn || '',
       image: banner.image || '',
       buttonText: banner.buttonText || 'TA EN TUR',
+      buttonTextEn: banner.buttonTextEn || 'EXPLORE NOW',
       buttonLink: banner.buttonLink || '/turer',
       videoLink: banner.videoLink || '',
       order: banner.order ?? 0,
@@ -201,21 +211,32 @@ export default function AdminBannersPage() {
           </div>
 
           <form onSubmit={handleSave} className="space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="space-y-4 md:col-span-2">
-                <ImageUpload 
-                  value={formData.image} 
-                  onChange={url => setFormData({...formData, image: url})} 
-                  label="Banner Image *" 
-                />
-              </div>
+            <div className="space-y-4">
+              <ImageUpload 
+                value={formData.image} 
+                onChange={url => setFormData({...formData, image: url})} 
+                label="Banner Image *" 
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="space-y-4">
-                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Badge Text (e.g. EKTE EVENTYR)</label>
+                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Badge Text (Norsk)</label>
                 <input 
                   type="text" 
                   value={formData.badgeText}
                   onChange={e => setFormData({...formData, badgeText: e.target.value})}
-                  placeholder="e.g. Oppdag Himalaya"
+                  placeholder="f.eks. Oppdag Himalaya"
+                  className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all"
+                />
+              </div>
+              <div className="space-y-4">
+                <label className="text-[10px] font-black uppercase tracking-widest text-blue-500 px-2">Badge Text (English)</label>
+                <input 
+                  type="text" 
+                  value={formData.badgeTextEn}
+                  onChange={e => setFormData({...formData, badgeTextEn: e.target.value})}
+                  placeholder="e.g. Discover the Himalayas"
                   className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all"
                 />
               </div>
@@ -232,33 +253,33 @@ export default function AdminBannersPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="space-y-4">
-                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Title (Top Line) *</label>
+                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Title (Norsk) *</label>
                 <input 
                   type="text" 
                   required
                   value={formData.title}
                   onChange={e => setFormData({...formData, title: e.target.value})}
-                  placeholder="e.g. Uforglemmelige"
+                  placeholder="f.eks. Uforglemmelige"
                   className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all"
                 />
               </div>
               <div className="space-y-4">
-                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Highlighted (Stroke/Orange)</label>
+                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Highlighted (Norsk)</label>
                 <input 
                   type="text" 
                   value={formData.highlightText}
                   onChange={e => setFormData({...formData, highlightText: e.target.value})}
-                  placeholder="e.g. Kulturelle"
+                  placeholder="f.eks. Kulturelle"
                   className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all"
                 />
               </div>
               <div className="space-y-4">
-                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Subtitle (Bottom Line)</label>
+                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Subtitle (Norsk)</label>
                 <input 
                   type="text" 
                   value={formData.subtitle}
                   onChange={e => setFormData({...formData, subtitle: e.target.value})}
-                  placeholder="e.g. Opplevelser"
+                  placeholder="f.eks. Opplevelser"
                   className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all"
                 />
               </div>
@@ -266,7 +287,40 @@ export default function AdminBannersPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="space-y-4">
-                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Button Text</label>
+                <label className="text-[10px] font-black uppercase tracking-widest text-blue-500 px-2">Title (English)</label>
+                <input 
+                  type="text" 
+                  value={formData.titleEn}
+                  onChange={e => setFormData({...formData, titleEn: e.target.value})}
+                  placeholder="e.g. Unforgettable"
+                  className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all"
+                />
+              </div>
+              <div className="space-y-4">
+                <label className="text-[10px] font-black uppercase tracking-widest text-blue-500 px-2">Highlighted (English)</label>
+                <input 
+                  type="text" 
+                  value={formData.highlightTextEn}
+                  onChange={e => setFormData({...formData, highlightTextEn: e.target.value})}
+                  placeholder="e.g. Cultural"
+                  className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all"
+                />
+              </div>
+              <div className="space-y-4">
+                <label className="text-[10px] font-black uppercase tracking-widest text-blue-500 px-2">Subtitle (English)</label>
+                <input 
+                  type="text" 
+                  value={formData.subtitleEn}
+                  onChange={e => setFormData({...formData, subtitleEn: e.target.value})}
+                  placeholder="e.g. Experiences"
+                  className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+              <div className="space-y-4">
+                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Button Text (Norsk)</label>
                 <input 
                   type="text" 
                   value={formData.buttonText}
@@ -276,15 +330,24 @@ export default function AdminBannersPage() {
                 />
               </div>
               <div className="space-y-4">
+                <label className="text-[10px] font-black uppercase tracking-widest text-blue-500 px-2">Button Text (English)</label>
+                <input 
+                  type="text" 
+                  value={formData.buttonTextEn}
+                  onChange={e => setFormData({...formData, buttonTextEn: e.target.value})}
+                  placeholder="EXPLORE NOW"
+                  className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all"
+                />
+              </div>
+              <div className="space-y-4">
                 <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Button Link (URL)</label>
                 <input 
                   type="text" 
                   value={formData.buttonLink}
                   onChange={e => setFormData({...formData, buttonLink: e.target.value})}
-                  placeholder="f.eks. /turer eller /plan-your-trip"
+                  placeholder="f.eks. /turer"
                   className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 text-sm font-medium focus:ring-2 focus:ring-primary transition-all"
                 />
-                <p className="text-[10px] text-gray-400 px-2 font-medium">Bruk f.eks. <code className="bg-gray-100 px-1 rounded">/turer</code>, <code className="bg-gray-100 px-1 rounded">/plan-your-trip</code>, <code className="bg-gray-100 px-1 rounded">/destination/nepal</code> eller full URL.</p>
               </div>
               <div className="space-y-4">
                 <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2">Video URL (Optional)</label>

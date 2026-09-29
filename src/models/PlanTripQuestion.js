@@ -5,7 +5,13 @@ const PlanTripQuestionSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  questionEn: {
+    type: String,
+  },
   description: {
+    type: String,
+  },
+  descriptionEn: {
     type: String,
   },
   type: {
@@ -15,9 +21,11 @@ const PlanTripQuestionSchema = new mongoose.Schema({
   },
   options: [{
     label: String,
+    labelEn: String,
     value: String,
     icon: String, // Name of the lucide icon
-    description: String, // Added for more detail
+    description: String,
+    descriptionEn: String,
   }],
   order: {
     type: Number,
