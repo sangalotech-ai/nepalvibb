@@ -79,7 +79,7 @@ export default function TurerPage() {
                   key={tour._id}
                   className="bg-white rounded-3xl overflow-hidden transition-all duration-500 hover:-translate-y-2 group border border-gray-100 flex flex-col hover:shadow-lg"
                 >
-                  <div className="relative h-52 overflow-hidden">
+                  <Link href={`/trips/${tour.slug}`} className="relative h-52 overflow-hidden block">
                     <img
                       src={tour.image}
                       alt={tr(tour, 'title', locale)}
@@ -95,11 +95,13 @@ export default function TurerPage() {
                       <p className="text-[9px] block font-light text-orange-200 uppercase tracking-wider leading-none mb-0.5">{t?.common?.fra || (locale === 'en' ? 'From' : 'Fra')}</p>
                       <p className="text-sm">NOK {tour.price?.toLocaleString()}</p>
                     </div>
-                  </div>
+                  </Link>
 
                   <div className="p-5 flex-1 flex flex-col">
                     <h3 className="text-base sm:text-lg font-bold font-display text-primary mb-2 line-clamp-2 leading-snug group-hover:text-orange-500 transition-colors">
-                      {tr(tour, 'title', locale)}
+                      <Link href={`/trips/${tour.slug}`}>
+                        {tr(tour, 'title', locale)}
+                      </Link>
                     </h3>
                     <div
                       className="text-gray-500 font-light text-xs mb-4 line-clamp-2 leading-relaxed [&_p]:m-0 [&_p]:inline"

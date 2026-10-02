@@ -97,7 +97,7 @@ function SearchContent() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {tours.map((tour) => (
                 <div key={tour._id} className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-500 group border border-gray-100 flex flex-col">
-                  <div className="relative h-72 overflow-hidden">
+                  <Link href={`/trips/${tour.slug}`} className="relative h-72 overflow-hidden block">
                     <img src={tour.image} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" alt={tr(tour, 'title', locale)} loading="lazy" />
                     <div className="absolute top-6 left-6 bg-primary/90 backdrop-blur-md text-white text-[9px] font-bold uppercase px-4 py-1.5 rounded-full tracking-wider">
                       {tr(tour, 'difficulty', locale)}
@@ -106,10 +106,12 @@ function SearchContent() {
                       <p className="text-[9px] font-medium text-orange-200 uppercase tracking-wider mb-0.5">{t.common.fra}</p>
                       <p className="text-base leading-none">NOK {tour.price?.toLocaleString()}</p>
                     </div>
-                  </div>
+                  </Link>
                   <div className="p-8 flex-1 flex flex-col">
                     <h3 className="text-lg sm:text-xl font-bold font-display text-primary mb-3 tracking-tight line-clamp-2 leading-snug group-hover:text-orange-500 transition-colors">
-                      {tr(tour, 'title', locale)}
+                      <Link href={`/trips/${tour.slug}`}>
+                        {tr(tour, 'title', locale)}
+                      </Link>
                     </h3>
                     <div
                       className="text-gray-500 font-light mb-8 line-clamp-2 leading-relaxed text-sm [&_p]:m-0 [&_p]:inline"
