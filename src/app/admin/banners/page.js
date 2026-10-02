@@ -143,14 +143,15 @@ export default function AdminBannersPage() {
   };
 
   const toggleActive = async (banner) => {
+    const isCurrentlyActive = banner.isActive !== false;
     try {
       const res = await fetch(`/api/banners/${banner._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ isActive: !banner.isActive })
+        body: JSON.stringify({ isActive: !isCurrentlyActive })
       });
       if (res.ok) {
-        showStatus('success', `Banner ${!banner.isActive ? 'activated' : 'deactivated'}`);
+        showStatus('success', `Banner ${!isCurrentlyActive ? 'activated' : 'deactivated'}`);
         await fetchBanners();
       }
     } catch (err) {
@@ -405,11 +406,13 @@ export default function AdminBannersPage() {
             Ingen bannere lagt til ennå. Klikk &quot;Add New Slide&quot; for å opprette ditt første banner.
           </div>
         ) : (
-          banners.map((banner) => (
+          banners.map((banner) => {
+            const isBannerActive = banner.isActive !== false;
+            return (
             <div key={banner._id} className="bg-white rounded-[2.5rem] p-6 border border-gray-100 shadow-sm flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-8 group">
               <div className="w-full md:w-48 h-32 md:h-28 rounded-2xl overflow-hidden flex-shrink-0 relative bg-gray-100">
                 <img src={banner.image} className="w-full h-full object-cover" alt="" />
-                {!banner.isActive && (
+                {!isBannerActive && (
                   <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px] flex items-center justify-center">
                     <span className="text-[10px] font-black uppercase tracking-widest text-white/80 bg-black/40 px-3 py-1 rounded-full flex items-center gap-1.5">
                       <EyeOff className="w-3.5 h-3.5" /> Deaktivert
@@ -441,14 +444,14 @@ export default function AdminBannersPage() {
               <div className="flex items-center space-x-3 self-end md:self-center">
                 <button 
                   type="button"
-                  title={banner.isActive ? "Deaktiver slide" : "Aktiver slide"}
+                  title={isBannerActive ? "Deaktiver slide" : "Aktiver slide"}
                   onClick={() => toggleActive(banner)}
                   className={cn(
                     "p-3 rounded-xl transition-all",
-                    banner.isActive ? "bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white" : "bg-gray-100 text-gray-400 hover:bg-primary hover:text-white"
+                    isBannerActive ? "bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white" : "bg-gray-100 text-gray-400 hover:bg-primary hover:text-white"
                   )}
                 >
-                  {banner.isActive ? <Eye className="w-5 h-5" /> : <EyeOff className="w-5 h-5" />}
+                  {isBannerActive ? <Eye className="w-5 h-5" /> : <EyeOff className="w-5 h-5" />}
                 </button>
                 <button 
                   type="button"
@@ -468,7 +471,8 @@ export default function AdminBannersPage() {
                 </button>
               </div>
             </div>
-          ))
+            );
+          })
         )}
       </div>
     </div>

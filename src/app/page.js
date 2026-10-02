@@ -84,7 +84,7 @@ export default async function Home() {
   await dbConnect();
   const [content, banners, featuredTours, latestBlogs] = await Promise.all([
     getHomeContent(),
-    Banner.find({ isActive: true }).sort({ order: 1 }).lean().catch(() => []),
+    Banner.find({ isActive: { $ne: false } }).sort({ order: 1 }).lean().catch(() => []),
     Tour.find({})
       .select('title titleEn slug price duration durationEn difficulty difficultyEn image summary summaryEn category categoryEn isFeatured')
       .limit(9)

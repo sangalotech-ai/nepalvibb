@@ -2,10 +2,23 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowRight, Play, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowRight, Play, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useLocale } from '@/components/providers/useLocale';
 import { tr } from '@/lib/tr';
+
+function getEmbedUrl(url) {
+  if (!url) return null;
+  const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+  if (ytMatch && ytMatch[1]) {
+    return `https://www.youtube-nocookie.com/embed/${ytMatch[1]}?autoplay=1&rel=0`;
+  }
+  const vimeoMatch = url.match(/vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|)(\d+)(?:$|\/|\?)/);
+  if (vimeoMatch && vimeoMatch[3]) {
+    return `https://player.vimeo.com/video/${vimeoMatch[3]}?autoplay=1`;
+  }
+  return url;
+}
 
 export default function HeroBanner({ initialBanners }) {
   const { t, locale } = useLocale();
@@ -21,29 +34,52 @@ export default function HeroBanner({ initialBanners }) {
   };
   const [banners, setBanners] = useState(initialBanners || []);
   const [current, setCurrent] = useState(0);
+  const [activeVideo, setActiveVideo] = useState(null);
 
   useEffect(() => {
-    if (initialBanners?.length) return;
-    fetch('/api/banners')
-      .then(res => res.json())
-      .then(data => {
-        if (data && data.length > 0) {
-          setBanners(data);
-        }
-      })
-      .catch(() => {});
+    if (initialBanners && initialBanners.length > 0) {
+      setBanners(initialBanners);
+    } else {
+      fetch('/api/banners')
+        .then(res => res.json())
+        .then(data => {
+          if (Array.isArray(data) && data.length > 0) {
+            setBanners(data);
+          }
+        })
+        .catch(() => {});
+    }
   }, [initialBanners]);
 
   useEffect(() => {
-    if (banners.length <= 1) return;
+    if (banners.length <= 1 || activeVideo) return;
     const timer = setInterval(() => {
       setCurrent(prev => (prev + 1) % banners.length);
     }, 8000);
     return () => clearInterval(timer);
-  }, [banners.length]);
+  }, [banners.length, activeVideo]);
+
+  // Close video on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') setActiveVideo(null);
+    };
+    if (activeVideo) {
+      window.addEventListener('keydown', handleKeyDown);
+    }
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activeVideo]);
 
   const allBanners = banners.length > 0 ? banners : [FALLBACK_BANNER];
-  const currentBanner = allBanners[current];
+  const currentBanner = allBanners[current] || allBanners[0] || FALLBACK_BANNER;
+
+  const handleOpenVideo = (url) => {
+    if (!url) return;
+    setActiveVideo(url);
+  };
+
+  const embedUrl = activeVideo ? getEmbedUrl(activeVideo) : null;
+  const isDirectVideo = activeVideo && /\.(mp4|webm|ogg)($|\?)/i.test(activeVideo);
 
   return (
     <>
@@ -93,8 +129,12 @@ export default function HeroBanner({ initialBanners }) {
             </Link>
 
             {currentBanner.videoLink && (
-              <button className="inline-flex items-center gap-4 text-white/70 hover:text-white transition-colors group">
-                <div className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center group-hover:bg-white group-hover:border-white group-hover:text-primary transition-all duration-300">
+              <button
+                type="button"
+                onClick={() => handleOpenVideo(currentBanner.videoLink)}
+                className="inline-flex items-center gap-4 text-white/70 hover:text-white transition-colors group cursor-pointer"
+              >
+                <div className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center group-hover:bg-white group-hover:border-white group-hover:text-primary transition-all duration-300 shadow-lg">
                   <Play className="w-5 h-5 fill-current ml-0.5" />
                 </div>
                 <span className="text-xs font-bold uppercase tracking-[0.2em]">{t.common.seVideo}</span>
@@ -110,13 +150,13 @@ export default function HeroBanner({ initialBanners }) {
           <div className="relative h-full max-w-7xl mx-auto px-4">
             <button
               onClick={() => setCurrent(prev => (prev - 1 + allBanners.length) % allBanners.length)}
-              className="pointer-events-auto absolute left-4 top-1/2 -translate-y-1/2 p-3 rounded-full border border-white/20 text-white/60 hover:text-white hover:bg-white/10 hover:border-white/40 backdrop-blur-sm transition-all duration-300 opacity-0 group-hover/arrows:opacity-100"
+              className="pointer-events-auto absolute left-4 top-1/2 -translate-y-1/2 p-3 rounded-full border border-white/20 text-white/60 hover:text-white hover:bg-white/10 hover:border-white/40 backdrop-blur-sm transition-all duration-300 opacity-0 group-hover/arrows:opacity-100 cursor-pointer"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
             <button
               onClick={() => setCurrent(prev => (prev + 1) % allBanners.length)}
-              className="pointer-events-auto absolute right-4 top-1/2 -translate-y-1/2 p-3 rounded-full border border-white/20 text-white/60 hover:text-white hover:bg-white/10 hover:border-white/40 backdrop-blur-sm transition-all duration-300 opacity-0 group-hover/arrows:opacity-100"
+              className="pointer-events-auto absolute right-4 top-1/2 -translate-y-1/2 p-3 rounded-full border border-white/20 text-white/60 hover:text-white hover:bg-white/10 hover:border-white/40 backdrop-blur-sm transition-all duration-300 opacity-0 group-hover/arrows:opacity-100 cursor-pointer"
             >
               <ChevronRight className="w-5 h-5" />
             </button>
@@ -132,7 +172,7 @@ export default function HeroBanner({ initialBanners }) {
               key={i}
               onClick={() => setCurrent(i)}
               className={cn(
-                "rounded-full transition-all duration-500",
+                "rounded-full transition-all duration-500 cursor-pointer",
                 i === current
                   ? "bg-orange-500 w-10 h-2"
                   : "bg-white/30 hover:bg-white/50 w-2 h-2"
@@ -147,6 +187,57 @@ export default function HeroBanner({ initialBanners }) {
         <span className="text-[9px] font-bold uppercase tracking-[0.3em] [writing-mode:vertical-lr]">{t.common.scroll}</span>
         <div className="w-px h-16 bg-gradient-to-b from-white/30 to-transparent" />
       </div>
+
+      {/* Video Modal */}
+      {activeVideo && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-10 bg-black/85 backdrop-blur-md animate-in fade-in duration-200"
+          onClick={() => setActiveVideo(null)}
+        >
+          <div 
+            className="relative w-full max-w-5xl aspect-video bg-black rounded-3xl overflow-hidden shadow-2xl border border-white/10"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => setActiveVideo(null)}
+              className="absolute top-4 right-4 z-20 p-3 rounded-full bg-black/60 hover:bg-black text-white/80 hover:text-white border border-white/20 backdrop-blur-sm transition-all cursor-pointer"
+              aria-label="Close video"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {isDirectVideo ? (
+              <video
+                src={activeVideo}
+                controls
+                autoPlay
+                className="w-full h-full object-contain"
+              />
+            ) : embedUrl ? (
+              <iframe
+                src={embedUrl}
+                title="Banner Video"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+                className="w-full h-full border-0"
+              />
+            ) : (
+              <div className="w-full h-full flex flex-col items-center justify-center gap-4 text-white p-6 text-center">
+                <p className="text-lg font-semibold">Cannot preview this video URL in embed mode.</p>
+                <a 
+                  href={activeVideo} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="bg-orange-500 hover:bg-orange-600 text-white font-bold px-6 py-3 rounded-full text-sm uppercase tracking-wider"
+                >
+                  Open video in new tab
+                </a>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
     </>
   );
